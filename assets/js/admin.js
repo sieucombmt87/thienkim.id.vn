@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const role = user.role || "TVBH";
-  document.getElementById("adminUserBox").innerHTML = `<b>${ROLE_LABELS[role] || role}</b><br>${user.full_name || user.username}`;
+  document.getElementById("adminUserBox").innerHTML = `<b>${user.full_name || user.username}</b><br>${ROLE_LABELS[role] || role}`;
 
   const username = String(user.username || "").toLowerCase();
   const canVault = username === "0947924444";

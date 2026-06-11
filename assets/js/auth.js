@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 650);
     }catch(err){
       msg.className = "login-message error";
-      msg.textContent = "Không kết nối được API. Hãy kiểm tra Apps Script hoặc chạy local server.";
+      msg.textContent = "Không kết nối được API. Hãy kiểm tra Apps Script hoặc dùng tài khoản test offline để vào trước."; console.error(err);
     }
   });
 });

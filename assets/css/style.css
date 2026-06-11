@@ -2090,3 +2090,56 @@ body.vault-enabled .domain-panel .domain-vault{
     flex-direction:column;
   }
 }
+
+
+/* TKver2.3 - Identity greeting + login history + 80-minute session */
+.module-status b{
+  color:#fff;
+}
+
+.module-status span{
+  color:#ffd36b;
+  font-weight:900;
+}
+
+.comfort-panel{
+  grid-template-columns:1.2fr .8fr 1fr 1fr !important;
+}
+
+.login-history-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:12px;
+}
+
+.login-history-item{
+  padding:10px 12px;
+  border-radius:16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.10);
+}
+
+.login-history-item b{
+  display:block;
+  color:#fff;
+}
+
+.login-history-item span{
+  display:block;
+  margin-top:3px;
+  color:#d9ceec;
+  font-size:12px;
+}
+
+@media(max-width:1200px){
+  .comfort-panel{
+    grid-template-columns:1fr 1fr !important;
+  }
+}
+
+@media(max-width:760px){
+  .comfort-panel{
+    grid-template-columns:1fr !important;
+  }
+}

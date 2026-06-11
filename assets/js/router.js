@@ -33,8 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const status = document.querySelector("#moduleStatus");
   if(status){
-    const name = user ? (user.full_name || user.username || "User") : "User";
-    status.textContent = `✨ Chào ${name}`;
+    if(user){
+      const name = user.full_name || user.username || "User";
+      const role = user.role || "User";
+      status.innerHTML = `✨ Chào <b>${name}</b> <span>• ${role}</span>`;
+    }else{
+      status.textContent = "✨ Chào bạn";
+    }
     status.classList.remove("hidden");
   }
 
@@ -80,6 +85,11 @@ function renderComfortLayer(user){
         </div>
         <p id="achievementSaved" class="mood-message"></p>
       </div>
+
+      <div class="comfort-card login-history-card">
+        <span class="comfort-kicker">🕘 Lịch sử đăng nhập</span>
+        <div id="loginHistoryList" class="login-history-list"></div>
+      </div>
     </section>
 
     <div id="wellnessToast" class="wellness-toast hidden">
@@ -106,6 +116,8 @@ function bindComfortLayer(){
       localStorage.setItem("tk_mood", btn.dataset.mood);
     });
   });
+
+  renderLoginHistory();
 
   const quotes = [
     "Kỷ luật là cây cầu nối giữa mục tiêu và thành tựu.",
@@ -165,6 +177,29 @@ function startWellnessReminder(){
       if(toast) toast.classList.add("hidden");
     }
   });
+}
+
+function renderLoginHistory(){
+  const box = document.getElementById("loginHistoryList");
+  if(!box) return;
+
+  let history = [];
+  try{
+    history = JSON.parse(localStorage.getItem("tk_login_history") || "[]");
+  }catch(e){}
+
+  if(!history.length){
+    box.innerHTML = `<p class="mood-message">Chưa có lịch sử đăng nhập.</p>`;
+    return;
+  }
+
+  box.innerHTML = history.slice(0, 4).map(item => {
+    const time = new Date(item.login_at).toLocaleString("vi-VN");
+    return `<div class="login-history-item">
+      <b>${item.full_name || item.username}</b>
+      <span>${item.role || "User"} • ${time}</span>
+    </div>`;
+  }).join("");
 }
 
 function renderModule(module, key, user){

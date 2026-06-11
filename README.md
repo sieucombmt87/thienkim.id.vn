@@ -1,3 +1,32 @@
+# TKver2.4 - API Debug Fix
+
+## Cập nhật
+- Sửa `apiLogin()` để thử POST trước, nếu lỗi sẽ fallback sang GET.
+- Khi API trả về HTML/lỗi quyền, web sẽ báo rõ hơn thay vì chỉ báo không kết nối.
+- Thêm `apps-script/Code.gs` là mã Apps Script chuẩn để paste lại vào Google Apps Script.
+- Thêm `api-debug.html` để test trực tiếp API sau khi upload GitHub.
+
+## Cách test
+Mở:
+`api-debug.html`
+
+Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay lỗi.
+
+
+# TKver2.3 - Session Identity
+
+## Cập nhật
+- Dòng chào hiển thị đúng danh tính người đăng nhập:
+  - Full name
+  - Role
+- Lưu lịch sử đăng nhập bằng LocalStorage.
+- Nếu đã đăng nhập, hệ thống giữ phiên đăng nhập.
+- Chỉ tự đăng xuất khi:
+  - Không sử dụng trong 80 phút
+  - Hoặc người dùng chủ động bấm Đăng xuất
+- Thêm thẻ lịch sử đăng nhập trong module để người dùng xem các lần đăng nhập gần nhất.
+
+
 # TKver2.2 - Comfort Interaction
 
 ## Cập nhật
