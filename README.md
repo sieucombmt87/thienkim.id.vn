@@ -1,3 +1,9 @@
+# TKver2.9 - Repair Build
+
+- Sửa lỗi JavaScript ở popup Thiên Kim Care khiến web có thể không chạy.
+- Giữ theme Black Gold.
+- Version tag: TKver2.9.
+
 # TKver2.8 - Black Gold Edition
 
 ## Cập nhật

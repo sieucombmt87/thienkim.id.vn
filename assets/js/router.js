@@ -59,13 +59,11 @@ function renderComfortLayer(user){
   const name = user ? (user.full_name || user.username || "bạn") : "bạn";
   return `
     <button id="comfortToggle" class="comfort-floating-btn" type="button">💜<span>Care</span></button>
-
     <aside id="comfortDrawer" class="comfort-drawer hidden">
       <div class="comfort-drawer-head">
         <div><span class="comfort-kicker">THIENKIM CARE</span><h2>Hôm nay ${name} thế nào?</h2></div>
         <button id="comfortClose" type="button">×</button>
       </div>
-
       <div class="comfort-drawer-body">
         <section class="comfort-card">
           <div class="mood-actions">
@@ -75,28 +73,15 @@ function renderComfortLayer(user){
           </div>
           <p id="moodMessage" class="mood-message">Chọn một cảm xúc nhỏ để Thiên Kim gửi bạn một lời nhắn nhẹ nhàng.</p>
         </section>
-
-        <section class="comfort-card quote-card">
-          <span class="comfort-kicker">🌟 Câu nói hôm nay</span>
-          <p id="dailyQuote"></p>
-        </section>
-
+        <section class="comfort-card quote-card"><span class="comfort-kicker">🌟 Câu nói hôm nay</span><p id="dailyQuote"></p></section>
         <section class="comfort-card achievement-card">
           <span class="comfort-kicker">🎯 Thành tựu hôm nay</span>
-          <div class="achievement-row">
-            <input id="achievementInput" placeholder="Hôm nay bạn đã hoàn thành điều gì?">
-            <button id="saveAchievement">Lưu</button>
-          </div>
+          <div class="achievement-row"><input id="achievementInput" placeholder="Hôm nay bạn đã hoàn thành điều gì?"><button id="saveAchievement">Lưu</button></div>
           <p id="achievementSaved" class="mood-message"></p>
         </section>
-
-        <section class="comfort-card login-history-card">
-          <span class="comfort-kicker">🕘 Lịch sử đăng nhập</span>
-          <div id="loginHistoryList" class="login-history-list"></div>
-        </section>
+        <section class="comfort-card login-history-card"><span class="comfort-kicker">🕘 Lịch sử đăng nhập</span><div id="loginHistoryList" class="login-history-list"></div></section>
       </div>
     </aside>
-
     <div id="wellnessToast" class="wellness-toast hidden">
       <button id="closeWellness" type="button">×</button>
       <h3>💧 Nghỉ nhẹ một chút nhé</h3>
@@ -107,110 +92,79 @@ function renderComfortLayer(user){
 }
 
 function bindComfortLayer(){
-  const drawer = document.getElementById("comfortDrawer");
-  const toggle = document.getElementById("comfortToggle");
-  const close = document.getElementById("comfortClose");
-  if(toggle && drawer) toggle.addEventListener("click", () => drawer.classList.toggle("hidden"));
-  if(close && drawer) close.addEventListener("click", () => drawer.classList.add("hidden"));
+  const drawer=document.getElementById("comfortDrawer");
+  const toggle=document.getElementById("comfortToggle");
+  const close=document.getElementById("comfortClose");
+  if(toggle&&drawer) toggle.addEventListener("click",()=>drawer.classList.toggle("hidden"));
+  if(close&&drawer) close.addEventListener("click",()=>drawer.classList.add("hidden"));
 
-
-  const messages = {
-    happy: "Tuyệt vời 🎉 Hãy tận dụng năng lượng tích cực này để hoàn thành một việc quan trọng nhất hôm nay.",
-    sad: "Mọi chuyện rồi sẽ ổn 💜 Bạn không cần giải quyết tất cả ngay hôm nay. Chỉ cần đi tiếp một bước nhỏ là đủ.",
-    private: "Không sao cả 🌙 Bạn không cần phải chia sẻ điều gì nếu chưa sẵn sàng. Chúc bạn một ngày thật bình an."
+  const messages={
+    happy:"Tuyệt vời 🎉 Hãy tận dụng năng lượng tích cực này để hoàn thành một việc quan trọng nhất hôm nay.",
+    sad:"Mọi chuyện rồi sẽ ổn 💜 Bạn không cần giải quyết tất cả ngay hôm nay. Chỉ cần đi tiếp một bước nhỏ là đủ.",
+    private:"Không sao cả 🌙 Bạn không cần phải chia sẻ điều gì nếu chưa sẵn sàng. Chúc bạn một ngày thật bình an."
   };
 
-  document.querySelectorAll("[data-mood]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const msg = document.getElementById("moodMessage");
-      msg.textContent = messages[btn.dataset.mood] || messages.private;
+  document.querySelectorAll("[data-mood]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const msg=document.getElementById("moodMessage");
+      if(!msg) return;
+      msg.textContent=messages[btn.dataset.mood]||messages.private;
       msg.classList.add("active");
-      localStorage.setItem("tk_mood", btn.dataset.mood);
+      localStorage.setItem("tk_mood",btn.dataset.mood);
     });
   });
 
   renderLoginHistory();
 
-  const quotes = [
+  const quotes=[
     "Kỷ luật là cây cầu nối giữa mục tiêu và thành tựu.",
     "Bạn không cần hoàn hảo, chỉ cần tốt hơn hôm qua một chút.",
     "Một bước nhỏ hôm nay có thể mở ra một cánh cửa lớn ngày mai.",
     "Năng lượng tốt bắt đầu từ một tâm trí được chăm sóc.",
     "Làm chậm lại không có nghĩa là bỏ cuộc.",
-    "Việc lớn bắt đầu bằng một hành động nhỏ nhưng đều đặn.",
-    "Hãy tử tế với chính mình trên hành trình phát triển.",
-    "Mỗi ngày là một lần được làm mới.",
-    "Chọn điều quan trọng, làm nó thật rõ ràng.",
-    "Tỏa sáng không phải để hơn ai, mà để trở thành phiên bản tốt hơn của mình."
+    "Việc lớn bắt đầu bằng một hành động nhỏ nhưng đều đặn."
   ];
+  const quoteEl=document.getElementById("dailyQuote");
+  if(quoteEl) quoteEl.textContent=`“${quotes[new Date().getDate()%quotes.length]}”`;
 
-  const quoteEl = document.getElementById("dailyQuote");
-  if(quoteEl){
-    const index = new Date().getDate() % quotes.length;
-    quoteEl.textContent = `“${quotes[index]}”`;
-  }
-
-  const input = document.getElementById("achievementInput");
-  const saved = document.getElementById("achievementSaved");
-  const btn = document.getElementById("saveAchievement");
-
-  if(input){
-    input.value = localStorage.getItem("tk_today_achievement") || "";
-  }
-  if(saved && input.value){
-    saved.textContent = "Đã lưu thành tựu hôm nay ✨";
-  }
-  if(btn){
-    btn.addEventListener("click", () => {
-      const value = (input.value || "").trim();
-      if(!value){
-        saved.textContent = "Bạn có thể ghi một điều rất nhỏ cũng được.";
-        return;
-      }
-      localStorage.setItem("tk_today_achievement", value);
-      saved.textContent = "Đã lưu rồi. Bạn làm tốt lắm ✨";
+  const input=document.getElementById("achievementInput");
+  const saved=document.getElementById("achievementSaved");
+  const btn=document.getElementById("saveAchievement");
+  if(input) input.value=localStorage.getItem("tk_today_achievement")||"";
+  if(saved&&input&&input.value) saved.textContent="Đã lưu thành tựu hôm nay ✨";
+  if(btn&&input&&saved){
+    btn.addEventListener("click",()=>{
+      const value=(input.value||"").trim();
+      if(!value){saved.textContent="Bạn có thể ghi một điều rất nhỏ cũng được.";return;}
+      localStorage.setItem("tk_today_achievement",value);
+      saved.textContent="Đã lưu rồi. Bạn làm tốt lắm ✨";
     });
   }
 }
 
 function startWellnessReminder(){
-  if(sessionStorage.getItem("tk_wellness_shown") === "1") return;
-  setTimeout(() => {
-    const toast = document.getElementById("wellnessToast");
-    if(toast){
-      toast.classList.remove("hidden");
-      sessionStorage.setItem("tk_wellness_shown", "1");
-    }
-  }, 30 * 60 * 1000);
-
-  document.addEventListener("click", (e) => {
-    if(e.target && (e.target.id === "closeWellness" || e.target.id === "doneWellness")){
-      const toast = document.getElementById("wellnessToast");
+  if(sessionStorage.getItem("tk_wellness_shown")==="1") return;
+  setTimeout(()=>{
+    const toast=document.getElementById("wellnessToast");
+    if(toast){toast.classList.remove("hidden");sessionStorage.setItem("tk_wellness_shown","1");}
+  },30*60*1000);
+  document.addEventListener("click",(e)=>{
+    if(e.target&&(e.target.id==="closeWellness"||e.target.id==="doneWellness")){
+      const toast=document.getElementById("wellnessToast");
       if(toast) toast.classList.add("hidden");
     }
   });
 }
 
 function renderLoginHistory(){
-  const box = document.getElementById("loginHistoryList");
+  const box=document.getElementById("loginHistoryList");
   if(!box) return;
-
-  let history = [];
-  try{
-    history = JSON.parse(localStorage.getItem("tk_login_history") || "[]");
-  }catch(e){}
-
-  if(!history.length){
-    box.innerHTML = `<p class="mood-message">Chưa có lịch sử đăng nhập.</p>`;
-    return;
-  }
-
-  box.innerHTML = history.slice(0, 4).map(item => {
-    const time = new Date(item.login_at).toLocaleString("vi-VN");
-    return `<div class="login-history-item">
-      <b>${item.full_name || item.username}</b>
-      <span>${item.role || "User"} • ${time}</span>
-    </div>`;
+  let history=[];
+  try{history=JSON.parse(localStorage.getItem("tk_login_history")||"[]");}catch(e){}
+  if(!history.length){box.innerHTML=`<p class="mood-message">Chưa có lịch sử đăng nhập.</p>`;return;}
+  box.innerHTML=history.slice(0,4).map(item=>{
+    const time=new Date(item.login_at).toLocaleString("vi-VN");
+    return `<div class="login-history-item"><b>${item.full_name||item.username}</b><span>${item.role||"User"} • ${time}</span></div>`;
   }).join("");
 }
 
