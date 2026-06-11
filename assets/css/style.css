@@ -2162,3 +2162,213 @@ body.vault-enabled .domain-panel .domain-vault{
 .comfort-drawer .comfort-card{padding:16px;border-radius:22px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.13)}
 .comfort-drawer .achievement-row{flex-direction:column}
 @media(max-width:760px){.comfort-floating-btn{right:14px;bottom:18px;top:auto;transform:none;width:68px;height:68px}.comfort-floating-btn:hover{transform:scale(1.06)}.comfort-drawer{left:12px;right:12px;top:auto;bottom:96px;width:auto;max-height:72vh}.comfort-drawer-body{max-height:calc(72vh - 92px)}}
+
+
+/* TKver2.8 - Black Gold Edition: global chủ đạo cho portal và domain con */
+:root{
+  --tk-bg-0:#030303;
+  --tk-bg-1:#0b0904;
+  --tk-bg-2:#171104;
+  --tk-gold:#ffd76a;
+  --tk-gold-2:#fff1b8;
+  --tk-gold-3:#b8860b;
+  --tk-champagne:#ffe9a6;
+  --tk-glass:rgba(18,15,8,.72);
+  --tk-glass-2:rgba(255,215,106,.08);
+  --tk-border:rgba(255,215,106,.28);
+  --tk-text:#fff8dd;
+  --tk-muted:#d8c58c;
+  --tk-shadow:rgba(255,205,84,.22);
+}
+
+/* nền chính toàn site */
+html, body{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,215,106,.22) 0%, rgba(184,134,11,.10) 22%, transparent 46%),
+    radial-gradient(circle at 18% 82%, rgba(255,215,106,.16) 0%, transparent 34%),
+    radial-gradient(circle at 86% 78%, rgba(255,241,184,.12) 0%, transparent 32%),
+    linear-gradient(180deg, #080704 0%, #050505 42%, #000 100%) !important;
+  color:var(--tk-text) !important;
+}
+
+/* galaxy background đồng bộ cho index + login + module/admin */
+.galaxy-bg,
+body::before,
+body::after{
+  filter:saturate(.8) sepia(.25) hue-rotate(350deg);
+}
+
+.galaxy-bg{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,215,106,.20), transparent 42%),
+    radial-gradient(circle at 50% 100%, rgba(184,134,11,.18), transparent 48%),
+    linear-gradient(180deg, #050505 0%, #100c03 58%, #000 100%) !important;
+}
+
+/* ép các mảng tím/hồng sang black-gold nhưng vẫn giữ ảnh card */
+.main-shell,
+.module-shell,
+.profile-shell,
+.admin-main{
+  color:var(--tk-text) !important;
+}
+
+/* kính đen vàng cho card/module */
+.module-card,
+.module-card-wide,
+.profile-hero-card,
+.profile-filter-card,
+.profile-content-card,
+.admin-sidebar,
+.admin-user,
+.admin-main section,
+.manager-form,
+.manager-preview,
+.comfort-drawer,
+.comfort-card,
+.demo-card,
+.store-hero,
+.product-card,
+.app-tool,
+.dash-card,
+.profile-post-card,
+.saved-post-item,
+.lesson-item{
+  background:linear-gradient(145deg, rgba(20,17,9,.82), rgba(8,8,8,.76)) !important;
+  border-color:var(--tk-border) !important;
+  box-shadow:0 0 36px rgba(255,205,84,.12), inset 0 0 20px rgba(255,215,106,.035) !important;
+  color:var(--tk-text) !important;
+}
+
+/* heading gradient vàng kim */
+.hero-title,
+.module-card h1,
+.module-card-wide h1,
+.profile-hero-copy h1,
+.admin-main h1,
+.login-brand h1,
+h1{
+  background:linear-gradient(90deg, #fff3b0 0%, #ffd76a 34%, #b8860b 64%, #fff1b8 100%) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  color:transparent !important;
+  text-shadow:0 0 22px rgba(255,215,106,.18) !important;
+}
+
+/* chữ phụ và nhãn */
+.hero-subtitle,
+.profile-kicker,
+.comfort-kicker,
+.module-domain,
+.post-meta,
+.demo-kicker,
+.admin-logo,
+.profile-filter-card label,
+.manager-form label,
+.stat b,
+.goal-item b,
+.goal-item em,
+.achievement-item b{
+  color:var(--tk-gold) !important;
+}
+
+/* nút và chip vàng */
+button,
+.card-button,
+.login-submit,
+.module-actions a,
+.profile-tabs button.active,
+.profile-socials a:hover,
+.manager-form button,
+.manager-preview button,
+.store-hero button,
+.product-card button,
+.mood-actions button,
+.achievement-row button,
+#doneWellness{
+  background:linear-gradient(90deg, #fff1b8 0%, #ffd76a 36%, #b8860b 100%) !important;
+  color:#171104 !important;
+  border-color:rgba(255,215,106,.38) !important;
+  box-shadow:0 0 22px rgba(255,205,84,.18) !important;
+}
+
+/* nút đặc biệt không phá close */
+#comfortClose,
+#closeWellness,
+#closeLightbox{
+  background:rgba(255,215,106,.16) !important;
+  color:var(--tk-gold-2) !important;
+}
+
+/* input/select/textarea */
+input, select, textarea{
+  background:rgba(0,0,0,.38) !important;
+  border-color:rgba(255,215,106,.26) !important;
+  color:var(--tk-text) !important;
+}
+
+input::placeholder, textarea::placeholder{
+  color:rgba(255,241,184,.42) !important;
+}
+
+/* care popup nút nổi */
+.comfort-floating-btn{
+  background:linear-gradient(135deg, #fff1b8, #ffd76a 45%, #9b6a04) !important;
+  color:#0b0904 !important;
+  box-shadow:0 0 34px rgba(255,215,106,.35), inset 0 0 18px rgba(255,255,255,.24) !important;
+}
+
+/* các thanh progress */
+.goal-bar i{
+  background:linear-gradient(90deg,#fff1b8,#ffd76a,#b8860b) !important;
+}
+
+/* admin menu */
+.admin-sidebar nav a,
+.admin-sidebar button,
+#adminLogout{
+  border-color:rgba(255,215,106,.24) !important;
+}
+
+.admin-sidebar nav a:hover{
+  background:rgba(255,215,106,.12) !important;
+}
+
+/* version tag nhỏ, chỉ để chủ web check */
+#buildVersion{
+  position:fixed;
+  right:10px;
+  bottom:7px;
+  z-index:99999;
+  padding:2px 6px;
+  border-radius:999px;
+  font-size:10px;
+  line-height:1.2;
+  font-weight:800;
+  letter-spacing:.2px;
+  color:#ffd76a;
+  background:rgba(0,0,0,.34);
+  border:1px solid rgba(255,215,106,.16);
+  opacity:.22;
+  pointer-events:none;
+  user-select:none;
+  text-shadow:0 0 8px rgba(255,215,106,.45);
+}
+
+#buildVersion:hover{
+  opacity:.75;
+}
+
+/* fallback cho ảnh lỗi: khung vàng nhẹ */
+img{
+  color:var(--tk-gold);
+}
+
+/* mobile giữ gọn */
+@media(max-width:760px){
+  #buildVersion{
+    font-size:9px;
+    right:6px;
+    bottom:5px;
+  }
+}

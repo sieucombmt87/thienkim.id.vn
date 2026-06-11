@@ -1,3 +1,22 @@
+# TKver2.8 - Black Gold Edition
+
+## Cập nhật
+- Thêm version tag nhỏ góc phải dưới: `TKver2.8`.
+- Chuyển màu chủ đạo toàn bộ website sang Đen ánh kim vàng.
+- Đồng bộ màu chủ đạo cho các trang/domain con:
+  - index
+  - login
+  - admin
+  - me
+  - academy
+  - app
+  - store
+  - bi
+  - vault
+  - pages/module.html
+- Giữ nguyên toàn bộ chức năng của TKver2.7.
+
+
 # TKver2.7 - Thiên Kim Care Popup
 
 - Chuyển cụm Thiên Kim Care sang popup bên hông.
