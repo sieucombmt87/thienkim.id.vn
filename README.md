@@ -1,3 +1,17 @@
+# TKver2.5 - Flex Profile Timeline
+
+- Tạo trang `me/index.html` riêng cho Flex Profile.
+- Hỗ trợ bài viết chia theo năm/tháng.
+- Hỗ trợ ảnh cover và nhiều ảnh trong một bài viết.
+- Có tab: Nhật ký, Thành tích, Mục tiêu, Thư viện ảnh.
+- Có lightbox xem ảnh lớn.
+- Thêm `admin/profile-manager.html` để Admin thêm bài viết test.
+- Dữ liệu mẫu: `data/profile-info.json`, `data/profile-posts.json`.
+- Ảnh mẫu: `assets/uploads/profile/2026/06/`.
+
+Bản này quản lý bài test bằng LocalStorage. Khi muốn đưa bài thành dữ liệu thật, copy JSON từ Profile Manager vào `data/profile-posts.json`, hoặc giai đoạn sau nối Google Sheet `profile_posts`.
+
+
 # TKver2.4 - API Debug Fix
 
 ## Cập nhật

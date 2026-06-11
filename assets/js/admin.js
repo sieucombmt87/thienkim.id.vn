@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modules = [
     ["dashboard","📊 Dashboard","Tổng quan hệ thống","../index.html"],
     ["profile","😎 Flex Profile","Quản lý nội dung Thiên Kim","../me/index.html"],
+    ["profile_manager","✍️ Profile Manager","Thêm bài viết, ảnh, timeline","profile-manager.html"],
     ["learning","📚 Vũ Trụ Cày Cuốc","Tài liệu, khóa học, ghi chú","../academy/index.html"],
     ["vip","🔐 Kho Báu VIP","Dữ liệu nội bộ theo quyền","../bi/index.html"],
     ["sales","🛒 Tạp Hóa Chốt Đơn","Sản phẩm, đơn hàng, khách hàng","../store/index.html"],
