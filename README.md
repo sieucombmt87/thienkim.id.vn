@@ -1,3 +1,33 @@
+# TKver2.2 - Comfort Interaction
+
+## Cập nhật
+- Xóa phần ghi chú/mô tả dư thừa ở module App Center và các module chung.
+- Dòng trạng thái đăng nhập đổi thành `✨ Chào User`.
+- Thêm widget cảm xúc: vui, buồn, không muốn chia sẻ.
+- Thêm lời động viên theo cảm xúc.
+- Thêm câu nói hôm nay.
+- Thêm ô lưu thành tựu hôm nay bằng LocalStorage.
+- Sau 30 phút trong web sẽ nhắc uống nước/vận động nhẹ.
+- App Center tối giản: chỉ icon + tên, không mô tả dài.
+
+
+# TKver2.1 - Linked Modules + Demo Pages + App Center
+
+## Cập nhật
+- Menu Admin đã liên kết thật tới các trang/module.
+- Thêm module `Kho Dự Trữ` nằm trên `System Setting`.
+- Vault chỉ còn user `0947924444` được thấy/truy cập.
+- Tạo demo cho:
+  - Flex Profile
+  - Academy
+  - BI/VIP
+  - Store bán nước hoa/son/combo
+  - App Center dạng lưới giống app center, dùng icon user cung cấp.
+- Giữ tài khoản test:
+  - Admin: 0947924444 / 0987471471
+  - Boss: 0987471471 / 0947924444
+
+
 # TKver2.0 - Lite Clean Build
 
 - Đã xóa MP4/video cũ, mockup, source ảnh, file backup không dùng.

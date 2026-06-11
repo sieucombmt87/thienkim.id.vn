@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if(gate === "vault"){
-    if(!user || !(username === "htbmt" || username === "10341" || username === "0947924444" || username === "0987471471" || username === "0947924444" || username === "0987471471")){
+    if(!user || !(username === "0947924444" || username === "0947924444" || username === "0987471471")){
       alert("Vault chỉ dành cho user htbmt hoặc 10341.");
       location.href = "../index.html";
       return;

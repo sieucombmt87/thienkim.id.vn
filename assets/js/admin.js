@@ -1,1 +1,43 @@
-document.addEventListener("DOMContentLoaded",()=>{const user=getSavedUser();if(!user){location.href="../login.html?mode=admin";return}if(user.role !== "Admin" && user.all_access !== true){ alert("Trang admin chỉ dành cho tài khoản có quyền quản trị."); location.href="../index.html"; return; } const role=user.role||"TVBH",permissions=ROLE_PERMISSIONS[role]||ROLE_PERMISSIONS["Admin"]||[];document.getElementById("adminUserBox").innerHTML=`<b>${ROLE_LABELS[role]||role}</b><br>${user.full_name||user.username}`;const modules=[["dashboard","📊 Dashboard","Tổng quan hệ thống"],["profile","😎 Flex Profile","Quản lý nội dung Thiên Kim"],["learning","📚 Vũ Trụ Cày Cuốc","Tài liệu, khóa học, ghi chú"],["vip","🔐 Kho Báu VIP","Dữ liệu nội bộ theo quyền"],["sales","🛒 Tạp Hóa Chốt Đơn","Sản phẩm, đơn hàng, khách hàng"],["tools","🛠️ Bảo Bối Mì Ăn Liền","Công cụ dùng nhanh"],["user_manager","👥 User Manager","Quản lý tài khoản"],["role_manager","🛡️ Role Manager","Phân quyền"],["sheet_sync","🔄 Google Sheet Sync","Đồng bộ dữ liệu"],["settings","⚙️ System Setting","Cài đặt hệ thống"],["reports","📈 Báo cáo","Báo cáo theo quyền"]];document.getElementById("adminMenu").innerHTML=modules.filter(m=>permissions.includes(m[0])).map(m=>`<a href="#">${m[1]}</a>`).join("");document.getElementById("dashGrid").innerHTML=modules.filter(m=>permissions.includes(m[0])).map(m=>`<div class="dash-card"><b>${m[1]}</b><span>${m[2]}</span></div>`).join("");document.getElementById("adminLogout").addEventListener("click",()=>{clearUser();location.href="../index.html"})});
+document.addEventListener("DOMContentLoaded", () => {
+  const user = getSavedUser();
+  if(!user){
+    location.href = "../login.html?mode=admin";
+    return;
+  }
+
+  if(user.role !== "Admin" && user.all_access !== true){
+    alert("Trang admin chỉ dành cho tài khoản có quyền quản trị.");
+    location.href = "../index.html";
+    return;
+  }
+
+  const role = user.role || "TVBH";
+  document.getElementById("adminUserBox").innerHTML = `<b>${ROLE_LABELS[role] || role}</b><br>${user.full_name || user.username}`;
+
+  const username = String(user.username || "").toLowerCase();
+  const canVault = username === "0947924444";
+
+  const modules = [
+    ["dashboard","📊 Dashboard","Tổng quan hệ thống","../index.html"],
+    ["profile","😎 Flex Profile","Quản lý nội dung Thiên Kim","../me/index.html"],
+    ["learning","📚 Vũ Trụ Cày Cuốc","Tài liệu, khóa học, ghi chú","../academy/index.html"],
+    ["vip","🔐 Kho Báu VIP","Dữ liệu nội bộ theo quyền","../bi/index.html"],
+    ["sales","🛒 Tạp Hóa Chốt Đơn","Sản phẩm, đơn hàng, khách hàng","../store/index.html"],
+    ["tools","🛠️ Bảo Bối Mì Ăn Liền","Công cụ dùng nhanh","../app/index.html"],
+    ...(canVault ? [["vault","🧳 Vault","Kho riêng user 0947924444","../vault/index.html"]] : []),
+    ["user_manager","👥 User Manager","Quản lý tài khoản","#"],
+    ["role_manager","🛡️ Role Manager","Phân quyền","#"],
+    ["sheet_sync","🔄 Google Sheet Sync","Đồng bộ dữ liệu","#"],
+    ["reserve","📦 Kho Dự Trữ","Miền con và module chưa dùng","../reserve/index.html"],
+    ["settings","⚙️ System Setting","Cài đặt hệ thống","#"],
+    ["reports","📈 Báo cáo","Báo cáo theo quyền","../pages/module.html?module=bi"]
+  ];
+
+  document.getElementById("adminMenu").innerHTML = modules.map(m => `<a href="${m[3]}">${m[1]}</a>`).join("");
+  document.getElementById("dashGrid").innerHTML = modules.map(m => `<a class="dash-card" href="${m[3]}"><b>${m[1]}</b><span>${m[2]}</span></a>`).join("");
+
+  document.getElementById("adminLogout").addEventListener("click", () => {
+    clearUser();
+    location.href = "../index.html";
+  });
+});
