@@ -58,39 +58,44 @@ function cleanTitle(title){
 function renderComfortLayer(user){
   const name = user ? (user.full_name || user.username || "bạn") : "bạn";
   return `
-    <section class="comfort-panel">
-      <div class="comfort-card">
-        <div>
-          <span class="comfort-kicker">THIENKIM CARE</span>
-          <h2>Hôm nay ${name} thế nào?</h2>
-        </div>
-        <div class="mood-actions">
-          <button data-mood="happy">😊 Vui vẻ</button>
-          <button data-mood="sad">😔 Hơi buồn</button>
-          <button data-mood="private">🤐 Không muốn chia sẻ</button>
-        </div>
-        <p id="moodMessage" class="mood-message">Chọn một cảm xúc nhỏ để Thiên Kim gửi bạn một lời nhắn nhẹ nhàng.</p>
+    <button id="comfortToggle" class="comfort-floating-btn" type="button">💜<span>Care</span></button>
+
+    <aside id="comfortDrawer" class="comfort-drawer hidden">
+      <div class="comfort-drawer-head">
+        <div><span class="comfort-kicker">THIENKIM CARE</span><h2>Hôm nay ${name} thế nào?</h2></div>
+        <button id="comfortClose" type="button">×</button>
       </div>
 
-      <div class="comfort-card quote-card">
-        <span class="comfort-kicker">🌟 Câu nói hôm nay</span>
-        <p id="dailyQuote"></p>
-      </div>
+      <div class="comfort-drawer-body">
+        <section class="comfort-card">
+          <div class="mood-actions">
+            <button data-mood="happy">😊 Vui vẻ</button>
+            <button data-mood="sad">😔 Hơi buồn</button>
+            <button data-mood="private">🤐 Không muốn chia sẻ</button>
+          </div>
+          <p id="moodMessage" class="mood-message">Chọn một cảm xúc nhỏ để Thiên Kim gửi bạn một lời nhắn nhẹ nhàng.</p>
+        </section>
 
-      <div class="comfort-card achievement-card">
-        <span class="comfort-kicker">🎯 Thành tựu hôm nay</span>
-        <div class="achievement-row">
-          <input id="achievementInput" placeholder="Hôm nay bạn đã hoàn thành điều gì?">
-          <button id="saveAchievement">Lưu</button>
-        </div>
-        <p id="achievementSaved" class="mood-message"></p>
-      </div>
+        <section class="comfort-card quote-card">
+          <span class="comfort-kicker">🌟 Câu nói hôm nay</span>
+          <p id="dailyQuote"></p>
+        </section>
 
-      <div class="comfort-card login-history-card">
-        <span class="comfort-kicker">🕘 Lịch sử đăng nhập</span>
-        <div id="loginHistoryList" class="login-history-list"></div>
+        <section class="comfort-card achievement-card">
+          <span class="comfort-kicker">🎯 Thành tựu hôm nay</span>
+          <div class="achievement-row">
+            <input id="achievementInput" placeholder="Hôm nay bạn đã hoàn thành điều gì?">
+            <button id="saveAchievement">Lưu</button>
+          </div>
+          <p id="achievementSaved" class="mood-message"></p>
+        </section>
+
+        <section class="comfort-card login-history-card">
+          <span class="comfort-kicker">🕘 Lịch sử đăng nhập</span>
+          <div id="loginHistoryList" class="login-history-list"></div>
+        </section>
       </div>
-    </section>
+    </aside>
 
     <div id="wellnessToast" class="wellness-toast hidden">
       <button id="closeWellness" type="button">×</button>
@@ -102,6 +107,13 @@ function renderComfortLayer(user){
 }
 
 function bindComfortLayer(){
+  const drawer = document.getElementById("comfortDrawer");
+  const toggle = document.getElementById("comfortToggle");
+  const close = document.getElementById("comfortClose");
+  if(toggle && drawer) toggle.addEventListener("click", () => drawer.classList.toggle("hidden"));
+  if(close && drawer) close.addEventListener("click", () => drawer.classList.add("hidden"));
+
+
   const messages = {
     happy: "Tuyệt vời 🎉 Hãy tận dụng năng lượng tích cực này để hoàn thành một việc quan trọng nhất hôm nay.",
     sad: "Mọi chuyện rồi sẽ ổn 💜 Bạn không cần giải quyết tất cả ngay hôm nay. Chỉ cần đi tiếp một bước nhỏ là đủ.",
@@ -231,10 +243,12 @@ function profileDemo(){
           <li>💌 Kết nối và câu chuyện</li>
         </ul>
       </div>
-    </div>`;
+    </div>${lessonHtml}`;
 }
 
 function academyDemo(){
+  let lessons=[];try{lessons=JSON.parse(localStorage.getItem("tk_academy_lessons")||"[]")}catch(e){}
+  const lessonHtml=lessons.length?`<div class="demo-card"><h3>📝 Bài học Family/Admin đã thêm</h3><div class="lesson-list">${lessons.map(l=>`<div class="lesson-item"><b>${l.title}</b><span>${l.category} • ${l.author||""}</span><p>${l.content}</p></div>`).join("")}</div></div>`:"";
   return `
     <div class="demo-grid three">
       <div class="demo-card"><h3>📚 Khóa học</h3><p>Danh sách bài học, video, tài liệu và lộ trình học tập.</p></div>

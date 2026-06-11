@@ -1,3 +1,23 @@
+# TKver2.7 - Thiên Kim Care Popup
+
+- Chuyển cụm Thiên Kim Care sang popup bên hông.
+- Thêm nút nổi `💜 Care` để người dùng chủ động mở.
+- Không còn chiếm diện tích nội dung chính.
+
+# TKver2.6 - Family Role + Profile Sharing
+
+- Thêm role mới: `Family`.
+- Family có quyền viết/sửa phần 1 `Flex Profile` và phần 2 `Academy`.
+- Flex Profile thêm chế độ chia sẻ:
+  - `public`: ai cũng xem
+  - `only`: chỉ nhóm Family xem
+- Profile Manager thêm chọn `Public / Only`.
+- Thêm `Academy Manager` cho Family/Admin viết nội dung học tập.
+- Thêm `DNS_PA_VIETNAM_GUIDE.md` hướng dẫn chuyển sang `thienkim.id.vn`.
+
+Trong Google Sheet, user nào thuộc gia đình thì cột `role` nhập đúng: `Family`.
+
+
 # TKver2.5 - Flex Profile Timeline
 
 - Tạo trang `me/index.html` riêng cho Flex Profile.

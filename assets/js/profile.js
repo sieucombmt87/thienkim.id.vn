@@ -1,7 +1,12 @@
 let TK_PROFILE={},TK_POSTS=[],TK_FILTER={year:"all",month:"all"};
 document.addEventListener("DOMContentLoaded",async()=>{await loadData();renderInfo();setupFilters();setupTabs();renderAll();setupLightbox()});
 async function loadJson(p,f){try{let r=await fetch(p+"?t="+Date.now());return await r.json()}catch(e){return f}}
-async function loadData(){TK_PROFILE=await loadJson("../data/profile-info.json",{});let s=await loadJson("../data/profile-posts.json",[]),l=[];try{l=JSON.parse(localStorage.getItem("tk_profile_posts")||"[]")}catch(e){}TK_POSTS=[...l,...s].filter(p=>(p.status||"published")==="published").sort((a,b)=>String(b.date).localeCompare(String(a.date)))}
+async function loadData(){TK_PROFILE=await loadJson("../data/profile-info.json",{});let s=await loadJson("../data/profile-posts.json",[]),l=[];try{l=JSON.parse(localStorage.getItem("tk_profile_posts")||"[]")}catch(e){}let u=(typeof getSavedUser==="function")?getSavedUser():null,role=String(u?.role||"").toLowerCase();
+TK_POSTS=[...l,...s].filter(p=>{
+ if((p.status||"published")!=="published")return false;
+ if((p.visibility||"public")==="only")return role==="family";
+ return true;
+}).sort((a,b)=>String(b.date).localeCompare(String(a.date)))}
 function asset(p){if(!p)return"../assets/images/ui/admin-star.png";if(p.startsWith("http")||p.startsWith("../"))return p;return"../"+p}
 function renderInfo(){profileName.textContent=TK_PROFILE.name||"Thiên Kim";profileSubtitle.textContent=TK_PROFILE.subtitle||"";profileIntro.textContent=TK_PROFILE.intro||"";profileAvatar.src=asset(TK_PROFILE.avatar);profileQr.src=asset(TK_PROFILE.qr_contact);profileSocials.innerHTML=(TK_PROFILE.social_links||[]).map(s=>`<a href="${s.url||"#"}" target="_blank">${s.label}</a>`).join("")}
 function setupFilters(){let years=[...new Set(TK_POSTS.map(p=>+p.year).filter(Boolean))].sort((a,b)=>b-a);yearFilter.innerHTML=`<option value="all">Tất cả năm</option>`+years.map(y=>`<option>${y}</option>`).join("");monthFilter.innerHTML=`<option value="all">Tất cả tháng</option>`+Array.from({length:12},(_,i)=>i+1).map(m=>`<option value="${m}">Tháng ${String(m).padStart(2,"0")}</option>`).join("");yearFilter.onchange=()=>{TK_FILTER.year=yearFilter.value;renderAll()};monthFilter.onchange=()=>{TK_FILTER.month=monthFilter.value;renderAll()};clearFilter.onclick=()=>{TK_FILTER={year:"all",month:"all"};yearFilter.value="all";monthFilter.value="all";renderAll()}}
