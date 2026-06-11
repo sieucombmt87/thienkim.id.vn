@@ -1,0 +1,182 @@
+# TKver2.0 - Lite Clean Build
+
+- Đã xóa MP4/video cũ, mockup, source ảnh, file backup không dùng.
+- Đã tối ưu ảnh card/icon/UI để upload GitHub Pages nhẹ hơn.
+- Giữ module/router từ bản trước.
+- Giữ tài khoản test offline:
+  - Admin: 0947924444 / 0987471471
+  - Boss: 0987471471 / 0947924444
+
+Bản tiếp theo mặc định là TKver2.1.
+
+
+# TKver1.9 - Test Accounts Full Access
+
+## Tài khoản test offline không cần Google Sheet
+
+### Admin full quyền
+- Username: `0947924444`
+- Password: `0987471471`
+- Role: `Admin`
+- Quyền: toàn bộ trang/module/admin/vault
+
+### Boss full quyền test
+- Username: `0987471471`
+- Password: `0947924444`
+- Role: `Boss`
+- Quyền: toàn bộ trang/module/admin/vault để test tính năng khác
+
+## Ghi chú
+Hai tài khoản này chạy offline trong source, không phụ thuộc Google Sheet.
+
+
+# TKver1.8 - Professional Module Architecture
+
+## Cập nhật chính
+- Thêm `config/modules.js` để quản lý cấu hình module tập trung.
+- Thêm `assets/js/router.js` để điều hướng và kiểm tra quyền.
+- Thêm `pages/module.html` làm template chung cho các trang phụ.
+- Từ trang chính, 5 card đã liên kết về:
+  - me/index.html
+  - academy/index.html
+  - bi/index.html
+  - store/index.html
+  - app/index.html
+- Các module tương lai có thể tạo bằng cách:
+  1. Thêm cấu hình vào `config/modules.js`
+  2. Tạo thư mục mới, ví dụ `newmodule/index.html`
+  3. Copy mẫu redirect từ module khác và đổi `module=newmodule`
+
+## Có ảnh hưởng gì không?
+Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn vì nội dung module được tách khỏi portal chính, dễ copy, dễ đổi tên, dễ mở rộng.
+
+
+# TKver1.7
+
+## Cập nhật
+- Đổi chữ `← Về Portal` thành `← Về trang chủ`.
+- Thêm tài khoản Admin offline full quyền, không cần Google Sheet:
+  - Username: 0947924444
+  - Password: 0987471471
+- Tài khoản offline này có role Admin và có quyền vào admin/vault.
+
+
+# TKver1.6 - Login Position Swap
+
+## Cập nhật
+- Ngôi sao được đưa lên vị trí cũ của dòng `KHO BÁU VIP` / `ADMIN GATEWAY`.
+- Dòng `KHO BÁU VIP` / `ADMIN GATEWAY` / `TẠP HÓA CHỐT ĐƠN` được đưa xuống vị trí cũ của ngôi sao, ngay dưới chữ `THIENKIM UNIVERSE`.
+- Góc trái giữ nút `← Về Portal`.
+
+
+# TKver1.5 - Small Center Login Star
+
+## Cập nhật
+- Ngôi sao trong trang login được thu nhỏ.
+- Ngôi sao nằm chính giữa bên dưới chữ `THIENKIM UNIVERSE`.
+- Bỏ xoay liên tục để không gây mất tập trung.
+- Hiệu ứng mới: thở sáng nhẹ.
+- Hover: phóng 115% và nghiêng nhẹ.
+- VIP/Sales: bấm vào ngôi sao vẫn chuyển nhanh sang `login.html?mode=admin`.
+
+
+# TKver1.4 - Unified Login
+
+## Cập nhật
+- Đồng bộ giao diện form đăng nhập Admin / Kho Báu VIP / Tạp Hóa Chốt Đơn.
+- Logo ngôi sao 8 cánh nằm chính giữa phía trên form.
+- Ngôi sao có glow xanh-vàng và xoay chậm 20 giây.
+- Hover ngôi sao phóng 115%.
+- Ở cổng VIP hoặc Sales, bấm vào logo ngôi sao sẽ chuyển sang `login.html?mode=admin`.
+- Đồng hồ hệ thống hiển thị trong form đăng nhập.
+- Đã bỏ các dòng mô tả Role và hint không cần thiết.
+
+
+# TKver1.2
+
+## Sửa lỗi
+- Làm sạch nền icon ngôi sao Admin để không còn khung/nền tím tròn phía sau.
+- Bỏ dòng: `Admin đăng nhập từ nút góc phải để vào dashboard.`
+- Bỏ dòng: `Role: Admin, Boss, Leader, Trưởng ca, TVBH`
+
+
+# TKver1.1 - THIENKIM UNIVERSE
+
+## Cập nhật chính
+- Thay nút Admin góc phải bằng icon ngôi sao 8 cánh mới.
+- Hover ngôi sao phóng 115%.
+- Click ngôi sao mở `login.html?mode=admin`.
+- Không hiển thị chữ Admin, không hiển thị đồng hồ trên Portal.
+- Đồng hồ hệ thống chỉ hiển thị trong popup/trang đăng nhập Admin.
+- Dòng `5 KHÔNG GIAN • 1 HÀNH TRÌNH • VÔ VÀN GIÁ TRỊ` được căn giữa trực tiếp bên dưới chữ `THIENKIM UNIVERSE`.
+
+## Quy ước version
+- Bản hiện tại: TKver1.1
+- Bản tiếp theo: TKver1.2
+- Sau TKver1.9 sẽ lên TKver2.0
+
+
+# TKver1.0 - THIENKIM UNIVERSE
+
+## Quy ước phiên bản
+- Bản hiện tại: TKver1.0
+- Bản tiếp theo: TKver1.1
+- Sau TKver1.9 sẽ lên TKver2.0
+
+## Nội dung bản này
+- Portal chính GitHub Pages ready.
+- Ngôi sao 8 cánh góc phải là cổng Admin ẩn.
+- Bấm ngôi sao để vào `login.html?mode=admin`.
+- Admin page chỉ dành cho role Admin.
+- Vault chỉ dành cho username `htbmt` hoặc `10341`.
+- Domain phụ/module đã tạo sẵn trong source: me, academy, bi, store, app, vault, crm, ai, erp, hr, wiki.
+- Domain phụ đang được ẩn khỏi trang chủ.
+
+
+# THIENKIM UNIVERSE v6 Balanced
+- Dùng asset card/icon đã tách riêng.
+- Tự trim viền đen ngoài card/icon để card hiển thị lớn hơn và đúng bố cục hơn.
+- Bố cục dựa theo landing page chuyên nghiệp: hero 22-24%, cards 60%, footer 14%.
+- Không logo góc trái, không bảng xếp hạng, chỉ còn đăng nhập góc phải.
+- Galaxy + cloud + starfield + sparkle được cân bằng cho laptop và màn lớn.
+
+
+## V7 GitHub Ready
+- Tối ưu lại bố cục theo kinh nghiệm production responsive.
+- Laptop: hero gọn hơn, card lớn hơn, footer cân đối.
+- Màn lớn 27–32 inch: không bị lọt thỏm.
+- Mobile: carousel ngang, dễ xem trên điện thoại.
+- Có .nojekyll để upload GitHub Pages dễ hơn.
+
+## Cách upload GitHub Pages
+1. Tạo repository mới.
+2. Upload toàn bộ file/thư mục trong project.
+3. Vào Settings → Pages.
+4. Source: Deploy from branch.
+5. Branch: main / root.
+6. Mở link GitHub Pages được cấp.
+
+
+## V8 Clean Cards
+- Welcome to + THIENKIM UNIVERSE nằm ngang hàng.
+- Dòng 5 KHÔNG GIAN / 1 HÀNH TRÌNH / VÔ VÀN GIÁ TRỊ căn giữa bên dưới.
+- Bỏ toàn bộ chữ đề mục trên 5 card, chỉ giữ hình card.
+- Giữ nút đăng nhập card 03/04 và nút khám phá.
+
+
+## V9 Clock + Domain Ecosystem
+- Nút đăng nhập góc phải đổi thành đồng hồ live theo giờ hệ thống máy tính.
+- Bấm đồng hồ mở cổng Admin riêng.
+- Cổng Admin chỉ cho role Admin đăng nhập.
+- Admin page chỉ role Admin được xem.
+- Vault chỉ user username `htbmt` hoặc `10341` được vào.
+- Tạo sẵn module page:
+  me/, academy/, bi/, store/, app/, vault/, crm/, ai/, erp/, hr/, wiki/
+
+
+## V10 Star Hidden Login
+- Ẩn toàn bộ domain phụ trên trang chủ.
+- Dòng `5 KHÔNG GIAN • 1 HÀNH TRÌNH • VÔ VÀN GIÁ TRỊ` căn giữa dưới `THIENKIM UNIVERSE`.
+- Nền galaxy tăng glow/sparkle giống ảnh mẫu.
+- Góc phải dùng video ngôi sao xoay làm cổng đăng nhập Admin ẩn.
+- Module/domain vẫn có sẵn trong source để sau này copy/đổi tên triển khai.
