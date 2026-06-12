@@ -1,6 +1,6 @@
-# TKver3.5 CLEAN - Báo cáo dọn dẹp
+# TKver3.6 CLEAN - Báo cáo dọn dẹp
 
-Source gốc: TKver3.5.zip
+Source gốc: TKver3.6.zip
 Tổng mục đã xóa: 14
 Dung lượng giảm ước tính: 0.06 MB
 

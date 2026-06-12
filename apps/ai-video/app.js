@@ -1,4 +1,4 @@
-const APP_VERSION = "AI.TKver1.4";
+const APP_VERSION = "AI.TKver3.6";
 let currentAssetMode = "video";
 let uploadConfirmed = false;
 let pendingCopyAfterConfirm = false;
