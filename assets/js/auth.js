@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(location.search);
   const mode = params.get("mode") || "admin";
+  const next = params.get("next") || "";
 
   const modeChip = document.getElementById("loginModeChip");
   const loginStar = document.getElementById("loginStarLogo");
@@ -66,7 +67,11 @@ document.addEventListener("DOMContentLoaded", () => {
             role: "Admin",
             status: "active",
             source: "offline",
-            all_access: true
+            all_access: true,
+            vip_access: "Y",
+            create_video: "Y",
+            ai_prompt: "Y",
+            vault_access: "Y"
           }
         },
         "0987471471": {
@@ -77,7 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
             role: "Boss",
             status: "active",
             source: "offline",
-            all_access: true
+            all_access: true,
+            vip_access: "Y",
+            create_video: "Y",
+            ai_prompt: "Y"
           }
         }
       };
@@ -97,18 +105,21 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if(mode === "admin" && data.user.role !== "Admin"){
+      if(mode === "admin" && data.user.role !== "Admin" && data.user.all_access !== true){
         msg.className = "login-message error";
         msg.textContent = "Cổng này chỉ dành cho Admin.";
         return;
       }
 
       saveUser(data.user, remember);
+      if(mode === "vip" && typeof tkSaveVipSession === "function") tkSaveVipSession(data.user);
       msg.className = "login-message success";
       msg.textContent = "Đăng nhập thành công. Đang chuyển trang...";
 
       setTimeout(() => {
-        if(data.user.role === "Admin" || mode === "admin"){
+        if(next === "app"){
+          location.href = "app/index.html";
+        }else if(data.user.role === "Admin" || mode === "admin"){
           location.href = "admin/index.html";
         }else{
           location.href = "index.html";
@@ -123,3 +134,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* TKver1.5 behavior: VIP/Sales star redirects to Admin; Admin star pulses only. */
+
+function tkSaveVipSession(user){
+  if(!user) return;
+  localStorage.setItem("tk_vip_session", JSON.stringify({username:user.username, role:user.role, created_at:Date.now()}));
+}

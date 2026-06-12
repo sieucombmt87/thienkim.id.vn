@@ -2372,3 +2372,155 @@ img{
     bottom:5px;
   }
 }
+
+/* TKver3.1 - VIP App Engine + Mood V2 */
+.module-status{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  min-height:54px;
+}
+
+.module-status .hello-user{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+
+.module-status em{
+  color:#7fd6ff;
+  font-style:normal;
+  font-weight:900;
+}
+
+.quick-mood-heart{
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#ffd76a !important;
+  font-size:34px !important;
+  padding:0 !important;
+  width:44px !important;
+  height:44px !important;
+  line-height:1 !important;
+  animation:tkHeartPulse 1.45s ease-in-out infinite;
+  cursor:pointer;
+}
+
+@keyframes tkHeartPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 5px rgba(255,215,106,.4))}
+  50%{transform:scale(1.18);filter:drop-shadow(0 0 18px rgba(255,215,106,.9))}
+}
+
+#buildVersion{
+  color:#4cc9ff !important;
+  border-color:rgba(76,201,255,.18) !important;
+  text-shadow:0 0 8px rgba(76,201,255,.55) !important;
+  opacity:.42 !important;
+}
+
+.app-center-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  margin:0 0 20px;
+  padding:18px;
+  border-radius:24px;
+  background:rgba(255,215,106,.065);
+  border:1px solid rgba(255,215,106,.16);
+}
+
+.app-center-toolbar h2{
+  margin:0 0 4px;
+  color:#ffd76a;
+}
+
+.app-center-toolbar p{
+  margin:0;
+  color:#d8c58c;
+}
+
+.app-manager-shortcut{
+  white-space:nowrap;
+}
+
+.vip-app{
+  position:relative;
+  border-color:rgba(255,215,106,.45) !important;
+  box-shadow:0 0 32px rgba(255,215,106,.16), inset 0 0 18px rgba(255,215,106,.05) !important;
+}
+
+.vip-badge{
+  position:absolute;
+  top:10px;
+  right:10px;
+  padding:5px 9px;
+  border-radius:999px;
+  color:#171104;
+  background:linear-gradient(90deg,#fff1b8,#ffd76a,#b8860b);
+  font-size:11px;
+  font-weight:900;
+  box-shadow:0 0 18px rgba(255,215,106,.36);
+}
+
+.app-manager-list{
+  display:grid;
+  gap:12px;
+  margin-top:16px;
+}
+
+.app-manager-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px;
+  border-radius:20px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,215,106,.18);
+}
+
+.app-manager-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.app-manager-info img{
+  width:58px;
+  height:58px;
+  border-radius:16px;
+  object-fit:cover;
+}
+
+.app-manager-info b,
+.app-manager-info span{
+  display:block;
+}
+
+.app-manager-info span{
+  color:#d8c58c;
+  font-size:12px;
+}
+
+.vip-switch{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#ffd76a;
+  font-weight:900;
+}
+
+.vip-switch input{
+  width:20px;
+  height:20px;
+}
+
+@media(max-width:760px){
+  .app-center-toolbar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}

@@ -1,8 +1,29 @@
-# TKver2.9 - Repair Build
+# TKver3.1 - Full Feature Build
+
+## Hoàn thành trong bản này
+- VIP App Engine.
+- Thêm app mới: Create Video.
+- Thêm app mới: AI Prompt.
+- App VIP có badge 👑 VIP.
+- Bấm app VIP lần đầu yêu cầu đăng nhập VIP.
+- Sau khi đăng nhập VIP, các app VIP khác không yêu cầu đăng nhập lại trong 24 giờ.
+- Smart Ranking: app dùng nhiều sẽ tự lên đầu theo từng user/browser.
+- App Manager trong Admin để set app VIP/thường.
+- Google Sheet gợi ý cột mở rộng và Apps Script trả thêm cột mở rộng nếu có.
+- Mood Widget V2: trái tim nhỏ cạnh dòng chào, nhấp nháy, không chiếm diện tích.
+- Version tag chuyển sang màu xanh dương nhỏ.
+- Giữ Black Gold theme.
+
+## Gợi ý Google Sheet
+Xem file:
+`GOOGLE_SHEET_TKVER3.1_COLUMNS.md`
+
+
+# TKver3.1 - Repair Build
 
 - Sửa lỗi JavaScript ở popup Thiên Kim Care khiến web có thể không chạy.
 - Giữ theme Black Gold.
-- Version tag: TKver2.9.
+- Version tag: TKver3.1.
 
 # TKver2.8 - Black Gold Edition
 

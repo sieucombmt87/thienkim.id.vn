@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(user){
       const name = user.full_name || user.username || "User";
       const role = user.role || "User";
-      status.innerHTML = `✨ Chào <b>${name}</b> <span>• ${role}</span>`;
+      status.innerHTML = `<span class="hello-user">✨ Chào <b>${name}</b> <em>• ${role}</em></span><button id="quickMoodHeart" class="quick-mood-heart" type="button" title="Hôm nay bạn thế nào?">💛</button>`;
     }else{
       status.textContent = "✨ Chào bạn";
     }
@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     content.innerHTML = renderComfortLayer(user) + renderModule(module, key, user);
     bindComfortLayer();
     startWellnessReminder();
+    bindAppCenterClicks();
   }
 });
 
@@ -92,6 +93,10 @@ function renderComfortLayer(user){
 }
 
 function bindComfortLayer(){
+  const heart = document.getElementById("quickMoodHeart");
+  const drawerQuick = document.getElementById("comfortDrawer");
+  if(heart && drawerQuick) heart.addEventListener("click", () => drawerQuick.classList.toggle("hidden"));
+
   const drawer=document.getElementById("comfortDrawer");
   const toggle=document.getElementById("comfortToggle");
   const close=document.getElementById("comfortClose");
@@ -242,10 +247,20 @@ function storeDemo(){
 }
 
 function appCenterDemo(){
+  const user = typeof getSavedUser === "function" ? getSavedUser() : null;
+  const apps = typeof tkGetSortedApps === "function" ? tkGetSortedApps(user) : TK_APP_TOOLS;
   return `
+    <div class="app-center-toolbar">
+      <div>
+        <h2>App Center</h2>
+        <p>Ứng dụng thường dùng sẽ tự động được đẩy lên đầu theo thói quen của từng user.</p>
+      </div>
+      <button class="app-manager-shortcut" onclick="location.href='../admin/app-manager.html'">⚙️ App Manager</button>
+    </div>
     <div class="app-grid clean-app-grid">
-      ${TK_APP_TOOLS.map(tool => `
-        <a class="app-tool clean-app-tool" href="#" onclick="alert('Module ${tool.title} sẽ được triển khai sau.'); return false;">
+      ${apps.map(tool => `
+        <a class="app-tool clean-app-tool ${tool.vip ? "vip-app" : ""}" href="#" data-app-key="${tool.key}" data-vip="${tool.vip ? "1" : "0"}">
+          ${tool.vip ? `<span class="vip-badge">👑 VIP</span>` : ""}
           <img src="../${tool.icon}" alt="${tool.title}">
           <strong>${tool.title}</strong>
         </a>`).join("")}
@@ -274,4 +289,38 @@ function reserveItemDemo(module){
 
 function genericDemo(module){
   return `<div class="demo-card"><h3>${module.title}</h3><p>${module.description}</p></div>`;
+}
+
+
+/* TKver3.1 app click handler */
+function bindAppCenterClicks(){
+  document.querySelectorAll(".app-tool[data-app-key]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const key = el.dataset.appKey;
+      const isVip = el.dataset.vip === "1";
+      const user = typeof getSavedUser === "function" ? getSavedUser() : null;
+      const apps = typeof tkGetAppConfig === "function" ? tkGetAppConfig() : TK_APP_TOOLS;
+      const app = apps.find(a => a.key === key) || {key, title:key, vip:isVip};
+
+      if(isVip){
+        const hasVip = typeof tkUserHasVipAccess === "function" ? tkUserHasVipAccess(user, app) : !!user;
+        const hasSession = typeof tkHasVipSession === "function" ? tkHasVipSession() : false;
+        if(!user || (!hasVip && !hasSession)){
+          sessionStorage.setItem("tk_pending_app", key);
+          location.href = "../login.html?mode=vip&next=app";
+          return;
+        }
+        if(typeof tkSaveVipSession === "function") tkSaveVipSession(user);
+      }
+
+      if(typeof tkTrackAppUse === "function") tkTrackAppUse(key);
+      showAppLaunch(app);
+    });
+  });
+}
+
+function showAppLaunch(app){
+  const label = app.vip ? "VIP App" : "App";
+  alert(`${label}: ${app.title}\\n\\nModule này đã được ghi nhận lượt sử dụng. Phần chức năng chi tiết sẽ triển khai riêng trong từng app.`);
 }

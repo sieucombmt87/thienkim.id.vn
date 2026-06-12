@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ["role_manager","🛡️ Role Manager","Phân quyền","#"],
     ["sheet_sync","🔄 Google Sheet Sync","Đồng bộ dữ liệu","#"],
     ["reserve","📦 Kho Dự Trữ","Miền con và module chưa dùng","../reserve/index.html"],
+    ["app_manager","📱 App Manager","Set ứng dụng VIP/thường","app-manager.html"],
     ["settings","⚙️ System Setting","Cài đặt hệ thống","#"],
     ["reports","📈 Báo cáo","Báo cáo theo quyền","../pages/module.html?module=bi"]
   ];

@@ -109,16 +109,22 @@ function login_(params) {
         return json_({ ok: false, error: 'Tài khoản đang bị khóa hoặc chưa active.' });
       }
 
-      return json_({
-        ok: true,
-        user: {
-          username: rowUsername,
-          full_name: idx.full_name >= 0 ? clean_(row[idx.full_name]) : rowUsername,
-          role: clean_(row[idx.role]) || 'TVBH',
-          status: 'active',
-          source: 'google_sheet'
+      const user = {
+        username: rowUsername,
+        full_name: idx.full_name >= 0 ? clean_(row[idx.full_name]) : rowUsername,
+        role: clean_(row[idx.role]) || 'TVBH',
+        status: 'active',
+        source: 'google_sheet'
+      };
+
+      // TKver3.1: trả thêm các cột mở rộng nếu có trong Google Sheet
+      headers.forEach((h, colIndex) => {
+        if (!user[h] && !['username','password','full_name','role','status'].includes(h)) {
+          user[h] = clean_(row[colIndex]);
         }
       });
+
+      return json_({ ok: true, user });
     }
   }
 

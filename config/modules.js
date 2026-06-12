@@ -93,15 +93,17 @@ const TK_MODULES = {
 };
 
 const TK_APP_TOOLS = [
-  { key:"bao-cao", title:"Báo Cáo", desc:"Tổng hợp nhanh báo cáo ngày, tuần, tháng.", icon:"assets/images/app-icons/bao-cao.jpg" },
-  { key:"bai-test", title:"Bài Test", desc:"Tạo bài kiểm tra, checklist và form đánh giá.", icon:"assets/images/app-icons/bai-test.jpg" },
-  { key:"bau-cua", title:"Bầu Cua", desc:"Mini game/tiện ích random vui vẻ cho đội nhóm.", icon:"assets/images/app-icons/bau-cua.jpg" },
-  { key:"random", title:"Random", desc:"Random tên, số, ca trực, nhiệm vụ hoặc lựa chọn.", icon:"assets/images/app-icons/random.jpg" },
-  { key:"doc-truyen", title:"Đọc Truyện", desc:"Không gian đọc nhanh, lưu nội dung giải trí.", icon:"assets/images/app-icons/doc-truyen.jpg" },
-  { key:"qr-code", title:"QR Code", desc:"Tạo mã QR cho link, nội dung, sản phẩm.", icon:"assets/images/app-icons/qr-code.jpg" },
-  { key:"kho-phan-mem", title:"Kho Phần Mềm", desc:"Lưu link công cụ, phần mềm và tài nguyên tải nhanh.", icon:"assets/images/app-icons/kho-phan-mem.jpg" },
-  { key:"kiem-quy", title:"Kiểm Quỹ", desc:"Ghi nhận thu chi, đối soát và kiểm quỹ nhanh.", icon:"assets/images/app-icons/kiem-quy.jpg" },
-  { key:"tinh-tra-gop", title:"Tính Trả Góp", desc:"Tính khoản trả góp, lãi suất và kế hoạch thanh toán.", icon:"assets/images/app-icons/tinh-tra-gop.jpg" }
+  { key:"bao-cao", title:"Báo Cáo", desc:"Tổng hợp nhanh báo cáo ngày, tuần, tháng.", icon:"assets/images/app-icons/bao-cao.jpg", vip:false },
+  { key:"bai-test", title:"Bài Test", desc:"Tạo bài kiểm tra, checklist và form đánh giá.", icon:"assets/images/app-icons/bai-test.jpg", vip:false },
+  { key:"bau-cua", title:"Bầu Cua", desc:"Mini game/tiện ích random vui vẻ cho đội nhóm.", icon:"assets/images/app-icons/bau-cua.jpg", vip:false },
+  { key:"random", title:"Random", desc:"Random tên, số, ca trực, nhiệm vụ hoặc lựa chọn.", icon:"assets/images/app-icons/random.jpg", vip:false },
+  { key:"doc-truyen", title:"Đọc Truyện", desc:"Không gian đọc nhanh, lưu nội dung giải trí.", icon:"assets/images/app-icons/doc-truyen.jpg", vip:false },
+  { key:"qr-code", title:"QR Code", desc:"Tạo mã QR cho link, nội dung, sản phẩm.", icon:"assets/images/app-icons/qr-code.jpg", vip:false },
+  { key:"kho-phan-mem", title:"Kho Phần Mềm", desc:"Lưu link công cụ, phần mềm và tài nguyên tải nhanh.", icon:"assets/images/app-icons/kho-phan-mem.jpg", vip:false },
+  { key:"kiem-quy", title:"Kiểm Quỹ", desc:"Ghi nhận thu chi, đối soát và kiểm quỹ nhanh.", icon:"assets/images/app-icons/kiem-quy.jpg", vip:false },
+  { key:"tinh-tra-gop", title:"Tính Trả Góp", desc:"Tính khoản trả góp, lãi suất và kế hoạch thanh toán.", icon:"assets/images/app-icons/tinh-tra-gop.jpg", vip:false },
+  { key:"create-video", title:"Create Video", desc:"Tạo video nhanh từ ý tưởng, ảnh hoặc prompt.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"create_video" },
+  { key:"ai-prompt", title:"AI Prompt", desc:"Kho prompt AI, ý tưởng nội dung và trợ lý viết nhanh.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"ai_prompt" }
 ];
 
 const TK_RESERVE_DOMAINS = [
@@ -124,12 +126,19 @@ function tkCanAccess(module, user){
   if(!module) return false;
 
   const username = String(user?.username || "").toLowerCase();
+  const role = String(user?.role || "").toLowerCase();
 
-  // Admin/Boss test vẫn full quyền các trang, ngoại trừ Vault chỉ user 0947924444.
+  // Vault: chỉ user 0947924444
   if(module.access === "vault"){
     return !!user && username === "0947924444";
   }
 
+  // Family: được viết/sửa Flex Profile và Academy, xem app public
+  if(user && role === "family"){
+    return ["profile","academy","app"].includes(module.type) || module.access === "public";
+  }
+
+  // Tài khoản test full quyền, ngoại trừ Vault vẫn theo rule phía trên
   if(user && (user.all_access === true || username === "0947924444" || username === "0987471471")){
     return true;
   }
@@ -138,4 +147,74 @@ function tkCanAccess(module, user){
   if(module.access === "login") return !!user;
   if(module.access === "admin") return !!user && user.role === "Admin";
   return false;
+}
+
+// TKver3.1 App helpers
+function tkGetAppConfig(){
+  let overrides = {};
+  try{ overrides = JSON.parse(localStorage.getItem("tk_app_config") || "{}"); }catch(e){}
+  return TK_APP_TOOLS.map(app => ({...app, ...(overrides[app.key] || {})}));
+}
+
+function tkIsYes(value){
+  return ["y","yes","1","true","vip","active","có","co"].includes(String(value || "").toLowerCase());
+}
+
+function tkUserHasVipAccess(user, app){
+  if(!app || !app.vip) return true;
+  if(!user) return false;
+  const username = String(user.username || "").toLowerCase();
+  const role = String(user.role || "").toLowerCase();
+  if(user.all_access === true || username === "0947924444" || username === "0987471471") return true;
+  if(role === "admin" || role === "boss") return true;
+  if(tkIsYes(user.vip_access)) return true;
+  if(app.feature_column && tkIsYes(user[app.feature_column])) return true;
+  return false;
+}
+
+function tkHasVipSession(){
+  try{
+    const raw = JSON.parse(localStorage.getItem("tk_vip_session") || "null");
+    if(!raw) return false;
+    if(Date.now() - Number(raw.created_at || 0) > 24 * 60 * 60 * 1000){
+      localStorage.removeItem("tk_vip_session");
+      return false;
+    }
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+function tkSaveVipSession(user){
+  if(!user) return;
+  localStorage.setItem("tk_vip_session", JSON.stringify({
+    username:user.username,
+    role:user.role,
+    created_at:Date.now()
+  }));
+}
+
+function tkTrackAppUse(key){
+  let usage = {};
+  try{ usage = JSON.parse(localStorage.getItem("tk_app_usage") || "{}"); }catch(e){}
+  usage[key] = usage[key] || {count:0,last_used:0};
+  usage[key].count += 1;
+  usage[key].last_used = Date.now();
+  localStorage.setItem("tk_app_usage", JSON.stringify(usage));
+}
+
+function tkGetSortedApps(user){
+  const apps = tkGetAppConfig();
+  let usage = {};
+  let customOrder = [];
+  try{ usage = JSON.parse(localStorage.getItem("tk_app_usage") || "{}"); }catch(e){}
+  try{ customOrder = JSON.parse(user?.app_order || "[]"); }catch(e){}
+
+  return apps.slice().sort((a,b)=>{
+    const ia = customOrder.indexOf(a.key), ib = customOrder.indexOf(b.key);
+    if(ia !== -1 || ib !== -1) return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+    const ua = usage[a.key] || {}, ub = usage[b.key] || {};
+    return (ub.count || 0) - (ua.count || 0) || (ub.last_used || 0) - (ua.last_used || 0);
+  });
 }
