@@ -37,12 +37,12 @@
           <label class="mode-card active" id="modeVideoCard">
             <input type="radio" name="assetMode" value="video" checked onchange="setAssetMode('video')" />
             <span>🎬 Tạo video</span>
-            <small>Google Flow, Veo, Kling, Runway, Pika</small>
+            <small></small>
           </label>
           <label class="mode-card" id="modeImageCard">
             <input type="radio" name="assetMode" value="image" onchange="setAssetMode('image')" />
             <span>🖼️ Tạo hình ảnh</span>
-            <small>Gemini, ChatGPT, AI Studio, Canva, Firefly</small>
+            <small></small>
           </label>
         </div>
 
@@ -53,8 +53,8 @@
         <div class="two-cols">
           <div>
             <label for="price">Giá bán gợi ý</label>
-            <input id="price" placeholder="Giá trên web nếu có, ví dụ: 15.990.000₫" />
-            <small>Điền giá web đang hiển thị nếu có. Nếu để trống, prompt sẽ yêu cầu AI lấy giá trên trang/link.</small>
+            <input id="price" placeholder="Giá đang hiển thị trên web, ví dụ: 15.990.000₫" />
+            <small>Tool sẽ ưu tiên giá trên web đang hiển thị. Nếu chưa đọc được giá, bạn có thể nhập giá thật tại đây.</small>
           </div>
           <div>
             <label for="promotion">Khuyến mãi</label>
@@ -140,7 +140,7 @@
 
     <footer>
       <a class="back-link" href="/apps/">← Quay về Apps Mì Ăn Liền</a>
-      <span>AI.TKver3.6</span>
+      <span>AI.TKver1.5</span>
     </footer>
   </main>
 

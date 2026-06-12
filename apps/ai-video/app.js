@@ -1,4 +1,4 @@
-const APP_VERSION = "AI.TKver3.6";
+const APP_VERSION = "AI.TKver1.5";
 let currentAssetMode = "video";
 let uploadConfirmed = false;
 let pendingCopyAfterConfirm = false;
@@ -113,11 +113,18 @@ function guessProductHighlights(productName) {
 }
 
 function guessPrice(productInput, storeName) {
+  const s = (productInput || "").toLowerCase();
+  // App tĩnh không dùng tài khoản/credit của chủ web. Nếu không có backend đọc trang,
+  // tool sẽ tạo hướng dẫn để AI lấy đúng giá đang hiển thị trên link sản phẩm.
+  if (s.includes("dienmayxanh") && (s.includes("tivi") || s.includes("samsung") || s.includes("crystal") || s.includes("uhd"))) {
+    return `Theo giá đang hiển thị trên trang sản phẩm tại ${storeName}. Hãy đọc đúng giá bán/giá flash sale trên link trước khi viết caption.`;
+  }
   if ((productInput || "").includes("http")) {
-    return `Giá theo web đang hiển thị tại ${storeName}. Nếu công cụ AI đọc được trang, hãy lấy đúng giá trên web.`;
+    return `Lấy đúng giá đang hiển thị trên web tại ${storeName}. Nếu có giá gạch/giá sale, ưu tiên giá sale hiện tại.`;
   }
   return "Giá bán gợi ý theo thị trường hoặc giá người bán nhập.";
 }
+
 
 function guessPromotions(productInput, storeName) {
   if ((productInput || "").includes("http")) {
@@ -151,8 +158,9 @@ function analyzeProduct() {
   if (!$("price").value.trim()) $("price").value = guessPrice(input, storeName);
   if (!$("promotion").value.trim()) $("promotion").value = guessPromotions(input, storeName);
   if (!$("customer").value.trim()) $("customer").value = guessCustomer(input);
-  $("copyStatus").innerText = "Đã phân tích sản phẩm. Bạn có thể chỉnh lại thông tin trước khi tạo prompt.";
+  $("copyStatus").innerText = "Đã phân tích sản phẩm và tạo gợi ý chuẩn. Bạn có thể sửa prompt trước khi copy.";
   updateHelperNotes();
+  generatePrompt();
 }
 
 function clearPromotion() {
@@ -306,8 +314,8 @@ async function actuallyCopyPrompt() {
   try {
     await navigator.clipboard.writeText($("promptOutput").value);
     $("copyStatus").innerText = currentAssetMode === "video"
-      ? "Đã copy Prompt VIP. Hãy dán vào Google Flow, Veo, Kling, Runway, Pika hoặc công cụ AI video khác."
-      : "Đã copy Prompt VIP. Hãy dán vào Gemini, ChatGPT, AI Studio, Canva, Firefly hoặc công cụ AI tạo ảnh khác.";
+      ? "Đã copy Prompt VIP. Hãy dán vào công cụ AI tạo video bạn chọn."
+      : "Đã copy Prompt VIP. Hãy dán vào công cụ AI tạo hình ảnh bạn chọn.";
   } catch (e) {
     $("promptOutput").select();
     document.execCommand("copy");
