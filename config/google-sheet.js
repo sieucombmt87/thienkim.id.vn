@@ -53,7 +53,7 @@ async function apiLogin(username,password){
 }
 
 
-/* TKver3.6 - Session history + 80-minute inactivity timeout */
+/* TKver3.7 - Session history + 80-minute inactivity timeout */
 const TK_SESSION_TIMEOUT_MS = 80 * 60 * 1000;
 
 function tkNow(){

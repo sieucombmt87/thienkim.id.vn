@@ -67,3 +67,26 @@ footer { display: flex; justify-content: space-between; gap: 12px; align-items: 
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 @media (max-width: 900px) { .grid-layout, .two-cols, .mode-switch, .action-row { grid-template-columns: 1fr; } .preview-panel { position: static; } .inline-field { flex-direction: column; } .mini-btn { min-height: 45px; } }
 @media (max-width: 560px) { .tk-shell { width: min(100% - 18px, 1180px); padding-top: 18px; } .panel { padding: 16px; } h1 { font-size: 32px; } .tool-links { grid-template-columns: 1fr; } footer { flex-direction: column; align-items: flex-start; } }
+.api-accounts { display: grid; gap: 10px; margin: 12px 0; }
+.api-card { border: 1px solid var(--border); border-radius: 16px; padding: 12px; background: rgba(255,213,106,.04); }
+.api-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+.api-title { color: var(--gold); font-weight: 900; }
+.api-dot { width:12px; height:12px; border-radius:50%; background:#8b1d1d; box-shadow:0 0 10px rgba(255,0,0,.4); display:inline-block; }
+.api-dot.green { background:#24d36b; box-shadow:0 0 12px rgba(36,211,107,.75); }
+.api-dot.gray { background:#777; box-shadow:none; }
+.api-card.selected { border-color: var(--gold); background: rgba(255,213,106,.09); }
+.api-card input { margin-top: 8px; }
+.api-meta { font-size:12px; color:var(--muted); margin-top:6px; }
+.api-actions { display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin:10px 0 14px; }
+.status.error { color: #ff6666; }
+.status.success { color: #5dff95; }
+.connect-row { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 12px 0; }
+.connect-row button.connected { border-color: rgba(36,211,107,.7); color:#70ff9e; box-shadow:0 0 16px rgba(36,211,107,.12); }
+.feedback-panel { margin-top: 18px; }
+.feedback-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.feedback-actions { grid-template-columns: 1fr auto; }
+.reply-box { margin-top: 12px; padding: 12px; border-radius: 14px; border: 1px solid var(--border); background: rgba(255,213,106,.05); color:#fff1bc; display:none; white-space:pre-wrap; }
+.mode-switch.clean .mode-card { align-items:center; justify-content:center; min-height:72px; }
+.mode-switch.clean .mode-card span { margin:0; font-size:17px; }
+.loading { opacity:.65; pointer-events:none; }
+@media (max-width: 900px) { .api-actions, .feedback-grid, .connect-row, .feedback-actions { grid-template-columns:1fr; } }

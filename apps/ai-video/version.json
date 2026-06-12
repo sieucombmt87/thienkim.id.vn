@@ -1,7 +1,7 @@
 {
   "app": "ai-video",
-  "version": "TKver1.5",
-  "footer": "AI.TKver1.5",
+  "version": "TKver1.6",
+  "footer": "AI.TKver1.6",
   "updated": "2026-06-12",
-  "note": "Giữ tính năng cũ, cập nhật prompt mẫu chuyên nghiệp và ẩn tên app gợi ý ở thẻ chọn mục."
+  "note": "Thêm cấu hình 3 tài khoản Gemini, backend Apps Script, crawl sản phẩm, feedback Google Sheet, logic upload ưu tiên và trạng thái kết nối tool."
 }

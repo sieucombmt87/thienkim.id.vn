@@ -1,4 +1,4 @@
-HUONG DAN CAI DAT APP VIP AI VIDEO BAN HANG - TKver3.6
+HUONG DAN CAI DAT APP VIP AI VIDEO BAN HANG - TKver3.7
 
 1. Giai nen file ZIP.
 2. Upload thu muc ai-video vao duong dan:

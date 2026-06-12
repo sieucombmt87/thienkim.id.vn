@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">Thiên Kim Universe • Apps Mì Ăn Liền</p>
         <h1>❤️ App VIP AI Video Bán Hàng</h1>
-        <p class="hero-desc">Nhập tên sản phẩm hoặc link sản phẩm. Tool hỗ trợ phân tích nhanh, tạo mô tả ngắn 3-5 điểm nhấn, gợi ý giá, khuyến mãi, khách hàng mục tiêu và prompt VIP có thể sửa.</p>
+        <p class="hero-desc">Nhập tên sản phẩm hoặc link sản phẩm. Tool hỗ trợ phân tích nhanh, crawl mô tả/giá/khuyến mãi qua Apps Script, tạo Prompt VIP có thể sửa và copy.</p>
       </div>
     </header>
 
@@ -28,33 +28,31 @@
         <label for="productInput">Tên sản phẩm hoặc link sản phẩm</label>
         <div class="inline-field">
           <input id="productInput" placeholder="Ví dụ: Smart Tivi Crystal UHD Samsung 4K hoặc link sản phẩm" />
-          <button class="mini-btn" type="button" onclick="analyzeProduct()">🔍 Phân tích sản phẩm</button>
+          <button class="mini-btn" type="button" onclick="analyzeProduct(true)">🔍 Phân tích sản phẩm</button>
         </div>
-        <small id="sourceHint">Nếu nhập link, prompt sẽ ưu tiên nội dung sản phẩm, web hãng hoặc trang bán hàng bạn gửi.</small>
+        <small id="sourceHint">Nếu nhập link, backend sẽ ưu tiên crawl mô tả, giá và khuyến mãi từ trang sản phẩm.</small>
 
         <label>Mục cần tạo</label>
-        <div class="mode-switch" role="group" aria-label="Chọn tạo ảnh hoặc video">
+        <div class="mode-switch clean" role="group" aria-label="Chọn tạo ảnh hoặc video">
           <label class="mode-card active" id="modeVideoCard">
             <input type="radio" name="assetMode" value="video" checked onchange="setAssetMode('video')" />
-            <span>🎬 Tạo video</span>
-            <small></small>
+            <span>🎬 Tạo clip</span>
           </label>
           <label class="mode-card" id="modeImageCard">
             <input type="radio" name="assetMode" value="image" onchange="setAssetMode('image')" />
             <span>🖼️ Tạo hình ảnh</span>
-            <small></small>
           </label>
         </div>
 
         <label for="shortDesc">Mô tả ngắn</label>
-        <textarea id="shortDesc" placeholder="Tóm tắt 3-5 điểm nhấn tính năng sản phẩm. Nếu có link/web hãng, hãy tập trung vào thông tin sản phẩm trên trang đó."></textarea>
-        <small>Mô tả nên là 3-5 gạch đầu dòng về tính năng, lợi ích và điểm nổi bật của sản phẩm.</small>
+        <textarea id="shortDesc" placeholder="Tóm tắt 3-5 điểm nhấn tính năng sản phẩm từ website gốc/web hãng/trang bán hàng."></textarea>
+        <small>Mô tả nên là 3-5 gạch đầu dòng về tính năng, lợi ích và điểm nổi bật thật của sản phẩm.</small>
 
         <div class="two-cols">
           <div>
             <label for="price">Giá bán gợi ý</label>
-            <input id="price" placeholder="Giá đang hiển thị trên web, ví dụ: 15.990.000₫" />
-            <small>Tool sẽ ưu tiên giá trên web đang hiển thị. Nếu chưa đọc được giá, bạn có thể nhập giá thật tại đây.</small>
+            <input id="price" placeholder="Giá thực tế đang hiển thị trên web. Nếu chưa đúng, nhập tay tại đây." />
+            <small>Ưu tiên lấy đúng giá đang hiển thị trên website. Nếu chưa ổn, bạn nhập tay theo nhu cầu.</small>
           </div>
           <div>
             <label for="promotion">Khuyến mãi</label>
@@ -83,6 +81,8 @@
 
         <div class="two-cols">
           <div>
+            <label for="characterFile">Tải file nhân vật</label>
+            <input class="file-input" id="characterFile" type="file" accept="image/*,video/*" onchange="handleCharacterFileChange()" />
             <label for="character">Nhân vật</label>
             <select id="character" onchange="updateHelperNotes()">
               <option>AI tự chọn</option>
@@ -93,10 +93,11 @@
               <option>Người bán hàng thân thiện</option>
               <option>Upload file nhân vật riêng</option>
             </select>
-            <input class="file-input" id="characterFile" type="file" accept="image/*,video/*" onchange="updateHelperNotes()" />
-            <small id="characterNote">Nếu có nhân vật sẵn, hãy upload vào công cụ AI sau khi copy prompt.</small>
+            <small id="characterNote">Nếu có nhân vật sẵn, hãy upload file trước. Hệ thống sẽ tự chuyển sang chế độ dùng file riêng.</small>
           </div>
           <div>
+            <label for="sceneFile">Tải file bối cảnh</label>
+            <input class="file-input" id="sceneFile" type="file" accept="image/*,video/*" onchange="handleSceneFileChange()" />
             <label for="scene">Bối cảnh</label>
             <select id="scene" onchange="updateHelperNotes()">
               <option>AI tự chọn theo mô tả nơi bán</option>
@@ -107,7 +108,6 @@
               <option>Showroom</option>
               <option>Upload file bối cảnh riêng</option>
             </select>
-            <input class="file-input" id="sceneFile" type="file" accept="image/*,video/*" onchange="updateHelperNotes()" />
             <small id="sceneNote">Nếu không chọn bối cảnh, AI sẽ dựa trên mô tả ngắn và nơi bán để dựng cảnh.</small>
           </div>
         </div>
@@ -119,8 +119,19 @@
       </form>
 
       <aside class="panel preview-panel">
-        <h2>3. Prompt VIP có thể sửa</h2>
-        <p class="muted">Prompt được ẩn cho đến khi bạn bấm “Tạo prompt”. Bạn có thể sửa trực tiếp rồi bấm ❤️ để copy.</p>
+        <h2>3. Tài khoản Gemini & Prompt VIP</h2>
+        <p class="muted">Nhập API Key cho tối đa 3 tài khoản. Tài khoản còn credit sẽ xanh, hết credit hoặc lỗi sẽ đỏ.</p>
+
+        <div class="api-accounts" id="apiAccounts"></div>
+        <div class="api-actions">
+          <button class="mini-btn" type="button" onclick="saveApiKeys()">💾 Lưu key</button>
+          <button class="mini-btn ghost" type="button" onclick="checkAllAccounts()">🔄 Kiểm tra credit</button>
+          <button class="mini-btn" type="button" onclick="generatePromptWithGemini()">⚡ Tạo bằng Gemini</button>
+        </div>
+        <div id="apiStatus" class="status"></div>
+
+        <label for="promptOutput">Prompt VIP có thể sửa</label>
+        <p class="muted">Prompt được ẩn cho đến khi bạn bấm “Tạo prompt” hoặc “Tạo bằng Gemini”. Bạn có thể sửa trực tiếp rồi bấm ❤️ để copy.</p>
         <textarea id="promptOutput" class="prompt-output" placeholder="Prompt VIP sẽ hiện ở đây sau khi tạo..."></textarea>
         <div id="copyStatus" class="status"></div>
 
@@ -133,14 +144,34 @@
             <li>Dán prompt và tạo ảnh/video.</li>
             <li>Tải file về để đăng TikTok, Facebook, YouTube hoặc Zalo.</li>
           </ol>
+          <div class="connect-row">
+            <button type="button" id="canvaStatus" onclick="toggleConnected('canva')">Canva: chưa kết nối</button>
+            <button type="button" id="chatgptStatus" onclick="toggleConnected('chatgpt')">ChatGPT: chưa kết nối</button>
+          </div>
           <div class="tool-links" id="toolLinks"></div>
         </div>
       </aside>
     </section>
 
+    <section class="panel feedback-panel">
+      <h2>4. Đóng góp & phản hồi</h2>
+      <p class="muted">Gửi góp ý để Thiên Kim ghi nhận vào Google Sheet. Nếu có phản hồi, lần sau bạn mở lại app sẽ thấy nội dung phản hồi.</p>
+      <div class="feedback-grid">
+        <input id="feedbackName" placeholder="Tên của bạn" />
+        <input id="feedbackEmail" placeholder="Email hoặc mã nhận phản hồi" />
+      </div>
+      <textarea id="feedbackMessage" placeholder="Nhập góp ý của bạn..."></textarea>
+      <div class="action-row feedback-actions">
+        <button type="button" class="primary-btn" onclick="submitFeedback()">📩 Gửi đóng góp</button>
+        <button type="button" class="mini-btn ghost" onclick="loadFeedbackReply()">🔎 Xem phản hồi</button>
+      </div>
+      <div id="feedbackStatus" class="status"></div>
+      <div id="feedbackReply" class="reply-box"></div>
+    </section>
+
     <footer>
       <a class="back-link" href="/apps/">← Quay về Apps Mì Ăn Liền</a>
-      <span>AI.TKver1.5</span>
+      <span>AI.TKver1.6</span>
     </footer>
   </main>
 
@@ -155,6 +186,7 @@
     </div>
   </div>
 
+  <script src="./config.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
