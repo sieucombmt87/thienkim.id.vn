@@ -103,7 +103,8 @@ const TK_APP_TOOLS = [
   { key:"kiem-quy", title:"Kiểm Quỹ", desc:"Ghi nhận thu chi, đối soát và kiểm quỹ nhanh.", icon:"assets/images/app-icons/kiem-quy.jpg", vip:false },
   { key:"tinh-tra-gop", title:"Tính Trả Góp", desc:"Tính khoản trả góp, lãi suất và kế hoạch thanh toán.", icon:"assets/images/app-icons/tinh-tra-gop.jpg", vip:false },
   { key:"create-video", title:"Create Video", desc:"Tạo video nhanh từ ý tưởng, ảnh hoặc prompt.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"create_video" },
-  { key:"ai-prompt", title:"AI Prompt", desc:"Kho prompt AI, ý tưởng nội dung và trợ lý viết nhanh.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"ai_prompt" }
+  { key:"ai-prompt", title:"AI Prompt", desc:"Kho prompt AI, ý tưởng nội dung và trợ lý viết nhanh.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"ai_prompt" },
+  { key:"ai-video", title:"Create Video", desc:"AI Video bán hàng.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"create_video", url:"apps/ai-video/index.html" }
 ];
 
 const TK_RESERVE_DOMAINS = [

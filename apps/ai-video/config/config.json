@@ -1,0 +1,8 @@
+{
+  "appId": "TK-AI-VIDEO",
+  "name": "App VIP AI Video Bán Hàng",
+  "defaultPath": "/apps/ai-video/",
+  "creditMode": "user-owned-account",
+  "promptVisible": false,
+  "copyButtonIcon": "❤️"
+}

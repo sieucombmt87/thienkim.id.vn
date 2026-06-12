@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App VIP AI Video Bán Hàng - Thiên Kim</title>
+  <meta name="description" content="App VIP AI Video Bán Hàng giúp tạo prompt ẩn để copy sang Google Flow, Gemini, ChatGPT hoặc công cụ AI video khác." />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="tk-bg-glow"></div>
+
+  <main class="app-shell">
+    <header class="hero">
+      <div class="badge">TK-AI-VIDEO · TKver1.0</div>
+      <h1>❤️ App VIP AI Video Bán Hàng</h1>
+      <p>Nhập thông tin sản phẩm, bấm trái tim để copy prompt ẩn. Sau đó dán vào Google Flow, Gemini, ChatGPT, Veo hoặc công cụ AI video khác bằng tài khoản của người dùng.</p>
+    </header>
+
+    <section class="quick-guide" aria-label="Hướng dẫn nhanh">
+      <div><strong>1</strong><span>Nhập sản phẩm</span></div>
+      <div><strong>2</strong><span>Chọn kiểu video</span></div>
+      <div><strong>3</strong><span>Bấm ❤️ copy</span></div>
+      <div><strong>4</strong><span>Dán sang AI</span></div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>Thông tin sản phẩm</h2>
+        <button id="fillDemoBtn" class="ghost-btn" type="button">Điền mẫu</button>
+      </div>
+
+      <label>Tên sản phẩm</label>
+      <input id="productName" type="text" placeholder="Ví dụ: Kem chống nắng ABC" autocomplete="off" />
+
+      <label>Mô tả ngắn</label>
+      <textarea id="productDesc" placeholder="Ví dụ: SPF50+, không nhờn rít, phù hợp da dầu"></textarea>
+
+      <div class="grid-2">
+        <div>
+          <label>Giá bán</label>
+          <input id="price" type="text" placeholder="Ví dụ: 199K" />
+        </div>
+        <div>
+          <label>Khuyến mãi</label>
+          <input id="promotion" type="text" placeholder="Ví dụ: Mua 2 tặng 1" />
+        </div>
+      </div>
+
+      <label>Đối tượng khách hàng</label>
+      <input id="customer" type="text" placeholder="Ví dụ: Nữ 18-35 tuổi, thích làm đẹp" />
+    </section>
+
+    <section class="card">
+      <h2>Cấu hình nhanh</h2>
+
+      <div class="grid-3">
+        <div>
+          <label>Kiểu video</label>
+          <select id="videoStyle">
+            <option>AI tự chọn</option>
+            <option>Video bán hàng nhanh</option>
+            <option>Video review sản phẩm</option>
+            <option>Video chuyên gia tư vấn</option>
+            <option>Video kể chuyện cảm xúc</option>
+            <option>Video khuyến mãi mạnh</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Nhân vật</label>
+          <select id="character">
+            <option>AI tự chọn</option>
+            <option>MC nữ</option>
+            <option>MC nam</option>
+            <option>Chuyên gia</option>
+            <option>KOL</option>
+            <option>Người bán hàng thân thiện</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Bối cảnh</label>
+          <select id="scene">
+            <option>AI tự chọn</option>
+            <option>Studio sang trọng</option>
+            <option>Cửa hàng</option>
+            <option>Văn phòng</option>
+            <option>Ngoài trời</option>
+            <option>Showroom</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Nền tảng xuất bản</label>
+          <select id="platform">
+            <option>TikTok / Facebook Reel / YouTube Shorts</option>
+            <option>Facebook Ads</option>
+            <option>YouTube ngang</option>
+            <option>Màn hình LED / TVC</option>
+          </select>
+        </div>
+        <div>
+          <label>Độ dài video</label>
+          <select id="duration">
+            <option>20-30 giây</option>
+            <option>15 giây</option>
+            <option>30-45 giây</option>
+            <option>60 giây</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="card action-card">
+      <h2>Copy Prompt Ẩn</h2>
+      <p>Prompt sẽ không hiện sẵn để tránh rối. Bạn chỉ cần bấm nút trái tim bên dưới.</p>
+
+      <button id="copyBtn" class="heart-btn" type="button">❤️ Copy Prompt VIP</button>
+      <button id="copyGuideBtn" class="secondary-btn" type="button">📋 Copy hướng dẫn cho người dùng</button>
+
+      <div id="copyStatus" class="status" role="status"></div>
+    </section>
+
+    <section class="card guide-card">
+      <h2>Cách dùng sau khi copy</h2>
+      <ol>
+        <li>Bấm <strong>❤️ Copy Prompt VIP</strong>.</li>
+        <li>Mở Google Flow, Gemini, ChatGPT, Veo hoặc công cụ AI video khác.</li>
+        <li>Đăng nhập bằng tài khoản của người dùng.</li>
+        <li>Dán prompt và tạo video.</li>
+        <li>Tải video về để đăng TikTok, Facebook, YouTube hoặc Zalo.</li>
+      </ol>
+      <p class="note">Thiên Kim chỉ tạo prompt thông minh, không dùng credit của chủ website.</p>
+    </section>
+
+    <footer class="footer">
+      <a href="/5-mi-an-lien/">← Quay lại 5 Mì Ăn Liền</a>
+      <span>© Thiên Kim Universe</span>
+    </footer>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

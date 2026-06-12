@@ -324,3 +324,17 @@ function showAppLaunch(app){
   const label = app.vip ? "VIP App" : "App";
   alert(`${label}: ${app.title}\\n\\nModule này đã được ghi nhận lượt sử dụng. Phần chức năng chi tiết sẽ triển khai riêng trong từng app.`);
 }
+
+document.addEventListener("DOMContentLoaded",()=>{
+ const u=(typeof getSavedUser==="function")?getSavedUser():null;
+ const wrap=document.getElementById("adminBackWrap");
+ const actions=document.querySelector(".module-actions");
+ if(u && (u.role==="Admin" || String(u.username||"")==="0947924444")){
+   if(wrap) wrap.style.display="block";
+ }else{
+   if(actions) actions.style.display="none";
+ }
+ // hide care button text
+ const btn=document.getElementById("comfortToggle");
+ if(btn){ btn.innerHTML="💗"; btn.style.width="52px"; btn.style.height="52px"; }
+});
