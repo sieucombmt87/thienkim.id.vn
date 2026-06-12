@@ -1,12 +1,7 @@
 {
-  "appCode": "TK-AI-VIDEO",
-  "defaultDuration": "20-30 giây",
-  "defaultPlatform": "TikTok, Facebook Reel, YouTube Shorts, Zalo",
-  "externalTools": {
-    "Google Flow": "https://labs.google/fx/tools/flow",
-    "Gemini": "https://gemini.google.com/",
-    "ChatGPT": "https://chatgpt.com/",
-    "Veo": "https://deepmind.google/models/veo/",
-    "AI Studio": "https://aistudio.google.com/"
-  }
+  "appName": "App VIP AI Video Bán Hàng",
+  "brand": "Thiên Kim Universe",
+  "section": "Apps Mì Ăn Liền",
+  "returnUrl": "/apps/",
+  "versionDisplay": "AI.TKver1.4"
 }

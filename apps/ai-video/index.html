@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TK-AI-VIDEO • App VIP AI Video Bán Hàng</title>
-  <meta name="description" content="App VIP tạo prompt hình ảnh/video bán hàng thông minh cho Google Flow, Gemini, ChatGPT, Veo và các công cụ AI." />
+  <title>App VIP AI Video Bán Hàng</title>
+  <meta name="description" content="App VIP tạo prompt hình ảnh/video bán hàng thông minh cho Thiên Kim Universe." />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -13,9 +13,8 @@
       <div>
         <p class="eyebrow">Thiên Kim Universe • Apps Mì Ăn Liền</p>
         <h1>❤️ App VIP AI Video Bán Hàng</h1>
-        <p class="hero-desc">Nhập tên sản phẩm hoặc link sản phẩm. Tool sẽ tạo mô tả ngắn, gợi ý nơi bán, giá gợi ý, khuyến mãi, khách hàng mục tiêu, nhân vật, bối cảnh và prompt VIP có thể sửa.</p>
+        <p class="hero-desc">Nhập tên sản phẩm hoặc link sản phẩm. Tool hỗ trợ phân tích nhanh, tạo mô tả ngắn 3-5 điểm nhấn, gợi ý giá, khuyến mãi, khách hàng mục tiêu và prompt VIP có thể sửa.</p>
       </div>
-      <div class="version-pill" id="versionText">TKver1.3</div>
     </header>
 
     <section class="notice-card">
@@ -26,81 +25,65 @@
       <form class="panel" onsubmit="return false;">
         <h2>1. Thông tin sản phẩm</h2>
 
-        <label>Tên sản phẩm hoặc link sản phẩm</label>
+        <label for="productInput">Tên sản phẩm hoặc link sản phẩm</label>
         <div class="inline-field">
-          <input id="productInput" placeholder="Ví dụ: Kem chống nắng ABC hoặc link Shopee/TikTok Shop/website hãng" />
-          <button class="mini-btn" type="button" onclick="suggestProductInfo()">Tạo mô tả</button>
+          <input id="productInput" placeholder="Ví dụ: Smart Tivi Crystal UHD Samsung 4K hoặc link sản phẩm" />
+          <button class="mini-btn" type="button" onclick="analyzeProduct()">🔍 Phân tích sản phẩm</button>
         </div>
-        <small id="sourceHint">Nếu nhập link, prompt sẽ ưu tiên khai thác nội dung sản phẩm, web hãng hoặc trang bán hàng.</small>
+        <small id="sourceHint">Nếu nhập link, prompt sẽ ưu tiên nội dung sản phẩm, web hãng hoặc trang bán hàng bạn gửi.</small>
 
         <label>Mục cần tạo</label>
         <div class="mode-switch" role="group" aria-label="Chọn tạo ảnh hoặc video">
           <label class="mode-card active" id="modeVideoCard">
             <input type="radio" name="assetMode" value="video" checked onchange="setAssetMode('video')" />
             <span>🎬 Tạo video</span>
-            <small>Google Flow, Veo, công cụ AI video</small>
+            <small>Google Flow, Veo, Kling, Runway, Pika</small>
           </label>
           <label class="mode-card" id="modeImageCard">
             <input type="radio" name="assetMode" value="image" onchange="setAssetMode('image')" />
             <span>🖼️ Tạo hình ảnh</span>
-            <small>Gemini, ChatGPT, AI Studio, công cụ tạo ảnh</small>
+            <small>Gemini, ChatGPT, AI Studio, Canva, Firefly</small>
           </label>
         </div>
 
-        <label>Mô tả ngắn có gợi ý nơi bán</label>
-        <textarea id="shortDesc" placeholder="Bấm Tạo mô tả hoặc tự nhập mô tả ngắn tập trung vào sản phẩm..."></textarea>
+        <label for="shortDesc">Mô tả ngắn</label>
+        <textarea id="shortDesc" placeholder="Tóm tắt 3-5 điểm nhấn tính năng sản phẩm. Nếu có link/web hãng, hãy tập trung vào thông tin sản phẩm trên trang đó."></textarea>
+        <small>Mô tả nên là 3-5 gạch đầu dòng về tính năng, lợi ích và điểm nổi bật của sản phẩm.</small>
 
         <div class="two-cols">
           <div>
-            <label>Giá bán gợi ý</label>
-            <input id="price" placeholder="AI gợi ý theo sản phẩm/link; bạn có thể nhập giá thật nếu muốn" />
-            <small>Nếu web có giá, hãy nhập lại giá thật. Nếu không nhập, prompt sẽ dùng giá gợi ý.</small>
+            <label for="price">Giá bán gợi ý</label>
+            <input id="price" placeholder="Giá trên web nếu có, ví dụ: 15.990.000₫" />
+            <small>Điền giá web đang hiển thị nếu có. Nếu để trống, prompt sẽ yêu cầu AI lấy giá trên trang/link.</small>
           </div>
           <div>
-            <label>Khuyến mãi</label>
+            <label for="promotion">Khuyến mãi</label>
             <div class="inline-field compact">
-              <input id="promotion" placeholder="AI sẽ tìm/đề xuất khuyến mãi từ trang sản phẩm nếu có" />
+              <textarea id="promotion" placeholder="Top 3 khuyến mãi tốt nhất trên web nếu có"></textarea>
               <button class="mini-btn ghost" type="button" onclick="clearPromotion()">Thay đổi</button>
             </div>
-            <small>Bấm “Thay đổi” để xóa trắng và nhập nội dung bạn muốn.</small>
+            <small>Bấm “Thay đổi” để xóa trắng và nhập khuyến mãi theo ý bạn.</small>
           </div>
         </div>
 
-        <label>Đối tượng khách hàng</label>
-        <input id="customer" placeholder="AI gợi ý theo sản phẩm: độ tuổi, nhu cầu, hành vi mua hàng..." />
+        <label for="customer">Đối tượng khách hàng</label>
+        <input id="customer" placeholder="AI gợi ý theo sản phẩm: ai nên mua, nhu cầu chính, hành vi mua hàng..." />
 
         <h2>2. Cấu hình nhanh</h2>
         <div class="two-cols">
           <div>
-            <label>Kiểu nội dung</label>
-            <select id="videoStyle">
-              <option>AI tự chọn</option>
-              <option>Video bán hàng nhanh</option>
-              <option>Video review sản phẩm</option>
-              <option>Video chuyên gia tư vấn</option>
-              <option>Video kể chuyện cảm xúc</option>
-              <option>Video khuyến mãi mạnh</option>
-              <option>Ảnh quảng cáo sản phẩm</option>
-              <option>Ảnh thumbnail bán hàng</option>
-            </select>
+            <label for="contentStyle">Kiểu nội dung</label>
+            <select id="contentStyle"></select>
           </div>
           <div>
-            <label>Thời lượng / định dạng</label>
-            <select id="duration">
-              <option>20-30 giây</option>
-              <option>10-15 giây</option>
-              <option>30-45 giây</option>
-              <option>45-60 giây</option>
-              <option>Ảnh vuông 1:1</option>
-              <option>Ảnh dọc 9:16</option>
-              <option>Ảnh ngang 16:9</option>
-            </select>
+            <label for="formatOption">Thời lượng / định dạng</label>
+            <select id="formatOption"></select>
           </div>
         </div>
 
         <div class="two-cols">
           <div>
-            <label>Nhân vật</label>
+            <label for="character">Nhân vật</label>
             <select id="character" onchange="updateHelperNotes()">
               <option>AI tự chọn</option>
               <option>MC nữ</option>
@@ -114,7 +97,7 @@
             <small id="characterNote">Nếu có nhân vật sẵn, hãy upload vào công cụ AI sau khi copy prompt.</small>
           </div>
           <div>
-            <label>Bối cảnh</label>
+            <label for="scene">Bối cảnh</label>
             <select id="scene" onchange="updateHelperNotes()">
               <option>AI tự chọn theo mô tả nơi bán</option>
               <option>Studio sang trọng</option>
@@ -156,8 +139,8 @@
     </section>
 
     <footer>
-      <a class="back-link" href="/apps/index.html">← Quay về Apps Mì Ăn Liền</a>
-      <span>TK-AI-VIDEO • TKver1.3</span>
+      <a class="back-link" href="/apps/">← Quay về Apps Mì Ăn Liền</a>
+      <span>AI.TKver1.4</span>
     </footer>
   </main>
 
