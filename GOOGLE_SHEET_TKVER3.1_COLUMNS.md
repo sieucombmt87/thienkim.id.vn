@@ -1,4 +1,4 @@
-# Google Sheet columns gợi ý cho TKver3.2
+# Google Sheet columns gợi ý cho TKver3.3
 
 Các cột cơ bản:
 - username

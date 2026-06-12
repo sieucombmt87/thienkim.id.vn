@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => {
         if(next === "app"){
-          location.href = "app/index.html";
+          location.href = "apps/index.html";
         }else if(data.user.role === "Admin" || mode === "admin"){
           location.href = "admin/index.html";
         }else{

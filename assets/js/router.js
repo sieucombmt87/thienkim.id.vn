@@ -318,7 +318,7 @@ function genericDemo(module){
 }
 
 
-/* TKver3.2 app click handler */
+/* TKver3.3 app click handler */
 function bindAppCenterClicks(){
   document.querySelectorAll(".app-tool[data-app-key]").forEach(el => {
     el.addEventListener("click", (e) => {

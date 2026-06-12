@@ -2373,7 +2373,7 @@ img{
   }
 }
 
-/* TKver3.2 - VIP App Engine + Mood V2 */
+/* TKver3.3 - VIP App Engine + Mood V2 */
 .module-status{
   display:flex !important;
   align-items:center;
@@ -2525,7 +2525,7 @@ img{
   }
 }
 
-/* TKver3.2 cleanup */
+/* TKver3.3 cleanup */
 .comfort-floating-btn{display:none!important}
 .module-actions{display:none!important}
 .quick-mood-heart{
@@ -2575,3 +2575,17 @@ img{
   border-radius:0!important;
 }
 .vip-badge{font-size:10px!important}
+
+
+/* TKver3.3 fixes */
+.apps-page .module-card-wide{max-width:1500px}
+.app-page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.apps-page .back-link{position:static}
+.apps-page #appUserStatus{margin:0 auto}
+.role-badge.admin-return-chip{cursor:pointer;box-shadow:0 0 20px rgba(76,201,255,.2)}
+.role-badge.admin-return-chip:hover{filter:brightness(1.15)}
+.admin-back-link{display:inline-flex!important}
+.quick-mood-heart{background:transparent!important;border:0!important;box-shadow:none!important}
+.app-manager-inline{display:flex;justify-content:flex-end;margin:0 0 16px}
+.module-actions{display:none!important}
+.comfort-floating-btn{display:none!important}

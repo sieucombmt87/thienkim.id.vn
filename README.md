@@ -1,15 +1,24 @@
-# TKver3.2 - App Center Cleanup + Apps Folder
+# TKver3.3 - App Center Direct / Permission Excel
+
+- App Center chuyển sang `/apps/`.
+- Trang cũ `/app/` tự redirect sang `/apps/`.
+- Trang chủ card 5 mở `/apps/`.
+- Role badge ở trang chủ bấm về Admin nếu là Admin/VIP/.
+- App Manager chỉ hiện cho role VIP hoặc user .
+- Chuẩn bị Excel phân quyền Google Sheet.
+
+# TKver3.3 - App Center Cleanup + Apps Folder
 
 - Tắt nút Care nổi.
 - Tim hồng chỉ nằm sau role/user.
 - Xóa nút Trang chủ và Admin login ở cuối module.
-- App Manager chỉ hiện cho role VIP hoặc user 0947924444.
-- Role/user chip có thể bấm về Admin nếu là Admin/VIP/0947924444.
+- App Manager chỉ hiện cho role VIP hoặc user .
+- Role/user chip có thể bấm về Admin nếu là Admin/VIP/.
 - Thêm thư mục `/apps/ai-video/` từ file app bạn gửi.
 - Tạo sẵn thư mục `/apps/` cho tất cả app để sau này thay file riêng.
 - Create Video trỏ về `/apps/ai-video/`.
 
-# TKver3.2 - Full Feature Build
+# TKver3.3 - Full Feature Build
 
 ## Hoàn thành trong bản này
 - VIP App Engine.
@@ -30,11 +39,11 @@ Xem file:
 `GOOGLE_SHEET_TKVER3.1_COLUMNS.md`
 
 
-# TKver3.2 - Repair Build
+# TKver3.3 - Repair Build
 
 - Sửa lỗi JavaScript ở popup Thiên Kim Care khiến web có thể không chạy.
 - Giữ theme Black Gold.
-- Version tag: TKver3.2.
+- Version tag: TKver3.3.
 
 # TKver2.8 - Black Gold Edition
 
@@ -136,7 +145,7 @@ Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay
 ## Cập nhật
 - Menu Admin đã liên kết thật tới các trang/module.
 - Thêm module `Kho Dự Trữ` nằm trên `System Setting`.
-- Vault chỉ còn user `0947924444` được thấy/truy cập.
+- Vault chỉ còn user `` được thấy/truy cập.
 - Tạo demo cho:
   - Flex Profile
   - Academy
@@ -144,8 +153,8 @@ Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay
   - Store bán nước hoa/son/combo
   - App Center dạng lưới giống app center, dùng icon user cung cấp.
 - Giữ tài khoản test:
-  - Admin: 0947924444 / 0987471471
-  - Boss: 0987471471 / 0947924444
+  - Admin:  / 
+  - Boss:  / 
 
 
 # TKver2.0 - Lite Clean Build
@@ -154,8 +163,8 @@ Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay
 - Đã tối ưu ảnh card/icon/UI để upload GitHub Pages nhẹ hơn.
 - Giữ module/router từ bản trước.
 - Giữ tài khoản test offline:
-  - Admin: 0947924444 / 0987471471
-  - Boss: 0987471471 / 0947924444
+  - Admin:  / 
+  - Boss:  / 
 
 Bản tiếp theo mặc định là TKver2.1.
 
@@ -165,14 +174,14 @@ Bản tiếp theo mặc định là TKver2.1.
 ## Tài khoản test offline không cần Google Sheet
 
 ### Admin full quyền
-- Username: `0947924444`
-- Password: `0987471471`
+- Username: ``
+- Password: ``
 - Role: `Admin`
 - Quyền: toàn bộ trang/module/admin/vault
 
 ### Boss full quyền test
-- Username: `0987471471`
-- Password: `0947924444`
+- Username: ``
+- Password: ``
 - Role: `Boss`
 - Quyền: toàn bộ trang/module/admin/vault để test tính năng khác
 
@@ -206,8 +215,8 @@ Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn
 ## Cập nhật
 - Đổi chữ `← Về Portal` thành `← Về trang chủ`.
 - Thêm tài khoản Admin offline full quyền, không cần Google Sheet:
-  - Username: 0947924444
-  - Password: 0987471471
+  - Username: 
+  - Password: 
 - Tài khoản offline này có role Admin và có quyền vào admin/vault.
 
 

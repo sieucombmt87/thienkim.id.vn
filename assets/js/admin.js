@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ["learning","📚 Vũ Trụ Cày Cuốc","Tài liệu, khóa học, ghi chú","../academy/index.html"],
     ["vip","🔐 Kho Báu VIP","Dữ liệu nội bộ theo quyền","../bi/index.html"],
     ["sales","🛒 Tạp Hóa Chốt Đơn","Sản phẩm, đơn hàng, khách hàng","../store/index.html"],
-    ["tools","🛠️ Bảo Bối Mì Ăn Liền","Công cụ dùng nhanh","../app/index.html"],
+    ["tools","🛠️ Bảo Bối Mì Ăn Liền","Công cụ dùng nhanh","../apps/index.html"],
     ...(canVault ? [["vault","🧳 Vault","Kho riêng user 0947924444","../vault/index.html"]] : []),
     ["user_manager","👥 User Manager","Quản lý tài khoản","#"],
     ["role_manager","🛡️ Role Manager","Phân quyền","#"],
