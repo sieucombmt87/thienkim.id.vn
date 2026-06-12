@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(user){
       const name = user.full_name || user.username || "User";
       const role = user.role || "User";
-      status.innerHTML = `<span class="hello-user">✨ Chào <b>${name}</b> <em>• ${role}</em></span><button id="quickMoodHeart" class="quick-mood-heart" type="button" title="Hôm nay bạn thế nào?">💛</button>`;
+      status.innerHTML = renderUserStatus(user);
     }else{
       status.textContent = "✨ Chào bạn";
     }
@@ -56,10 +56,30 @@ function cleanTitle(title){
   return String(title || "THIENKIM").replace(/[😎📚🔐🛒🛠️]/g, "").trim().toUpperCase();
 }
 
+
+function renderUserStatus(user){
+  if(!user){
+    return `<span class="hello-user">✨ Chào bạn</span>`;
+  }
+  const name = user.full_name || user.username || "User";
+  const role = user.role || "User";
+  const canBack = (typeof tkIsAdminBackUser === "function" ? tkIsAdminBackUser(user) : (role === "Admin" || role === "VIP"));
+  return `
+    <span class="hello-user ${canBack ? "admin-return-chip" : ""}" ${canBack ? 'data-admin-return="1" title="Quay lại trang Admin"' : ""}>
+      ✨ Chào <b>${name}</b> <em>• ${role}</em>
+    </span>
+    <button id="quickMoodHeart" class="quick-mood-heart" type="button" title="Hôm nay bạn thế nào?">💗</button>
+  `;
+}
+
+function renderAdminBackButton(user){
+  const canBack = typeof tkIsAdminBackUser === "function" ? tkIsAdminBackUser(user) : false;
+  return canBack ? `<a class="admin-back-link" href="../admin/index.html">← Quay lại Admin</a>` : "";
+}
+
 function renderComfortLayer(user){
   const name = user ? (user.full_name || user.username || "bạn") : "bạn";
   return `
-    <button id="comfortToggle" class="comfort-floating-btn" type="button">💜<span>Care</span></button>
     <aside id="comfortDrawer" class="comfort-drawer hidden">
       <div class="comfort-drawer-head">
         <div><span class="comfort-kicker">THIENKIM CARE</span><h2>Hôm nay ${name} thế nào?</h2></div>
@@ -93,6 +113,10 @@ function renderComfortLayer(user){
 }
 
 function bindComfortLayer(){
+  document.querySelectorAll("[data-admin-return]").forEach(el=>{
+    el.addEventListener("click",()=>{ location.href="../admin/index.html"; });
+  });
+
   const heart = document.getElementById("quickMoodHeart");
   const drawerQuick = document.getElementById("comfortDrawer");
   if(heart && drawerQuick) heart.addEventListener("click", () => drawerQuick.classList.toggle("hidden"));
@@ -175,11 +199,11 @@ function renderLoginHistory(){
 
 function renderModule(module, key, user){
   if(module.type === "profile") return profileDemo();
-  if(module.type === "academy") return academyDemo();
+  if(module.type === "academy") return renderAdminBackButton(user) + academyDemo();
   if(module.type === "bi") return biDemo();
-  if(module.type === "store") return storeDemo();
+  if(module.type === "store") return renderAdminBackButton(user) + storeDemo();
   if(module.type === "app") return appCenterDemo();
-  if(module.type === "reserve") return reserveDemo();
+  if(module.type === "reserve") return renderAdminBackButton(user) + reserveDemo();
   if(module.type === "vault") return vaultDemo(user);
   if(module.type === "reserveItem") return reserveItemDemo(module);
   return genericDemo(module);
@@ -249,22 +273,24 @@ function storeDemo(){
 function appCenterDemo(){
   const user = typeof getSavedUser === "function" ? getSavedUser() : null;
   const apps = typeof tkGetSortedApps === "function" ? tkGetSortedApps(user) : TK_APP_TOOLS;
+  const showManager = typeof tkIsAppManager === "function" ? tkIsAppManager(user) : false;
   return `
-    <div class="app-center-toolbar">
-      <div>
-        <h2>App Center</h2>
-        <p>Ứng dụng thường dùng sẽ tự động được đẩy lên đầu theo thói quen của từng user.</p>
-      </div>
-      <button class="app-manager-shortcut" onclick="location.href='../admin/app-manager.html'">⚙️ App Manager</button>
-    </div>
+    ${renderAdminBackButton(user)}
+    ${showManager ? `<div class="app-manager-inline"><button class="app-manager-shortcut" onclick="location.href='../admin/app-manager.html'">⚙️ App Manager</button></div>` : ""}
     <div class="app-grid clean-app-grid">
       ${apps.map(tool => `
-        <a class="app-tool clean-app-tool ${tool.vip ? "vip-app" : ""}" href="#" data-app-key="${tool.key}" data-vip="${tool.vip ? "1" : "0"}">
+        <a class="app-tool clean-app-tool ${tool.vip ? "vip-app" : ""}" href="${appUrl(tool)}" data-app-key="${tool.key}" data-vip="${tool.vip ? "1" : "0"}">
           ${tool.vip ? `<span class="vip-badge">👑 VIP</span>` : ""}
           <img src="../${tool.icon}" alt="${tool.title}">
           <strong>${tool.title}</strong>
         </a>`).join("")}
     </div>`;
+}
+
+function appUrl(tool){
+  if(tool.key === "create-video") return "../apps/ai-video/";
+  if(tool.key === "ai-prompt") return "../apps/ai-prompt/";
+  return "../apps/" + tool.key + "/";
 }
 
 function reserveDemo(){
@@ -292,7 +318,7 @@ function genericDemo(module){
 }
 
 
-/* TKver3.1 app click handler */
+/* TKver3.2 app click handler */
 function bindAppCenterClicks(){
   document.querySelectorAll(".app-tool[data-app-key]").forEach(el => {
     el.addEventListener("click", (e) => {
@@ -321,20 +347,9 @@ function bindAppCenterClicks(){
 }
 
 function showAppLaunch(app){
-  const label = app.vip ? "VIP App" : "App";
-  alert(`${label}: ${app.title}\\n\\nModule này đã được ghi nhận lượt sử dụng. Phần chức năng chi tiết sẽ triển khai riêng trong từng app.`);
+  const key = app.key;
+  let url = "../apps/" + key + "/";
+  if(key === "create-video") url = "../apps/ai-video/";
+  if(key === "ai-prompt") url = "../apps/ai-prompt/";
+  location.href = url;
 }
-
-document.addEventListener("DOMContentLoaded",()=>{
- const u=(typeof getSavedUser==="function")?getSavedUser():null;
- const wrap=document.getElementById("adminBackWrap");
- const actions=document.querySelector(".module-actions");
- if(u && (u.role==="Admin" || String(u.username||"")==="0947924444")){
-   if(wrap) wrap.style.display="block";
- }else{
-   if(actions) actions.style.display="none";
- }
- // hide care button text
- const btn=document.getElementById("comfortToggle");
- if(btn){ btn.innerHTML="💗"; btn.style.width="52px"; btn.style.height="52px"; }
-});

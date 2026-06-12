@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  if(user.role !== "Admin" && user.role !== "Family" && user.all_access !== true){
+  if(user.role !== "Admin" && user.role !== "VIP" && user.role !== "Family" && user.all_access !== true){
     alert("Trang admin chỉ dành cho tài khoản có quyền quản trị.");
     location.href = "../index.html";
     return;
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ["role_manager","🛡️ Role Manager","Phân quyền","#"],
     ["sheet_sync","🔄 Google Sheet Sync","Đồng bộ dữ liệu","#"],
     ["reserve","📦 Kho Dự Trữ","Miền con và module chưa dùng","../reserve/index.html"],
-    ["app_manager","📱 App Manager","Set ứng dụng VIP/thường","app-manager.html"],
+    ...(typeof tkIsAppManager === "function" && tkIsAppManager(user) ? [["app_manager","📱 App Manager","Set ứng dụng VIP/thường","app-manager.html"]] : []),
     ["settings","⚙️ System Setting","Cài đặt hệ thống","#"],
     ["reports","📈 Báo cáo","Báo cáo theo quyền","../pages/module.html?module=bi"]
   ];

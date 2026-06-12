@@ -1,4 +1,15 @@
-# TKver3.1 - Full Feature Build
+# TKver3.2 - App Center Cleanup + Apps Folder
+
+- Tắt nút Care nổi.
+- Tim hồng chỉ nằm sau role/user.
+- Xóa nút Trang chủ và Admin login ở cuối module.
+- App Manager chỉ hiện cho role VIP hoặc user 0947924444.
+- Role/user chip có thể bấm về Admin nếu là Admin/VIP/0947924444.
+- Thêm thư mục `/apps/ai-video/` từ file app bạn gửi.
+- Tạo sẵn thư mục `/apps/` cho tất cả app để sau này thay file riêng.
+- Create Video trỏ về `/apps/ai-video/`.
+
+# TKver3.2 - Full Feature Build
 
 ## Hoàn thành trong bản này
 - VIP App Engine.
@@ -19,11 +30,11 @@ Xem file:
 `GOOGLE_SHEET_TKVER3.1_COLUMNS.md`
 
 
-# TKver3.1 - Repair Build
+# TKver3.2 - Repair Build
 
 - Sửa lỗi JavaScript ở popup Thiên Kim Care khiến web có thể không chạy.
 - Giữ theme Black Gold.
-- Version tag: TKver3.1.
+- Version tag: TKver3.2.
 
 # TKver2.8 - Black Gold Edition
 

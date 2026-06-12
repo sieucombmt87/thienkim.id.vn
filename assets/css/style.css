@@ -2373,7 +2373,7 @@ img{
   }
 }
 
-/* TKver3.1 - VIP App Engine + Mood V2 */
+/* TKver3.2 - VIP App Engine + Mood V2 */
 .module-status{
   display:flex !important;
   align-items:center;
@@ -2524,3 +2524,54 @@ img{
     align-items:flex-start;
   }
 }
+
+/* TKver3.2 cleanup */
+.comfort-floating-btn{display:none!important}
+.module-actions{display:none!important}
+.quick-mood-heart{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  width:30px!important;
+  height:30px!important;
+  padding:0!important;
+  font-size:24px!important;
+  color:#ff5ecf!important;
+  margin-left:6px!important;
+}
+.module-status{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+.admin-return-chip{cursor:pointer}
+.admin-return-chip:hover b,.admin-return-chip:hover em{text-decoration:underline}
+.admin-back-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 18px;
+  padding:10px 16px;
+  border-radius:999px;
+  color:#171104!important;
+  background:linear-gradient(90deg,#fff1b8,#ffd76a,#b8860b);
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:0 0 18px rgba(255,215,106,.18);
+}
+.app-manager-inline{
+  display:flex;
+  justify-content:flex-end;
+  margin:-4px 0 16px;
+}
+.app-center-toolbar{display:none!important}
+.app-manager-shortcut{
+  font-size:14px!important;
+  padding:9px 12px!important;
+  border-radius:0!important;
+}
+.vip-badge{font-size:10px!important}

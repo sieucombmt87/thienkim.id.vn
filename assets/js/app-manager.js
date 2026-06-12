@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const user = typeof getSavedUser === "function" ? getSavedUser() : null;
-  if(!user || (user.role !== "Admin" && user.all_access !== true)){
-    alert("Chỉ Admin được vào App Manager.");
+  if(!user || !(typeof tkIsAppManager === "function" ? tkIsAppManager(user) : false)){
+    alert("Chỉ role VIP hoặc user 0947924444 được set ứng dụng VIP/thường.");
     location.href = "../login.html?mode=admin";
     return;
   }

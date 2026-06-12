@@ -6,7 +6,16 @@
   <title>App VIP AI Video Bán Hàng - Thiên Kim</title>
   <meta name="description" content="App VIP AI Video Bán Hàng giúp tạo prompt ẩn để copy sang Google Flow, Gemini, ChatGPT hoặc công cụ AI video khác." />
   <link rel="stylesheet" href="./style.css" />
-</head>
+<script>
+(function(){
+  try{
+    const user = JSON.parse(localStorage.getItem("tk_user") || sessionStorage.getItem("tk_user") || "null");
+    const vip = JSON.parse(localStorage.getItem("tk_vip_session") || "null");
+    const ok = user && (user.all_access || user.role==="Admin" || user.role==="VIP" || user.vip_access==="Y" || user.create_video==="Y" || (vip && Date.now()-vip.created_at < 86400000));
+    if(!ok) location.href="../../login.html?mode=vip&next=app";
+  }catch(e){ location.href="../../login.html?mode=vip&next=app"; }
+})();
+</script></head>
 <body>
   <div class="tk-bg-glow"></div>
 
