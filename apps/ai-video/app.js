@@ -155,3 +155,315 @@ function closeUploadModal(confirmed) { $("uploadModal").classList.remove("show")
 async function submitFeedback() { const name = $("feedbackName").value.trim(); const email = $("feedbackEmail").value.trim() || localStorage.getItem(storageKey("feedbackId")) || `guest-${Date.now()}`; const message = $("feedbackMessage").value.trim(); if (!message) { $("feedbackStatus").innerText = "Bạn chưa nhập góp ý."; return; } localStorage.setItem(storageKey("feedbackId"), email); $("feedbackStatus").innerText = "Đang gửi góp ý..."; try { const data = await tkApi("submitFeedback", { name, email, message, appVersion: APP_VERSION }); $("feedbackStatus").className = data.ok ? "status success" : "status error"; $("feedbackStatus").innerText = data.ok ? "Đã ghi nhận đóng góp vào Google Sheet." : (data.message || "Không gửi được góp ý."); if (data.ok) $("feedbackMessage").value = ""; } catch (e) { $("feedbackStatus").className = "status error"; $("feedbackStatus").innerText = "Không kết nối được Apps Script để ghi góp ý."; } }
 async function loadFeedbackReply() { const email = $("feedbackEmail").value.trim() || localStorage.getItem(storageKey("feedbackId")); if (!email) { $("feedbackStatus").innerText = "Nhập email hoặc mã nhận phản hồi trước."; return; } try { const data = await tkApi("getFeedbackReply", { email }); const box = $("feedbackReply"); box.style.display = "block"; box.innerText = data.reply ? `Phản hồi từ Thiên Kim:\n${data.reply}` : "Chưa có phản hồi mới."; } catch (e) { $("feedbackStatus").className = "status error"; $("feedbackStatus").innerText = "Không đọc được phản hồi."; } }
 window.addEventListener("DOMContentLoaded", () => { setAssetMode("video"); renderApiAccounts(); updateConnections(); updateHelperNotes(); autoRecheckDueAccounts(); });
+
+/***********************
+ * AI.TKver1.7 Overrides
+ ***********************/
+let apiModalAccount = 1;
+
+function getApiKey(i = selectedAccount) {
+  return localStorage.getItem(storageKey(`geminiKey${i}`)) || "";
+}
+function setAccountStatus(i, status, note = "") {
+  localStorage.setItem(storageKey(`accountStatus${i}`), status);
+  localStorage.setItem(storageKey(`accountNote${i}`), note);
+  if (status === "red") localStorage.setItem(storageKey(`nextCheck${i}`), String(Date.now() + 5 * 60 * 60 * 1000));
+  updateApiPills();
+}
+function getAccountStatus(i) { return localStorage.getItem(storageKey(`accountStatus${i}`)) || "gray"; }
+function updateApiPills() {
+  for (let i = 1; i <= 3; i++) {
+    const el = $(`apiPill${i}`);
+    if (!el) continue;
+    const status = getAccountStatus(i);
+    el.classList.remove("green", "red", "gray", "selected");
+    el.classList.add(status === "green" ? "green" : status === "red" ? "red" : "gray");
+    if (selectedAccount === i) el.classList.add("selected");
+    const label = status === "green" ? "ổn định" : status === "red" ? "lỗi / hết credit" : "chưa kiểm tra";
+    el.title = `API tài khoản ${i}: ${label}`;
+  }
+}
+function openApiModal(i) {
+  apiModalAccount = i;
+  selectedAccount = i;
+  localStorage.setItem(storageKey("selectedAccount"), String(i));
+  updateApiPills();
+  $("apiModalTitle").innerText = `API tài khoản ${i}`;
+  $("apiModalInput").value = getApiKey(i);
+  const note = localStorage.getItem(storageKey(`accountNote${i}`)) || "Dán API Key rồi bấm Hoàn tất hoặc Kiểm tra API.";
+  $("apiModalStatus").className = "status";
+  $("apiModalStatus").innerText = note;
+  $("apiModal").classList.add("show");
+  $("apiModal").setAttribute("aria-hidden", "false");
+}
+function closeApiModal() {
+  $("apiModal").classList.remove("show");
+  $("apiModal").setAttribute("aria-hidden", "true");
+}
+function saveApiFromModal() {
+  const key = $("apiModalInput").value.trim();
+  localStorage.setItem(storageKey(`geminiKey${apiModalAccount}`), key);
+  localStorage.setItem(storageKey("selectedAccount"), String(apiModalAccount));
+  selectedAccount = apiModalAccount;
+  if (key && getAccountStatus(apiModalAccount) === "gray") setAccountStatus(apiModalAccount, "gray", "Đã lưu key. Bấm kiểm tra API để xác nhận.");
+  $("apiModalStatus").className = "status success";
+  $("apiModalStatus").innerText = "Đã lưu API Key trên trình duyệt này.";
+  $("apiStatus").className = "status success";
+  $("apiStatus").innerText = `Đã lưu API tài khoản ${apiModalAccount}.`;
+  updateApiPills();
+}
+async function checkApiFromModal() {
+  saveApiFromModal();
+  $("apiModalStatus").className = "status";
+  $("apiModalStatus").innerText = "Đang kiểm tra API...";
+  const ok = await checkAccount(apiModalAccount);
+  $("apiModalStatus").className = ok ? "status success" : "status error";
+  $("apiModalStatus").innerText = localStorage.getItem(storageKey(`accountNote${apiModalAccount}`)) || (ok ? "API hoạt động." : "API lỗi hoặc hết credit.");
+}
+function openApiHelp() {
+  $("apiHelpModal").classList.add("show");
+  $("apiHelpModal").setAttribute("aria-hidden", "false");
+}
+function closeApiHelp() {
+  $("apiHelpModal").classList.remove("show");
+  $("apiHelpModal").setAttribute("aria-hidden", "true");
+}
+function saveApiKeys() { updateApiPills(); return true; }
+function selectAccount(i) { selectedAccount = i; localStorage.setItem(storageKey("selectedAccount"), String(i)); updateApiPills(); }
+async function checkSelectedAccount() {
+  const i = selectedAccount || 1;
+  $("apiStatus").className = "status";
+  $("apiStatus").innerText = `Đang kiểm tra API tài khoản ${i}...`;
+  const ok = await checkAccount(i);
+  $("apiStatus").className = ok ? "status success" : "status error";
+  $("apiStatus").innerText = localStorage.getItem(storageKey(`accountNote${i}`)) || (ok ? "API hoạt động." : "API lỗi hoặc hết credit.");
+}
+async function checkAllAccounts() {
+  $("apiStatus").className = "status";
+  $("apiStatus").innerText = "Đang kiểm tra 3 tài khoản...";
+  let ok = false;
+  for (let i = 1; i <= 3; i++) if (await checkAccount(i)) ok = true;
+  $("apiStatus").className = ok ? "status success" : "status error";
+  $("apiStatus").innerText = ok ? "Đã kiểm tra xong. Tài khoản xanh có thể dùng." : "Cả 3 tài khoản đều hết credit hoặc chưa dùng được. Hệ thống sẽ nhắc kiểm tra lại sau 5 tiếng.";
+}
+
+function saveContactInfo() {
+  localStorage.setItem(storageKey("storeAddress"), $("storeAddress").value.trim());
+  localStorage.setItem(storageKey("contactPhone"), $("contactPhone").value.trim());
+  $("copyStatus").innerText = "Đã cập nhật địa chỉ và số điện thoại trên trình duyệt này.";
+}
+function loadContactInfo() {
+  if ($("storeAddress")) $("storeAddress").value = localStorage.getItem(storageKey("storeAddress")) || "";
+  if ($("contactPhone")) $("contactPhone").value = localStorage.getItem(storageKey("contactPhone")) || "";
+}
+
+function getWebPriceValue(productInput, storeName) {
+  return $("webPrice").value.trim() || guessPrice(productInput, storeName);
+}
+function getDisplayPriceValue(productInput, storeName) {
+  return $("desiredPrice").value.trim() || getWebPriceValue(productInput, storeName);
+}
+
+async function analyzeProduct(useBackend = true) {
+  const input = $("productInput").value.trim();
+  const productName = cleanProductName(input);
+  const storeName = detectStoreName(input);
+  setBusy(true);
+  $("copyStatus").innerText = "Đang phân tích sản phẩm, giá web và khuyến mãi...";
+  if (useBackend) {
+    try {
+      const data = await tkApi("analyzeProduct", { productInput: input, assetMode: currentAssetMode, apiKey: getApiKey() });
+      if (data && data.ok) {
+        $("shortDesc").value = normalizeBullets(data.shortDesc) || guessProductHighlights(productName).join("\n");
+        $("webPrice").value = data.price || guessPrice(input, storeName);
+        $("promotion").value = normalizePromos(data.promotions) || guessPromotions(input, storeName);
+        $("customer").value = data.customer || guessCustomer(input);
+        if (data.storeName && !$("storeAddress").value.trim()) $("storeAddress").value = data.storeName;
+        $("copyStatus").innerText = "Đã phân tích xong. Bạn có thể sửa giá mong muốn, khuyến mãi hoặc thông tin liên hệ trước khi tạo prompt.";
+        if (data.accountStatus === "red") setAccountStatus(selectedAccount, "red", data.message || "Tài khoản đã hết credit, vui lòng đổi tài khoản");
+        else if (getApiKey()) setAccountStatus(selectedAccount, "green", "Còn credit / API hoạt động");
+        generatePrompt(false);
+        setBusy(false);
+        return;
+      }
+    } catch (e) {
+      $("copyStatus").innerText = "Backend chưa phản hồi, dùng chế độ gợi ý nhanh tại máy.";
+    }
+  }
+  $("shortDesc").value = guessProductHighlights(productName).join("\n") + `\n\nNơi bán/kênh giới thiệu gợi ý: ${storeName}.`;
+  if (!$("webPrice").value.trim()) $("webPrice").value = guessPrice(input, storeName);
+  if (!$("promotion").value.trim()) $("promotion").value = guessPromotions(input, storeName);
+  if (!$("customer").value.trim()) $("customer").value = guessCustomer(input);
+  if (!$("storeAddress").value.trim()) $("storeAddress").value = storeName;
+  generatePrompt(false);
+  setBusy(false);
+}
+
+function buildVideoPrompt(data) {
+  return `Đóng vai một Đạo diễn Video Thương mại (Commercial Video Director) và Chuyên gia Prompt AI Video (AI Video Prompt Engineer). Tôi muốn sản xuất một video ngắn (${data.format}) để quảng cáo sản phẩm ${data.productName}, bán tại ${data.storeContext} với phong cách ${data.style}.
+
+THÔNG TIN SẢN PHẨM:
+- Link/tên sản phẩm: ${data.productInput}
+- Mô tả ngắn 3-5 điểm nhấn: ${data.shortDesc}
+- Giá web đang hiển thị: ${data.webPrice}
+- Giá hiển thị mong muốn: ${data.displayPrice}
+- Top 3 khuyến mãi/ưu đãi: ${data.promotion}
+- Đối tượng khách hàng: ${data.customer}
+- Địa chỉ siêu thị/nơi bán: ${data.storeAddress}
+- Số điện thoại liên hệ: ${data.contactPhone}
+- Nhân vật: ${data.characterInstruction}
+- Bối cảnh: ${data.sceneInstruction}
+
+YÊU CẦU KHAI THÁC LINK/TÊN SẢN PHẨM:
+- Nếu có link sản phẩm, hãy ưu tiên đọc mô tả sản phẩm, thông số, hình ảnh, giá đang hiển thị, khuyến mãi/voucher/flash sale và nội dung từ web hãng hoặc trang bán hàng.
+- Nếu công cụ AI không đọc được link, hãy dùng phần thông tin người dùng đã nhập và ghi rõ phần nào là gợi ý.
+- Mô tả phải tập trung vào 3-5 điểm nhấn tính năng/lợi ích sản phẩm.
+- Giá bán ưu tiên theo trang sản phẩm nếu có; nếu không có thì dùng giá/gợi ý giá đã nhập.
+- Khuyến mãi ưu tiên lấy top 3 ưu đãi tốt nhất trên web; nếu không có thì đề xuất ưu đãi hợp lý.
+- Đối tượng khách hàng phải dựa trên sản phẩm và nhu cầu thực tế.
+
+GỢI Ý FILE NGƯỜI DÙNG CÓ SẴN:
+- Nhân vật mẫu: ${data.characterFileText}
+- Bối cảnh mẫu: ${data.sceneFileText}
+
+Hãy xây dựng cho tôi một kế hoạch kịch bản video bao gồm 4 phần sau:
+
+1. KỊCH BẢN PHÂN CẢNH (SHOT-BY-SHOT PROMPT)
+Cung cấp 3-4 prompt tiếng Anh chi tiết để đưa vào công cụ tạo video AI. Mỗi phân cảnh khoảng 4-5 giây, tuân thủ công thức:
+[Góc máy] + [Chủ thể] + [Hành động chi tiết] + [Bối cảnh] + [Chuyển động Camera cụ thể] + [Chất lượng 4K, Cinematic lighting].
+
+2. KỊCH BẢN LỜI BÌNH (VOICEOVER)
+Viết lời thoại hấp dẫn, đọc khớp với từng phân cảnh. Chỉ định rõ giọng đọc (Tone of voice: Nam/Nữ, hào hứng, trầm ấm hoặc chuyên gia).
+
+3. CHỮ XUẤT HIỆN TRÊN VIDEO (ON-SCREEN TEXT)
+Gợi ý các dòng chữ xuất hiện ở giây nào để nhấn mạnh tính năng/ưu đãi, giúp người xem không bật tiếng vẫn hiểu thông điệp.
+
+4. GỢI Ý ÂM THANH (SOUND & MUSIC)
+Đề xuất nhạc nền và hiệu ứng âm thanh như swoosh, ting, cinematic hit để tăng độ sinh động.
+
+5. CAPTION ĐĂNG BÀI + HASHTAG + CTA
+Viết caption Facebook/Zalo/TikTok theo cấu trúc Hook -> Vấn đề -> Sản phẩm -> Lợi ích -> Ưu đãi -> Kêu gọi hành động. Thêm hashtag và mẫu câu trả lời comment/inbox.
+
+6. CHECKLIST KIỂM TRA TRƯỚC KHI XUẤT VIDEO
+Kiểm tra khuôn mặt, tay, sản phẩm, giá, khuyến mãi, text, màu thương hiệu, âm thanh và CTA.`;
+}
+
+function buildImagePrompt(data) {
+  return `Đóng vai một Chuyên gia Digital Marketing và Midjourney Prompt Engineer. Tôi muốn làm một chiến dịch quảng cáo mạng xã hội cho sản phẩm ${data.productName}, bán tại ${data.storeContext}. Tôi có đính kèm ${data.uploadCount} hình ảnh mẫu.
+
+THÔNG TIN SẢN PHẨM:
+- Link/tên sản phẩm: ${data.productInput}
+- Mô tả ngắn 3-5 điểm nhấn: ${data.shortDesc}
+- Giá web đang hiển thị: ${data.webPrice}
+- Giá hiển thị mong muốn: ${data.displayPrice}
+- Top 3 khuyến mãi/ưu đãi: ${data.promotion}
+- Đối tượng khách hàng: ${data.customer}
+- Địa chỉ siêu thị/nơi bán: ${data.storeAddress}
+- Số điện thoại liên hệ: ${data.contactPhone}
+- Nhân vật: ${data.characterInstruction}
+- Bối cảnh: ${data.sceneInstruction}
+- Định dạng ảnh: ${data.format}
+- Kiểu nội dung: ${data.style}
+
+YÊU CẦU KHAI THÁC LINK/TÊN SẢN PHẨM:
+- Nếu có link sản phẩm, hãy ưu tiên đọc mô tả sản phẩm, thông số, hình ảnh, giá đang hiển thị, khuyến mãi/voucher/flash sale và nội dung từ web hãng hoặc trang bán hàng.
+- Nếu công cụ AI không đọc được link, hãy dùng phần thông tin người dùng đã nhập và ghi rõ phần nào là gợi ý.
+- Mô tả phải tập trung vào 3-5 điểm nhấn tính năng/lợi ích sản phẩm.
+- Giá bán ưu tiên theo trang sản phẩm nếu có; nếu không có thì dùng giá/gợi ý giá đã nhập.
+- Khuyến mãi ưu tiên lấy top 3 ưu đãi tốt nhất trên web; nếu không có thì đề xuất ưu đãi hợp lý.
+- Đối tượng khách hàng phải dựa trên sản phẩm và nhu cầu thực tế.
+
+GỢI Ý FILE NGƯỜI DÙNG CÓ SẴN:
+- Nhân vật mẫu: ${data.characterFileText}
+- Bối cảnh mẫu: ${data.sceneFileText}
+
+Hãy cung cấp cho tôi một kế hoạch nội dung bao gồm 5 phần chi tiết sau:
+
+1. PROMPT TẠO ẢNH QUẢNG CÁO CHI TIẾT
+Viết 1 prompt tiếng Anh chi tiết để tạo ảnh quảng cáo thương mại, có không gian chèn text, tỷ lệ ${data.format}, phong cách high-end commercial photography, sharp focus, vibrant colors, studio lighting, hyper-realistic, 8K resolution, --v 6.0.
+
+2. BỐ CỤC HÌNH ẢNH ĐỀ XUẤT
+Gợi ý bố cục chia 1/3 phía trên, 1/3 ở giữa, 1/3 phía dưới để chèn headline, sản phẩm, nhân vật, khuyến mãi và CTA.
+
+3. TEXT NGẮN NÊN ĐẶT TRÊN ẢNH
+Đề xuất Headline, Sub-headline, Badge ưu đãi, CTA ngắn. Chữ phải dễ đọc, có tính chuyển đổi cao.
+
+4. PROMPT TẠO BIẾN THỂ ẢNH LIFESTYLE
+Viết 1 prompt tiếng Anh tạo ảnh biến thể theo phong cách đời sống, tạo cảm giác khao khát và gần gũi.
+
+5. CAPTION ĐĂNG FACEBOOK/ZALO CHUẨN SEO, TỐI ƯU CHUYỂN ĐỔI
+Viết theo cấu trúc Hook -> Nêu vấn đề -> Tính năng/Lợi ích -> Ưu đãi -> Kêu gọi hành động. Thêm hashtag, CTA comment/inbox, checklist kiểm tra ảnh trước khi đăng.`;
+}
+
+function buildPrompt() {
+  const productInput = $("productInput").value.trim() || "AI tự đề xuất sản phẩm phù hợp";
+  const productName = cleanProductName(productInput);
+  const storeName = detectStoreName(productInput);
+  const shortDesc = $("shortDesc").value.trim() || "Hãy tạo mô tả ngắn 3-5 điểm nổi bật nhất của sản phẩm.";
+  const webPrice = getWebPriceValue(productInput, storeName);
+  const desired = $("desiredPrice").value.trim();
+  const displayPrice = desired || webPrice;
+  const promotion = $("promotion").value.trim() || guessPromotions(productInput, storeName);
+  const customer = $("customer").value.trim() || guessCustomer(productInput);
+  const style = $("contentStyle").value;
+  const format = $("formatOption").value;
+  const character = $("character").value;
+  const scene = $("scene").value;
+  const charFile = $("characterFile").files[0];
+  const sceneFile = $("sceneFile").files[0];
+  const storeAddress = $("storeAddress").value.trim() || storeName;
+  const contactPhone = $("contactPhone").value.trim() || "Chưa nhập số điện thoại liên hệ";
+  const uploadCount = [charFile, sceneFile].filter(Boolean).length || (character.includes("Upload") || scene.includes("Upload") ? "các" : "0");
+  const characterFileText = charFile ? `Có file mẫu tên ${charFile.name}. Người dùng sẽ upload file này vào công cụ AI, hãy ưu tiên dùng nhân vật trong file upload.` : "Có file mẫu tên hinh_mau.png_202606121054.jpeg nếu người dùng có sẵn. Khi người dùng upload file này vào công cụ AI, hãy ưu tiên dùng nhân vật trong file upload.";
+  const sceneFileText = sceneFile ? `Có file bối cảnh tên ${sceneFile.name}. Người dùng sẽ upload file này vào công cụ AI, hãy ưu tiên dùng bối cảnh trong file upload.` : "Có file bối cảnh tên 1-vong-dao-quanh-trung-tam-gia-dung-dien-may-xanh-5.jpg nếu người dùng có sẵn. Khi người dùng upload file này vào công cụ AI, hãy ưu tiên dùng bối cảnh trong file upload.";
+  const data = {
+    productInput, productName,
+    storeContext: storeAddress || storeName,
+    shortDesc, webPrice, displayPrice, promotion, customer,
+    storeAddress, contactPhone, style, format,
+    characterInstruction: charFile ? `Dùng nhân vật từ file upload: ${charFile.name}` : character,
+    sceneInstruction: sceneFile ? `Dùng bối cảnh từ file upload: ${sceneFile.name}` : scene,
+    characterFileText, sceneFileText, uploadCount
+  };
+  return currentAssetMode === "video" ? buildVideoPrompt(data) : buildImagePrompt(data);
+}
+
+async function generatePromptWithGemini() {
+  if (!getApiKey()) {
+    $("apiStatus").className = "status error";
+    $("apiStatus").innerText = "Bạn chưa nhập API Key cho tài khoản đang chọn.";
+    openApiModal(selectedAccount || 1);
+    return;
+  }
+  if (!$("shortDesc").value.trim()) await analyzeProduct(true);
+  setBusy(true);
+  $("apiStatus").className = "status";
+  $("apiStatus").innerText = `Đang tạo prompt bằng Gemini tài khoản ${selectedAccount}...`;
+  try {
+    const data = await tkApi("generatePrompt", { apiKey: getApiKey(), basePrompt: buildPrompt(), assetMode: currentAssetMode });
+    if (data.ok && data.prompt) {
+      $("promptOutput").value = data.prompt;
+      setAccountStatus(selectedAccount, "green", "Còn credit / tạo prompt thành công");
+      $("apiStatus").className = "status success";
+      $("apiStatus").innerText = "Gemini đã tạo Prompt VIP. Bạn có thể sửa rồi copy.";
+    } else {
+      setAccountStatus(selectedAccount, "red", data.message || "Tài khoản đã hết credit, vui lòng đổi tài khoản");
+      $("apiStatus").className = "status error";
+      $("apiStatus").innerText = data.message || "Tài khoản đã hết credit, vui lòng đổi tài khoản";
+      generatePrompt(false);
+    }
+  } catch (e) {
+    setAccountStatus(selectedAccount, "red", e.message || "Lỗi kết nối Gemini");
+    $("apiStatus").className = "status error";
+    $("apiStatus").innerText = "Không gọi được backend. Đã tạo prompt tại máy để dùng tạm.";
+    generatePrompt(false);
+  }
+  setBusy(false);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadContactInfo();
+  updateApiPills();
+  const note = "API Key lưu trên trình duyệt. Bấm từng tài khoản để nhập/kiểm tra.";
+  if ($("apiStatus")) $("apiStatus").innerText = note;
+});

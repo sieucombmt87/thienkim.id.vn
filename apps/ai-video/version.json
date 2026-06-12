@@ -1,7 +1,11 @@
 {
-  "app": "ai-video",
-  "version": "TKver1.6",
-  "footer": "AI.TKver1.6",
-  "updated": "2026-06-12",
-  "note": "Thêm cấu hình 3 tài khoản Gemini, backend Apps Script, crawl sản phẩm, feedback Google Sheet, logic upload ưu tiên và trạng thái kết nối tool."
+  "app": "TK-AI-VIDEO",
+  "version": "AI.TKver1.7",
+  "folder": "/apps/ai-video/",
+  "release_notes": [
+    "Đưa API Gemini lên đầu trang bằng popup 3 tài khoản + hướng dẫn lấy API.",
+    "Lưu API Key trên localStorage trình duyệt, không ghi lên Google Sheet.",
+    "Thêm giá web, giá hiển thị mong muốn, địa chỉ siêu thị, số điện thoại lưu theo người dùng.",
+    "Nâng cấp prompt ảnh/video theo mẫu chất lượng cao."
+  ]
 }
