@@ -1,24 +1,41 @@
-# TKver3.3 - App Center Direct / Permission Excel
+# TKver3.5 - Mobile Optimized
+
+## Cập nhật
+- Header nhỏ hơn trên mobile.
+- Dòng `5 KHÔNG GIAN • 1 HÀNH TRÌNH • VÔ VÀN GIÁ TRỊ` thu gọn.
+- Card giảm khoảng 35% trên mobile.
+- Nút `Khám phá ngay` nhỏ hơn.
+- 5 card vuốt ngang, không xếp dọc dài.
+- Thanh `Kết nối • Học hỏi • Phát triển • Bứt phá • Tỏa sáng` giữ 1 hàng.
+- Tối ưu Mobile / Tablet / Desktop 32 inch.
+- Kiểm tra thêm các module App Center, Profile, Admin, Store cho mobile.
+
+# TKver3.5 - Production Clean Build
+
+- Đã dọn file debug/tài liệu tạm/thư mục cũ.
+- Chi tiết trong `CLEANUP_DETAILS.md`.
+
+# TKver3.5 - App Center Direct / Permission Excel
 
 - App Center chuyển sang `/apps/`.
 - Trang cũ `/app/` tự redirect sang `/apps/`.
 - Trang chủ card 5 mở `/apps/`.
-- Role badge ở trang chủ bấm về Admin nếu là Admin/VIP/.
-- App Manager chỉ hiện cho role VIP hoặc user .
+- Role badge ở trang chủ bấm về Admin nếu là Admin/VIP/0947924444.
+- App Manager chỉ hiện cho role VIP hoặc user 0947924444.
 - Chuẩn bị Excel phân quyền Google Sheet.
 
-# TKver3.3 - App Center Cleanup + Apps Folder
+# TKver3.5 - App Center Cleanup + Apps Folder
 
 - Tắt nút Care nổi.
 - Tim hồng chỉ nằm sau role/user.
 - Xóa nút Trang chủ và Admin login ở cuối module.
-- App Manager chỉ hiện cho role VIP hoặc user .
-- Role/user chip có thể bấm về Admin nếu là Admin/VIP/.
+- App Manager chỉ hiện cho role VIP hoặc user 0947924444.
+- Role/user chip có thể bấm về Admin nếu là Admin/VIP/0947924444.
 - Thêm thư mục `/apps/ai-video/` từ file app bạn gửi.
 - Tạo sẵn thư mục `/apps/` cho tất cả app để sau này thay file riêng.
 - Create Video trỏ về `/apps/ai-video/`.
 
-# TKver3.3 - Full Feature Build
+# TKver3.5 - Full Feature Build
 
 ## Hoàn thành trong bản này
 - VIP App Engine.
@@ -39,16 +56,16 @@ Xem file:
 `GOOGLE_SHEET_TKVER3.1_COLUMNS.md`
 
 
-# TKver3.3 - Repair Build
+# TKver3.5 - Repair Build
 
 - Sửa lỗi JavaScript ở popup Thiên Kim Care khiến web có thể không chạy.
 - Giữ theme Black Gold.
-- Version tag: TKver3.3.
+- Version tag: TKver3.5.
 
-# TKver2.8 - Black Gold Edition
+# TKver3.5 - Black Gold Edition
 
 ## Cập nhật
-- Thêm version tag nhỏ góc phải dưới: `TKver2.8`.
+- Thêm version tag nhỏ góc phải dưới: `TKver3.5`.
 - Chuyển màu chủ đạo toàn bộ website sang Đen ánh kim vàng.
 - Đồng bộ màu chủ đạo cho các trang/domain con:
   - index
@@ -61,16 +78,16 @@ Xem file:
   - bi
   - vault
   - pages/module.html
-- Giữ nguyên toàn bộ chức năng của TKver2.7.
+- Giữ nguyên toàn bộ chức năng của TKver3.5.
 
 
-# TKver2.7 - Thiên Kim Care Popup
+# TKver3.5 - Thiên Kim Care Popup
 
 - Chuyển cụm Thiên Kim Care sang popup bên hông.
 - Thêm nút nổi `💜 Care` để người dùng chủ động mở.
 - Không còn chiếm diện tích nội dung chính.
 
-# TKver2.6 - Family Role + Profile Sharing
+# TKver3.5 - Family Role + Profile Sharing
 
 - Thêm role mới: `Family`.
 - Family có quyền viết/sửa phần 1 `Flex Profile` và phần 2 `Academy`.
@@ -84,7 +101,7 @@ Xem file:
 Trong Google Sheet, user nào thuộc gia đình thì cột `role` nhập đúng: `Family`.
 
 
-# TKver2.5 - Flex Profile Timeline
+# TKver3.5 - Flex Profile Timeline
 
 - Tạo trang `me/index.html` riêng cho Flex Profile.
 - Hỗ trợ bài viết chia theo năm/tháng.
@@ -98,7 +115,7 @@ Trong Google Sheet, user nào thuộc gia đình thì cột `role` nhập đúng
 Bản này quản lý bài test bằng LocalStorage. Khi muốn đưa bài thành dữ liệu thật, copy JSON từ Profile Manager vào `data/profile-posts.json`, hoặc giai đoạn sau nối Google Sheet `profile_posts`.
 
 
-# TKver2.4 - API Debug Fix
+# TKver3.5 - API Debug Fix
 
 ## Cập nhật
 - Sửa `apiLogin()` để thử POST trước, nếu lỗi sẽ fallback sang GET.
@@ -113,7 +130,7 @@ Mở:
 Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay lỗi.
 
 
-# TKver2.3 - Session Identity
+# TKver3.5 - Session Identity
 
 ## Cập nhật
 - Dòng chào hiển thị đúng danh tính người đăng nhập:
@@ -127,7 +144,7 @@ Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay
 - Thêm thẻ lịch sử đăng nhập trong module để người dùng xem các lần đăng nhập gần nhất.
 
 
-# TKver2.2 - Comfort Interaction
+# TKver3.5 - Comfort Interaction
 
 ## Cập nhật
 - Xóa phần ghi chú/mô tả dư thừa ở module App Center và các module chung.
@@ -140,12 +157,12 @@ Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay
 - App Center tối giản: chỉ icon + tên, không mô tả dài.
 
 
-# TKver2.1 - Linked Modules + Demo Pages + App Center
+# TKver3.5 - Linked Modules + Demo Pages + App Center
 
 ## Cập nhật
 - Menu Admin đã liên kết thật tới các trang/module.
 - Thêm module `Kho Dự Trữ` nằm trên `System Setting`.
-- Vault chỉ còn user `` được thấy/truy cập.
+- Vault chỉ còn user `0947924444` được thấy/truy cập.
 - Tạo demo cho:
   - Flex Profile
   - Academy
@@ -153,35 +170,35 @@ Nhập user/password trong Google Sheet để kiểm tra API trả về JSON hay
   - Store bán nước hoa/son/combo
   - App Center dạng lưới giống app center, dùng icon user cung cấp.
 - Giữ tài khoản test:
-  - Admin:  / 
-  - Boss:  / 
+  - Admin: 0947924444 / 0987471471
+  - Boss: 0987471471 / 0947924444
 
 
-# TKver2.0 - Lite Clean Build
+# TKver3.5 - Lite Clean Build
 
 - Đã xóa MP4/video cũ, mockup, source ảnh, file backup không dùng.
 - Đã tối ưu ảnh card/icon/UI để upload GitHub Pages nhẹ hơn.
 - Giữ module/router từ bản trước.
 - Giữ tài khoản test offline:
-  - Admin:  / 
-  - Boss:  / 
+  - Admin: 0947924444 / 0987471471
+  - Boss: 0987471471 / 0947924444
 
-Bản tiếp theo mặc định là TKver2.1.
+Bản tiếp theo mặc định là TKver3.5.
 
 
-# TKver1.9 - Test Accounts Full Access
+# TKver3.5 - Test Accounts Full Access
 
 ## Tài khoản test offline không cần Google Sheet
 
 ### Admin full quyền
-- Username: ``
-- Password: ``
+- Username: `0947924444`
+- Password: `0987471471`
 - Role: `Admin`
 - Quyền: toàn bộ trang/module/admin/vault
 
 ### Boss full quyền test
-- Username: ``
-- Password: ``
+- Username: `0987471471`
+- Password: `0947924444`
 - Role: `Boss`
 - Quyền: toàn bộ trang/module/admin/vault để test tính năng khác
 
@@ -189,7 +206,7 @@ Bản tiếp theo mặc định là TKver2.1.
 Hai tài khoản này chạy offline trong source, không phụ thuộc Google Sheet.
 
 
-# TKver1.8 - Professional Module Architecture
+# TKver3.5 - Professional Module Architecture
 
 ## Cập nhật chính
 - Thêm `config/modules.js` để quản lý cấu hình module tập trung.
@@ -210,17 +227,17 @@ Hai tài khoản này chạy offline trong source, không phụ thuộc Google S
 Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn vì nội dung module được tách khỏi portal chính, dễ copy, dễ đổi tên, dễ mở rộng.
 
 
-# TKver1.7
+# TKver3.5
 
 ## Cập nhật
 - Đổi chữ `← Về Portal` thành `← Về trang chủ`.
 - Thêm tài khoản Admin offline full quyền, không cần Google Sheet:
-  - Username: 
-  - Password: 
+  - Username: 0947924444
+  - Password: 0987471471
 - Tài khoản offline này có role Admin và có quyền vào admin/vault.
 
 
-# TKver1.6 - Login Position Swap
+# TKver3.5 - Login Position Swap
 
 ## Cập nhật
 - Ngôi sao được đưa lên vị trí cũ của dòng `KHO BÁU VIP` / `ADMIN GATEWAY`.
@@ -228,7 +245,7 @@ Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn
 - Góc trái giữ nút `← Về Portal`.
 
 
-# TKver1.5 - Small Center Login Star
+# TKver3.5 - Small Center Login Star
 
 ## Cập nhật
 - Ngôi sao trong trang login được thu nhỏ.
@@ -239,7 +256,7 @@ Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn
 - VIP/Sales: bấm vào ngôi sao vẫn chuyển nhanh sang `login.html?mode=admin`.
 
 
-# TKver1.4 - Unified Login
+# TKver3.5 - Unified Login
 
 ## Cập nhật
 - Đồng bộ giao diện form đăng nhập Admin / Kho Báu VIP / Tạp Hóa Chốt Đơn.
@@ -251,7 +268,7 @@ Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn
 - Đã bỏ các dòng mô tả Role và hint không cần thiết.
 
 
-# TKver1.2
+# TKver3.5
 
 ## Sửa lỗi
 - Làm sạch nền icon ngôi sao Admin để không còn khung/nền tím tròn phía sau.
@@ -259,7 +276,7 @@ Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn
 - Bỏ dòng: `Role: Admin, Boss, Leader, Trưởng ca, TVBH`
 
 
-# TKver1.1 - THIENKIM UNIVERSE
+# TKver3.5 - THIENKIM UNIVERSE
 
 ## Cập nhật chính
 - Thay nút Admin góc phải bằng icon ngôi sao 8 cánh mới.
@@ -270,17 +287,17 @@ Không ảnh hưởng cấu trúc hiện tại. Cách này chuyên nghiệp hơn
 - Dòng `5 KHÔNG GIAN • 1 HÀNH TRÌNH • VÔ VÀN GIÁ TRỊ` được căn giữa trực tiếp bên dưới chữ `THIENKIM UNIVERSE`.
 
 ## Quy ước version
-- Bản hiện tại: TKver1.1
-- Bản tiếp theo: TKver1.2
-- Sau TKver1.9 sẽ lên TKver2.0
+- Bản hiện tại: TKver3.5
+- Bản tiếp theo: TKver3.5
+- Sau TKver3.5 sẽ lên TKver3.5
 
 
-# TKver1.0 - THIENKIM UNIVERSE
+# TKver3.5 - THIENKIM UNIVERSE
 
 ## Quy ước phiên bản
-- Bản hiện tại: TKver1.0
-- Bản tiếp theo: TKver1.1
-- Sau TKver1.9 sẽ lên TKver2.0
+- Bản hiện tại: TKver3.5
+- Bản tiếp theo: TKver3.5
+- Sau TKver3.5 sẽ lên TKver3.5
 
 ## Nội dung bản này
 - Portal chính GitHub Pages ready.
