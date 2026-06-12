@@ -56,4 +56,17 @@ ol { padding-left: 20px; color: #fff0c2; line-height: 1.65; }
 .tool-links button { padding: 12px; color: var(--gold); border: 1px solid var(--border); background: #0b0b0b; }
 .tool-links button:hover { background: rgba(255, 213, 106, 0.1); }
 footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--muted); padding: 18px 4px 0; font-size: 13px; }
-@media (max-width: 860px) { .grid-layout, .two-cols, .action-row { grid-template-columns: 1fr; } .hero { flex-direction: column; } .inline-field { flex-direction: column; } .mini-btn { min-height: 44px; } .tool-links { grid-template-columns: 1fr; } }
+.back-link { color: var(--gold); text-decoration: none; font-weight: 700; }
+.back-link:hover { text-decoration: underline; }
+.mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mode-card { margin: 0; padding: 13px; border: 1px solid var(--border); border-radius: 16px; background: #0d0d0d; cursor: pointer; }
+.mode-card input { width: auto; margin-right: 8px; }
+.mode-card span { color: #fff; font-weight: 800; }
+.mode-card small { display: block; margin-top: 5px; padding-left: 25px; }
+.mode-card.active { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 213, 106, 0.12); background: rgba(255, 213, 106, 0.08); }
+.modal-backdrop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.72); z-index: 50; }
+.modal-backdrop.show { display: flex; }
+.modal-card { width: min(520px, 100%); border: 1px solid var(--border); border-radius: 22px; background: linear-gradient(135deg, #070707, #1a1305); box-shadow: 0 0 45px rgba(255, 180, 0, .22); padding: 22px; color: #fff4c9; }
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+.modal-actions .mini-btn { min-height: 46px; }
+@media (max-width: 860px) { .grid-layout, .two-cols, .action-row, .mode-switch, .modal-actions { grid-template-columns: 1fr; } .hero { flex-direction: column; } .inline-field { flex-direction: column; } .mini-btn { min-height: 44px; } .tool-links { grid-template-columns: 1fr; } }

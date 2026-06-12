@@ -1,8 +1,9 @@
 {
   "code": "TK-AI-VIDEO",
   "name": "App VIP AI Video Bán Hàng",
-  "version": "TKver1.1",
+  "version": "TKver1.3",
   "path": "/apps/ai-video/",
-  "updated": "2026-06-12",
-  "mode": "static-mini-app"
+  "home": "/apps/index.html",
+  "structure": "independent-static-mini-app",
+  "note": "Giữ lại tính năng TKver1.1, chỉ bổ sung nâng cấp TKver1.2/TKver1.3."
 }

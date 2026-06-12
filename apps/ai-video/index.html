@@ -4,58 +4,75 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TK-AI-VIDEO • App VIP AI Video Bán Hàng</title>
-  <meta name="description" content="App VIP tạo prompt video bán hàng thông minh cho Google Flow, Gemini, ChatGPT, Veo và các công cụ AI video." />
+  <meta name="description" content="App VIP tạo prompt hình ảnh/video bán hàng thông minh cho Google Flow, Gemini, ChatGPT, Veo và các công cụ AI." />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <main class="tk-shell">
     <header class="hero">
       <div>
-        <p class="eyebrow">Thiên Kim Universe • 5 Mì Ăn Liền</p>
+        <p class="eyebrow">Thiên Kim Universe • Apps Mì Ăn Liền</p>
         <h1>❤️ App VIP AI Video Bán Hàng</h1>
-        <p class="hero-desc">Nhập sản phẩm hoặc link sản phẩm. Tool sẽ tạo mô tả ngắn, gợi ý nơi bán, nhân vật, bối cảnh và prompt VIP để bạn dán sang công cụ AI video.</p>
+        <p class="hero-desc">Nhập tên sản phẩm hoặc link sản phẩm. Tool sẽ tạo mô tả ngắn, gợi ý nơi bán, giá gợi ý, khuyến mãi, khách hàng mục tiêu, nhân vật, bối cảnh và prompt VIP có thể sửa.</p>
       </div>
-      <div class="version-pill" id="versionText">TKver1.1</div>
+      <div class="version-pill" id="versionText">TKver1.3</div>
     </header>
 
     <section class="notice-card">
-      <b>Lưu ý:</b> Thiên Kim chỉ hỗ trợ tạo prompt thông minh. Người dùng tự mở Google Flow, Gemini, ChatGPT, Veo hoặc công cụ AI video khác bằng tài khoản của mình.
+      <b>Lưu ý:</b> Thiên Kim chỉ hỗ trợ tạo prompt thông minh. Người dùng tự mở công cụ AI bằng tài khoản của mình và tự dùng credit của mình.
     </section>
 
     <section class="grid-layout">
       <form class="panel" onsubmit="return false;">
         <h2>1. Thông tin sản phẩm</h2>
+
         <label>Tên sản phẩm hoặc link sản phẩm</label>
         <div class="inline-field">
-          <input id="productInput" placeholder="Ví dụ: Kem chống nắng ABC hoặc link Shopee/TikTok Shop/website" />
+          <input id="productInput" placeholder="Ví dụ: Kem chống nắng ABC hoặc link Shopee/TikTok Shop/website hãng" />
           <button class="mini-btn" type="button" onclick="suggestProductInfo()">Tạo mô tả</button>
         </div>
-        <small id="sourceHint">Nếu nhập link, tool sẽ nhận diện nơi bán từ tên miền và đưa vào prompt.</small>
+        <small id="sourceHint">Nếu nhập link, prompt sẽ ưu tiên khai thác nội dung sản phẩm, web hãng hoặc trang bán hàng.</small>
+
+        <label>Mục cần tạo</label>
+        <div class="mode-switch" role="group" aria-label="Chọn tạo ảnh hoặc video">
+          <label class="mode-card active" id="modeVideoCard">
+            <input type="radio" name="assetMode" value="video" checked onchange="setAssetMode('video')" />
+            <span>🎬 Tạo video</span>
+            <small>Google Flow, Veo, công cụ AI video</small>
+          </label>
+          <label class="mode-card" id="modeImageCard">
+            <input type="radio" name="assetMode" value="image" onchange="setAssetMode('image')" />
+            <span>🖼️ Tạo hình ảnh</span>
+            <small>Gemini, ChatGPT, AI Studio, công cụ tạo ảnh</small>
+          </label>
+        </div>
 
         <label>Mô tả ngắn có gợi ý nơi bán</label>
-        <textarea id="shortDesc" placeholder="Bấm Tạo mô tả hoặc tự nhập mô tả ngắn..."></textarea>
+        <textarea id="shortDesc" placeholder="Bấm Tạo mô tả hoặc tự nhập mô tả ngắn tập trung vào sản phẩm..."></textarea>
 
         <div class="two-cols">
           <div>
-            <label>Giá bán</label>
-            <input id="price" placeholder="Ví dụ: 199.000đ" />
+            <label>Giá bán gợi ý</label>
+            <input id="price" placeholder="AI gợi ý theo sản phẩm/link; bạn có thể nhập giá thật nếu muốn" />
+            <small>Nếu web có giá, hãy nhập lại giá thật. Nếu không nhập, prompt sẽ dùng giá gợi ý.</small>
           </div>
           <div>
             <label>Khuyến mãi</label>
             <div class="inline-field compact">
-              <input id="promotion" placeholder="Ví dụ: Mua 2 tặng 1" />
+              <input id="promotion" placeholder="AI sẽ tìm/đề xuất khuyến mãi từ trang sản phẩm nếu có" />
               <button class="mini-btn ghost" type="button" onclick="clearPromotion()">Thay đổi</button>
             </div>
+            <small>Bấm “Thay đổi” để xóa trắng và nhập nội dung bạn muốn.</small>
           </div>
         </div>
 
         <label>Đối tượng khách hàng</label>
-        <input id="customer" placeholder="Ví dụ: Nữ 18-35 tuổi, dân văn phòng, mẹ bỉm..." />
+        <input id="customer" placeholder="AI gợi ý theo sản phẩm: độ tuổi, nhu cầu, hành vi mua hàng..." />
 
         <h2>2. Cấu hình nhanh</h2>
         <div class="two-cols">
           <div>
-            <label>Kiểu video</label>
+            <label>Kiểu nội dung</label>
             <select id="videoStyle">
               <option>AI tự chọn</option>
               <option>Video bán hàng nhanh</option>
@@ -63,15 +80,20 @@
               <option>Video chuyên gia tư vấn</option>
               <option>Video kể chuyện cảm xúc</option>
               <option>Video khuyến mãi mạnh</option>
+              <option>Ảnh quảng cáo sản phẩm</option>
+              <option>Ảnh thumbnail bán hàng</option>
             </select>
           </div>
           <div>
-            <label>Thời lượng</label>
+            <label>Thời lượng / định dạng</label>
             <select id="duration">
               <option>20-30 giây</option>
               <option>10-15 giây</option>
               <option>30-45 giây</option>
               <option>45-60 giây</option>
+              <option>Ảnh vuông 1:1</option>
+              <option>Ảnh dọc 9:16</option>
+              <option>Ảnh ngang 16:9</option>
             </select>
           </div>
         </div>
@@ -86,9 +108,10 @@
               <option>Chuyên gia</option>
               <option>KOL</option>
               <option>Người bán hàng thân thiện</option>
+              <option>Upload file nhân vật riêng</option>
             </select>
             <input class="file-input" id="characterFile" type="file" accept="image/*,video/*" onchange="updateHelperNotes()" />
-            <small id="characterNote">Nếu có nhân vật sẵn, hãy upload vào công cụ AI video sau khi copy prompt.</small>
+            <small id="characterNote">Nếu có nhân vật sẵn, hãy upload vào công cụ AI sau khi copy prompt.</small>
           </div>
           <div>
             <label>Bối cảnh</label>
@@ -99,6 +122,7 @@
               <option>Văn phòng</option>
               <option>Ngoài trời</option>
               <option>Showroom</option>
+              <option>Upload file bối cảnh riêng</option>
             </select>
             <input class="file-input" id="sceneFile" type="file" accept="image/*,video/*" onchange="updateHelperNotes()" />
             <small id="sceneNote">Nếu không chọn bối cảnh, AI sẽ dựa trên mô tả ngắn và nơi bán để dựng cảnh.</small>
@@ -123,24 +147,30 @@
             <li>Bấm ❤️ Copy Prompt VIP.</li>
             <li>Chọn công cụ bên dưới để mở tab mới.</li>
             <li>Đăng nhập bằng tài khoản của người dùng.</li>
-            <li>Dán prompt và tạo video.</li>
+            <li>Dán prompt và tạo ảnh/video.</li>
+            <li>Tải file về để đăng TikTok, Facebook, YouTube hoặc Zalo.</li>
           </ol>
-          <div class="tool-links">
-            <button onclick="openTool('flow')">Google Flow</button>
-            <button onclick="openTool('gemini')">Gemini</button>
-            <button onclick="openTool('chatgpt')">ChatGPT</button>
-            <button onclick="openTool('veo')">Veo</button>
-            <button onclick="openTool('aistudio')">AI Studio</button>
-          </div>
+          <div class="tool-links" id="toolLinks"></div>
         </div>
       </aside>
     </section>
 
     <footer>
-      <span>TK-AI-VIDEO • App độc lập</span>
-      <span>Chỉ cần upload thư mục <b>ai-video</b> vào <b>/apps/ai-video/</b></span>
+      <a class="back-link" href="/apps/index.html">← Quay về Apps Mì Ăn Liền</a>
+      <span>TK-AI-VIDEO • TKver1.3</span>
     </footer>
   </main>
+
+  <div class="modal-backdrop" id="uploadModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
+      <h2 id="uploadModalTitle">Xác nhận file upload</h2>
+      <p id="uploadModalText">Bạn đã chọn dùng file riêng. Sau khi copy prompt, bạn cần upload đúng file đó lên công cụ AI để kết quả khớp với prompt.</p>
+      <div class="modal-actions">
+        <button class="mini-btn ghost" type="button" onclick="closeUploadModal(false)">Quay lại kiểm tra</button>
+        <button class="mini-btn" type="button" onclick="closeUploadModal(true)">Tôi đã hiểu, tiếp tục copy</button>
+      </div>
+    </div>
+  </div>
 
   <script src="./app.js"></script>
 </body>
