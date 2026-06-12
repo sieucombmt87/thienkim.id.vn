@@ -1,6 +1,6 @@
 /******************************************************
  * TK-AI-VIDEO Backend - Google Apps Script
- * Version: AI.TKver1.6
+ * Version: AI.TKver1.7
  * Dùng cho: https://thienkim.id.vn/apps/ai-video/
  *
  * Cách dùng nhanh:
@@ -18,7 +18,7 @@ const TK_CONFIG = {
 };
 
 function doGet(e) {
-  return jsonOutput({ ok: true, app: 'TK-AI-VIDEO', version: 'AI.TKver1.6', message: 'Backend đang hoạt động.' });
+  return jsonOutput({ ok: true, app: 'TK-AI-VIDEO', version: 'AI.TKver1.7', message: 'Backend đang hoạt động.' });
 }
 
 function doPost(e) {
@@ -132,7 +132,7 @@ function callGemini(apiKey, prompt) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${TK_CONFIG.GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`;
   const payload = {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: { temperature: 0.55, topP: 0.9, maxOutputTokens: 4096 }
+    generationConfig: { temperature: 0.55, topP: 0.9, maxOutputTokens: 8192 }
   };
   const res = UrlFetchApp.fetch(url, {
     method: 'post',
@@ -162,7 +162,7 @@ function fetchProductPage(input) {
       method: 'get',
       muteHttpExceptions: true,
       followRedirects: true,
-      headers: { 'User-Agent': 'Mozilla/5.0 TK-AI-VIDEO/1.6' }
+      headers: { 'User-Agent': 'Mozilla/5.0 TK-AI-VIDEO/1.7' }
     });
     const html = res.getContentText();
     return { source: input, text: extractReadableText(html, input) };
@@ -283,4 +283,122 @@ function getFeedbackReply(payload) {
     if (String(values[i][3]) === String(email)) { latest = values[i]; break; }
   }
   return { ok: true, reply: latest ? latest[5] : '', status: latest ? latest[6] : '' };
+}
+
+/***********************
+ * AI.TKver1.7 Backend Overrides
+ ***********************/
+function extractReadableText(html, url) {
+  let text = html || '';
+  const title = matchOne(text, /<title[^>]*>([\s\S]*?)<\/title>/i);
+  const desc = matchMeta(text, 'description') || matchMeta(text, 'og:description');
+  const ogTitle = matchMeta(text, 'og:title');
+  const metaPrice = matchMeta(text, 'product:price:amount') || matchMeta(text, 'og:price:amount') || matchMeta(text, 'product:price') || matchMeta(text, 'price');
+  const jsonLdText = extractJsonLdText(text);
+  const clean = text
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const priceGuess = metaPrice || extractPriceFromText(jsonLdText + '\n' + clean);
+  const promoGuess = extractPromoSnippets(clean);
+  return [
+    `URL: ${url}`,
+    title ? `TITLE: ${decodeHtml(title)}` : '',
+    ogTitle ? `OG_TITLE: ${decodeHtml(ogTitle)}` : '',
+    desc ? `DESCRIPTION: ${decodeHtml(desc)}` : '',
+    priceGuess ? `PRICE_DETECTED: ${decodeHtml(priceGuess)}` : '',
+    promoGuess ? `PROMOTION_SNIPPETS: ${promoGuess}` : '',
+    jsonLdText ? `JSON_LD: ${jsonLdText.slice(0, 5000)}` : '',
+    `PAGE_TEXT: ${decodeHtml(clean).slice(0, 18000)}`
+  ].filter(Boolean).join('\n');
+}
+
+function extractJsonLdText(html) {
+  const parts = [];
+  const re = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = re.exec(html || '')) !== null) {
+    parts.push(decodeHtml(m[1]).replace(/\s+/g, ' ').trim());
+  }
+  return parts.join('\n');
+}
+
+function extractPriceFromText(text) {
+  const s = decodeHtml(String(text || ''));
+  const patterns = [
+    /(?:giá|price|salePrice|priceAmount|PRICE_DETECTED)[^\d]{0,40}(\d{1,3}(?:[\.\,]\d{3}){1,4}\s*(?:₫|đ|vnd|vnđ)?)/i,
+    /(\d{1,3}(?:[\.\,]\d{3}){1,4}\s*(?:₫|đ|vnd|vnđ))/i,
+    /"price"\s*:\s*"?(\d{4,12})"?/i
+  ];
+  for (const re of patterns) {
+    const m = s.match(re);
+    if (m && m[1]) return formatVndPrice(m[1]);
+  }
+  return '';
+}
+
+function formatVndPrice(v) {
+  let s = String(v || '').trim();
+  if (/₫|đ|vnd|vnđ/i.test(s)) return s;
+  const digits = s.replace(/\D/g, '');
+  if (digits.length >= 4) return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ';
+  return s;
+}
+
+function extractPromoSnippets(text) {
+  const s = decodeHtml(String(text || '')).replace(/\s+/g, ' ');
+  const keywords = /(khuyến mãi|ưu đãi|voucher|flash sale|giảm|trả góp|freeship|miễn phí|tặng|bảo hành|lắp đặt)/ig;
+  const snippets = [];
+  let m;
+  while ((m = keywords.exec(s)) !== null && snippets.length < 8) {
+    const start = Math.max(0, m.index - 80);
+    const end = Math.min(s.length, m.index + 180);
+    const sn = s.slice(start, end).trim();
+    if (!snippets.some(x => x.indexOf(sn.slice(0, 35)) >= 0)) snippets.push(sn);
+  }
+  return snippets.join(' | ');
+}
+
+function fallbackAnalyze(input, rawText) {
+  const s = `${input}\n${rawText}`.toLowerCase();
+  let storeName = 'kênh bán hàng bạn muốn giới thiệu';
+  if (s.indexOf('dienmayxanh') >= 0) storeName = 'Điện Máy Xanh';
+  else if (s.indexOf('thegioididong') >= 0) storeName = 'Thế Giới Di Động';
+  else if (s.indexOf('shopee') >= 0) storeName = 'Shopee';
+  else if (s.indexOf('lazada') >= 0) storeName = 'Lazada';
+  else if (s.indexOf('tiki') >= 0) storeName = 'Tiki';
+
+  let shortDesc = [
+    'Tập trung vào 3-5 điểm nổi bật nhất của sản phẩm.',
+    'Nêu rõ lợi ích thật, tính năng quan trọng và lý do khách hàng nên quan tâm.',
+    'Ưu tiên nội dung từ website gốc/trang bán hàng nếu có.',
+    `Gợi ý nơi bán/kênh giới thiệu: ${storeName}.`
+  ];
+  if (/tivi|tv|crystal|uhd|samsung/.test(s)) {
+    shortDesc = [
+      'Hình ảnh 4K sắc nét, phù hợp giải trí gia đình.',
+      'Màu sắc sống động, tạo cảm giác cao cấp khi xem phim/thể thao.',
+      'Hệ điều hành thông minh, dễ xem YouTube, Netflix và các ứng dụng phổ biến.',
+      'Thiết kế hiện đại, phù hợp phòng khách, phòng ngủ hoặc cửa hàng.',
+      `Gợi ý nơi bán/kênh giới thiệu: ${storeName}.`
+    ];
+  }
+  const price = extractPriceFromText(rawText) || 'Không tìm thấy giá. Vui lòng nhập tay giá đang hiển thị trên website.';
+  const promoText = extractPromoSnippets(rawText);
+  const promos = promoText ? promoText.split('|').slice(0,3).map(x => x.trim()) : [
+    'Tìm ưu đãi/voucher đang hiển thị trên website.',
+    'Ưu tiên top 3: giảm giá, trả góp 0%, freeship/lắp đặt/quà tặng/bảo hành.',
+    'Nếu không có ưu đãi rõ ràng, đề xuất ưu đãi hợp lý để tăng chuyển đổi.'
+  ];
+  return {
+    shortDesc,
+    price,
+    promotions: promos,
+    customer: /tivi|tv|samsung/.test(s) ? 'Gia đình, chủ nhà, người mua sắm thiết bị điện máy, người cần nâng cấp trải nghiệm giải trí tại nhà.' : 'Khách hàng có nhu cầu thực tế với sản phẩm, quan tâm chất lượng, giá trị sử dụng và ưu đãi mua hàng.',
+    storeName
+  };
 }
