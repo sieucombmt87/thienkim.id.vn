@@ -1,8 +1,12 @@
 {
-  "appId": "TK-AI-VIDEO",
-  "name": "App VIP AI Video Bán Hàng",
-  "defaultPath": "/apps/ai-video/",
-  "creditMode": "user-owned-account",
-  "promptVisible": false,
-  "copyButtonIcon": "❤️"
+  "appCode": "TK-AI-VIDEO",
+  "defaultDuration": "20-30 giây",
+  "defaultPlatform": "TikTok, Facebook Reel, YouTube Shorts, Zalo",
+  "externalTools": {
+    "Google Flow": "https://labs.google/fx/tools/flow",
+    "Gemini": "https://gemini.google.com/",
+    "ChatGPT": "https://chatgpt.com/",
+    "Veo": "https://deepmind.google/models/veo/",
+    "AI Studio": "https://aistudio.google.com/"
+  }
 }

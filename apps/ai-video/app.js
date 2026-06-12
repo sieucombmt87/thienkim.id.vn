@@ -1,123 +1,177 @@
-const $ = (id) => document.getElementById(id);
+const APP_VERSION = "TKver1.1";
 
-const demoData = {
-  productName: "Kem chống nắng ABC",
-  productDesc: "SPF50+, không nhờn rít, phù hợp da dầu, dùng hằng ngày khi đi làm hoặc đi chơi.",
-  price: "199K",
-  promotion: "Mua 2 tặng 1 trong hôm nay",
-  customer: "Nữ 18-35 tuổi, thích làm đẹp, sợ da bị sạm nám"
+const TOOL_URLS = {
+  flow: "https://labs.google/fx/tools/flow",
+  gemini: "https://gemini.google.com/",
+  chatgpt: "https://chatgpt.com/",
+  veo: "https://deepmind.google/models/veo/",
+  aistudio: "https://aistudio.google.com/"
 };
 
-function getValue(id, fallback) {
-  const el = $(id);
-  return el && el.value.trim() ? el.value.trim() : fallback;
+function $(id) { return document.getElementById(id); }
+
+function detectStoreName(input) {
+  const text = (input || "").trim();
+  try {
+    const url = new URL(text.startsWith("http") ? text : "https://" + text);
+    const host = url.hostname.replace(/^www\./, "").toLowerCase();
+    if (host.includes("shopee")) return "Shopee";
+    if (host.includes("lazada")) return "Lazada";
+    if (host.includes("tiktok")) return "TikTok Shop";
+    if (host.includes("tiki")) return "Tiki";
+    if (host.includes("sendo")) return "Sendo";
+    if (host.includes("facebook")) return "Facebook Shop/Fanpage";
+    return host;
+  } catch (e) {
+    return "kênh bán hàng bạn đang muốn giới thiệu";
+  }
 }
 
-function buildSalesPrompt() {
-  const productName = getValue("productName", "AI tự đề xuất sản phẩm phù hợp");
-  const productDesc = getValue("productDesc", "AI tự viết mô tả sản phẩm dựa trên ngành hàng");
-  const price = getValue("price", "Không có giá cụ thể");
-  const promotion = getValue("promotion", "AI tự đề xuất ưu đãi phù hợp");
-  const customer = getValue("customer", "AI tự phân tích khách hàng mục tiêu");
-  const videoStyle = getValue("videoStyle", "AI tự chọn");
-  const character = getValue("character", "AI tự chọn");
-  const scene = getValue("scene", "AI tự chọn");
-  const platform = getValue("platform", "TikTok / Facebook Reel / YouTube Shorts");
-  const duration = getValue("duration", "20-30 giây");
+function cleanProductName(input) {
+  const text = (input || "").trim();
+  if (!text) return "sản phẩm đang cần bán";
+  if (/^https?:\/\//i.test(text) || text.includes(".")) return "sản phẩm trong link đã nhập";
+  return text;
+}
 
-  return `Bạn là chuyên gia tạo video bán hàng bằng AI cho nền tảng Thiên Kim Universe.
+function suggestProductInfo() {
+  const productInput = $("productInput").value.trim();
+  const productName = cleanProductName(productInput);
+  const storeName = detectStoreName(productInput);
+  const promoField = $("promotion");
 
-Mục tiêu: tạo một video bán hàng ngắn, hấp dẫn, dễ hiểu, có khả năng chuyển đổi cao, phù hợp cho người xem mạng xã hội.
+  if (!productInput) {
+    $("sourceHint").innerText = "Bạn chưa nhập sản phẩm/link. Tool sẽ dùng mẫu chung để tạo prompt.";
+  } else {
+    $("sourceHint").innerText = `Đã nhận diện nơi bán/gợi ý: ${storeName}.`;
+  }
 
-THÔNG TIN SẢN PHẨM:
-- Tên sản phẩm: ${productName}
-- Mô tả sản phẩm: ${productDesc}
+  $("shortDesc").value = `${productName} là sản phẩm phù hợp để giới thiệu theo phong cách bán hàng ngắn gọn, dễ hiểu và tập trung vào lợi ích thật của khách hàng. Nội dung nên nhấn mạnh điểm nổi bật, lý do nên mua ngay và sự tiện lợi khi đặt hàng tại ${storeName}. Nếu đây là link sản phẩm, hãy ưu tiên khai thác hình ảnh, mô tả, ưu đãi và thông tin có trên trang bán hàng đó.`;
+
+  if (!promoField.value.trim()) {
+    promoField.value = productInput.includes("http")
+      ? "Hãy kiểm tra khuyến mãi trực tiếp trên trang sản phẩm; nếu không có, đề xuất ưu đãi phù hợp để tăng chuyển đổi."
+      : "AI tự đề xuất ưu đãi phù hợp để tăng chuyển đổi.";
+  }
+
+  updateHelperNotes();
+}
+
+function clearPromotion() {
+  $("promotion").value = "";
+  $("promotion").focus();
+  $("copyStatus").innerText = "Đã xóa khuyến mãi. Bạn có thể nhập nội dung mong muốn.";
+}
+
+function updateHelperNotes() {
+  const character = $("character").value;
+  const scene = $("scene").value;
+  const charFile = $("characterFile").files[0];
+  const sceneFile = $("sceneFile").files[0];
+
+  $("characterNote").innerText = charFile
+    ? `Đã chọn file nhân vật: ${charFile.name}. Sau khi mở công cụ AI video, hãy upload file này kèm prompt.`
+    : character === "AI tự chọn"
+      ? "AI sẽ tự chọn nhân vật phù hợp. Nếu có nhân vật sẵn, hãy upload vào công cụ AI video sau khi copy prompt."
+      : `Prompt sẽ yêu cầu nhân vật dạng: ${character}. Nếu có hình/video mẫu, hãy upload thêm vào công cụ AI video.`;
+
+  $("sceneNote").innerText = sceneFile
+    ? `Đã chọn file bối cảnh: ${sceneFile.name}. Sau khi mở công cụ AI video, hãy upload file này kèm prompt.`
+    : scene.includes("AI tự chọn")
+      ? "AI sẽ dựa trên mô tả ngắn và nơi bán để dựng bối cảnh phù hợp."
+      : `Prompt sẽ yêu cầu bối cảnh: ${scene}. Nếu có ảnh/video nền, hãy upload thêm vào công cụ AI video.`;
+}
+
+function buildPrompt() {
+  const productInput = $("productInput").value.trim() || "AI tự đề xuất sản phẩm phù hợp";
+  const productName = cleanProductName(productInput);
+  const storeName = detectStoreName(productInput);
+  const shortDesc = $("shortDesc").value.trim() || "AI tự tạo mô tả ngắn dựa trên tên sản phẩm hoặc link sản phẩm.";
+  const price = $("price").value.trim() || "Không có giá cụ thể, hãy đề xuất cách nói giá linh hoạt.";
+  const promotion = $("promotion").value.trim() || "Không có khuyến mãi cụ thể, hãy đề xuất ưu đãi phù hợp.";
+  const customer = $("customer").value.trim() || "AI tự phân tích khách hàng mục tiêu.";
+  const videoStyle = $("videoStyle").value;
+  const duration = $("duration").value;
+  const character = $("character").value;
+  const scene = $("scene").value;
+  const charFile = $("characterFile").files[0];
+  const sceneFile = $("sceneFile").files[0];
+
+  return `Bạn là chuyên gia tạo video bán hàng bằng AI cho Thiên Kim Universe.
+
+Hãy tạo một video bán hàng ngắn, hấp dẫn, dễ hiểu và có khả năng chuyển đổi cao.
+
+THÔNG TIN ĐẦU VÀO:
+- Tên/link sản phẩm: ${productInput}
+- Tên sản phẩm hiểu theo nội dung: ${productName}
+- Nơi bán/kênh giới thiệu gợi ý: ${storeName}
+- Mô tả ngắn: ${shortDesc}
 - Giá bán: ${price}
 - Khuyến mãi: ${promotion}
 - Đối tượng khách hàng: ${customer}
 - Kiểu video: ${videoStyle}
-- Nhân vật đại diện: ${character}
+- Thời lượng: ${duration}
+- Nhân vật: ${character}
 - Bối cảnh: ${scene}
-- Nền tảng xuất bản: ${platform}
-- Thời lượng mong muốn: ${duration}
 
-YÊU CẦU CHIẾN LƯỢC:
-1. Phân tích nhanh khách hàng mục tiêu.
-2. Tìm insight/nỗi đau khiến khách hàng quan tâm.
-3. Tạo hook thật mạnh trong 3 giây đầu.
-4. Giới thiệu sản phẩm như một giải pháp tự nhiên, không nói quá lố.
-5. Làm rõ lợi ích chính, ưu đãi và lời kêu gọi hành động.
-6. Văn phong gần gũi, dễ tin, dễ nghe, phù hợp người Việt.
+GỢI Ý FILE NGƯỜI DÙNG CÓ SẴN:
+- Nhân vật mẫu: ${charFile ? "Có file mẫu tên " + charFile.name + ". Hãy ưu tiên dùng nhân vật trong file upload." : "Chưa có file mẫu. Hãy tự tạo/chọn nhân vật phù hợp với sản phẩm."}
+- Bối cảnh mẫu: ${sceneFile ? "Có file bối cảnh tên " + sceneFile.name + ". Hãy ưu tiên dùng bối cảnh trong file upload." : "Chưa có file bối cảnh. Hãy dựng bối cảnh dựa trên mô tả sản phẩm và nơi bán."}
 
-CẤU TRÚC VIDEO:
+YÊU CẦU VIDEO:
+1. Có hook mạnh trong 3 giây đầu.
+2. Nêu đúng vấn đề/nỗi đau của khách hàng.
+3. Giới thiệu sản phẩm như giải pháp tự nhiên, đáng tin.
+4. Nêu lợi ích rõ ràng, tránh nói quá đà.
+5. Nhắc giá/khuyến mãi nếu phù hợp.
+6. Có CTA rõ: nhắn tin, đặt hàng, bấm mua, hoặc xem link sản phẩm.
+7. Phù hợp TikTok, Facebook Reel, YouTube Shorts và Zalo.
+8. Phong cách hình ảnh rõ nét, ánh sáng đẹp, bố cục chuyên nghiệp.
+9. Nếu thông tin còn thiếu, hãy tự đề xuất phương án hợp lý nhất.
+
+CẤU TRÚC CẢNH:
 - Cảnh 1: Hook thu hút.
-- Cảnh 2: Vấn đề khách hàng đang gặp.
-- Cảnh 3: Sản phẩm xuất hiện như giải pháp.
-- Cảnh 4: Lợi ích chính và bằng chứng thuyết phục.
+- Cảnh 2: Vấn đề khách hàng.
+- Cảnh 3: Sản phẩm xuất hiện.
+- Cảnh 4: Lợi ích chính.
 - Cảnh 5: Ưu đãi hoặc lý do nên mua ngay.
-- Cảnh 6: CTA rõ ràng.
+- Cảnh 6: Kêu gọi hành động.
 
-YÊU CẦU HÌNH ẢNH/VIDEO:
-- Ánh sáng đẹp, bố cục chuyên nghiệp.
-- Nhân vật tự nhiên, biểu cảm tin cậy.
-- Cảnh phù hợp sản phẩm và khách hàng mục tiêu.
-- Nếu thiếu thông tin, hãy tự đề xuất phương án hợp lý nhất.
-
-HÃY TRẢ VỀ ĐẦY ĐỦ 7 PHẦN:
-1. Phân tích sản phẩm và khách hàng.
-2. Kịch bản lời thoại theo từng cảnh.
-3. Prompt tạo video chi tiết.
-4. Prompt tạo ảnh thumbnail/cover.
-5. Gợi ý giọng đọc.
-6. Caption đăng bài.
-7. Hashtag và CTA bán hàng.`;
+HÃY TRẢ VỀ ĐẦY ĐỦ:
+1. Kịch bản lời thoại theo từng cảnh.
+2. Prompt tạo video chi tiết.
+3. Prompt tạo hình đại diện/thumbnail.
+4. Gợi ý giọng đọc.
+5. Caption đăng bài.
+6. Hashtag.
+7. CTA bán hàng.
+8. Checklist kiểm tra trước khi xuất video.`;
 }
 
-function buildUserGuide() {
-  return `Hướng dẫn dùng App VIP AI Video Bán Hàng:
-
-1. Nhập thông tin sản phẩm.
-2. Bấm nút ❤️ Copy Prompt VIP.
-3. Mở Google Flow, Gemini, ChatGPT, Veo hoặc công cụ AI video khác.
-4. Đăng nhập bằng tài khoản của người dùng.
-5. Dán prompt đã copy.
-6. Tạo video và tải về để đăng TikTok, Facebook, YouTube hoặc Zalo.
-
-Lưu ý: Website Thiên Kim chỉ tạo prompt thông minh, không dùng credit của chủ website.`;
+function generatePrompt() {
+  const prompt = buildPrompt();
+  $("promptOutput").value = prompt;
+  $("copyStatus").innerText = "Đã tạo prompt. Bạn có thể sửa rồi bấm ❤️ Copy Prompt VIP.";
 }
 
-async function copyText(text, successMessage) {
+async function copyVipPrompt() {
+  if (!$("promptOutput").value.trim()) generatePrompt();
   try {
-    await navigator.clipboard.writeText(text);
-    $("copyStatus").textContent = successMessage;
-  } catch (error) {
-    const temp = document.createElement("textarea");
-    temp.value = text;
-    document.body.appendChild(temp);
-    temp.select();
+    await navigator.clipboard.writeText($("promptOutput").value);
+    $("copyStatus").innerText = "Đã copy Prompt VIP. Hãy dán vào Google Flow, Gemini, ChatGPT, Veo hoặc công cụ AI video khác.";
+  } catch (e) {
+    $("promptOutput").select();
     document.execCommand("copy");
-    document.body.removeChild(temp);
-    $("copyStatus").textContent = successMessage;
+    $("copyStatus").innerText = "Đã copy bằng chế độ dự phòng.";
   }
 }
 
-function copySalesPrompt() {
-  copyText(buildSalesPrompt(), "Đã copy Prompt VIP. Hãy dán vào Google Flow, Gemini hoặc công cụ AI video khác.");
-}
-
-function copyGuide() {
-  copyText(buildUserGuide(), "Đã copy hướng dẫn sử dụng cho người dùng.");
-}
-
-function fillDemo() {
-  Object.entries(demoData).forEach(([id, value]) => {
-    if ($(id)) $(id).value = value;
-  });
-  $("copyStatus").textContent = "Đã điền dữ liệu mẫu. Bạn có thể bấm ❤️ Copy Prompt VIP.";
+function openTool(name) {
+  const url = TOOL_URLS[name];
+  if (url) window.open(url, "_blank", "noopener,noreferrer");
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  $("copyBtn").addEventListener("click", copySalesPrompt);
-  $("copyGuideBtn").addEventListener("click", copyGuide);
-  $("fillDemoBtn").addEventListener("click", fillDemo);
+  $("versionText").innerText = APP_VERSION;
+  updateHelperNotes();
 });

@@ -1,7 +1,8 @@
 {
-  "appId": "TK-AI-VIDEO",
-  "version": "TKver1.0",
-  "created": "2026-06-12",
-  "author": "Thien Kim Universe",
-  "updateMode": "replace-folder-only"
+  "code": "TK-AI-VIDEO",
+  "name": "App VIP AI Video Bán Hàng",
+  "version": "TKver1.1",
+  "path": "/apps/ai-video/",
+  "updated": "2026-06-12",
+  "mode": "static-mini-app"
 }
