@@ -1,1 +1,15 @@
-<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qr Code - THIENKIM</title><link rel="stylesheet" href="../../assets/css/style.css"></head><body class="module-page app-placeholder-page"><div class="galaxy-bg"><div class="starfield layer-1"></div><div class="starfield layer-2"></div><div class="sparkles"></div></div><main class="module-shell"><a href="../index.html" class="back-link">← App Center</a><section class="module-card module-card-wide app-lite-card"><h1>Qr Code</h1><p>Module đang sẵn sàng.</p></section></main><div id="buildVersion">TKver4.2</div></body></html>
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR Code - THIENKIM</title><link rel="stylesheet" href="./style.css"></head>
+<body><main class="tk-app-shell qr-app">
+<div class="modal-card">
+  <a class="close" href="../index.html">×</a>
+  <h1>TẠO & QUÉT MÃ</h1>
+  <div class="tabs"><button id="createTab" class="active">🖊 TẠO MÃ</button><button id="scanTab">📷 QUÉT CAMERA</button></div>
+  <div class="tabs mini"><button data-type="qr" class="active">QR Code</button><button data-type="barcode">Barcode 128</button></div>
+  <input id="contentInput" placeholder="Nhập nội dung...">
+  <div class="code-preview" id="preview"><span>Mã sẽ hiện ở đây...</span></div>
+  <button class="tk-btn green" id="downloadBtn">⬇ TẢI ẢNH VỀ</button>
+  <div id="scanBox" class="hidden"><video id="video" playsinline></video><p id="scanResult"></p></div>
+</div>
+</main><script src="./app.js"></script><div id="buildVersion">TKver4.3</div></body></html>
