@@ -1,1 +1,18 @@
-<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kiem Quy - THIENKIM</title><link rel="stylesheet" href="../../assets/css/style.css"></head><body class="module-page app-placeholder-page"><div class="galaxy-bg"><div class="starfield layer-1"></div><div class="starfield layer-2"></div><div class="sparkles"></div></div><main class="module-shell"><a href="../index.html" class="back-link">← App Center</a><section class="module-card module-card-wide app-lite-card"><h1>Kiem Quy</h1><p>Module đang sẵn sàng.</p></section></main><div id="buildVersion">TKver4.2</div></body></html>
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kiểm Quỹ - THIENKIM</title><link rel="stylesheet" href="./style.css"></head>
+<body><main class="tk-app-shell cash-app">
+  <div class="tk-app-top"><a class="tk-back" href="../index.html">← App Center</a><h1 class="tk-app-title">💲 Kiểm Quỹ</h1><span></span></div>
+  <section class="tk-card actions"><button class="tk-btn red" id="clearBtn">🗑 Xóa</button><button class="tk-btn ghost" id="historyBtn">🔐 Lịch sử</button></section>
+  <section class="tk-card">
+    <table class="cash-table"><thead><tr><th>Mệnh giá</th><th>SL</th><th>Thành tiền</th></tr></thead><tbody id="cashRows"></tbody></table>
+  </section>
+  <section class="cash-summary">
+    <div><b>Tổng đếm:</b><strong id="countTotal">0</strong></div>
+    <div><b>Hệ thống:</b><input id="systemTotal" inputmode="numeric" placeholder="Nhập..."></div>
+    <hr>
+    <div><b>Chênh lệch:</b><strong id="diffTotal">0</strong></div>
+    <button class="tk-btn green" id="saveBtn">Lưu lịch sử</button>
+  </section>
+  <section class="tk-card hidden" id="historyBox"><h2>Lịch sử kiểm quỹ</h2><div id="historyList"></div></section>
+</main><script src="./app.js"></script><div id="buildVersion">TKver4.3</div></body></html>
