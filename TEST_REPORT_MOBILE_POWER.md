@@ -1,4 +1,4 @@
-# TKver3.7 JS Check
+# TKver3.8 JS Check
 
 config/modules.js: OK 
 assets/js/apps-center.js: OK 
