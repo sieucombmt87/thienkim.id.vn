@@ -6,38 +6,31 @@
   <title>Flex Profile Chủ Tịch - THIENKIM</title>
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body class="module-page profile-page">
-  <div class="galaxy-bg">
-    <div class="starfield layer-1"></div>
-    <div class="starfield layer-2"></div>
-    <div class="sparkles"></div>
-    <div class="cloud cloud-left"></div>
-    <div class="cloud cloud-right"></div>
-    <div class="cloud cloud-bottom"></div>
-  </div>
+<body class="module-page profile-page profile-v2">
+  <div class="galaxy-bg"><div class="starfield layer-1"></div><div class="starfield layer-2"></div><div class="sparkles"></div><div class="cloud cloud-bottom"></div></div>
 
-  <main class="profile-shell">
+  <main class="profile-shell profile-v2-shell">
     <a href="../index.html" class="back-link">← Về trang chủ</a>
 
-    <section class="profile-hero-card">
-      <div class="profile-avatar-wrap">
-        <img id="profileAvatar" src="../assets/images/ui/admin-star.png" alt="Avatar">
-      </div>
-      <div class="profile-hero-content">
+    <section class="profile-v2-hero">
+      <div class="profile-v2-left">
         <span class="comfort-kicker">FLEX PROFILE CHỦ TỊCH</span>
         <h1 id="profileName">Thiên Kim</h1>
         <p id="profileSubtitle">Một vũ trụ nhỏ đầy sắc màu, học hỏi và tỏa sáng mỗi ngày.</p>
         <p id="profileIntro">Flex Profile lưu lại hành trình, mục tiêu, thành tích, hình ảnh và các cột mốc đáng nhớ theo từng năm/tháng.</p>
         <div id="profileSocials" class="profile-socials"></div>
       </div>
-      <div class="profile-qr-box">
+      <div class="profile-v2-avatar">
+        <img id="profileAvatar" src="../assets/images/ui/admin-star.png" alt="Avatar">
+      </div>
+      <div class="profile-v2-qr">
         <img id="profileQr" src="../assets/images/ui/admin-star.png" alt="QR Contact">
         <span>QR Contact</span>
       </div>
     </section>
 
-    <section class="profile-filter-card">
-      <div class="profile-filter-title">
+    <section class="profile-v2-controls">
+      <div>
         <h2>Hành trình theo năm / tháng</h2>
         <p>Lọc bài viết, ảnh, mục tiêu và thành tích theo thời gian.</p>
       </div>
@@ -48,7 +41,7 @@
       </div>
     </section>
 
-    <section class="profile-content-card">
+    <section class="profile-v2-content">
       <div class="profile-tabs">
         <button class="active" data-tab="timeline">Timeline</button>
         <button data-tab="achievements">Thành tích</button>
@@ -62,13 +55,8 @@
     </section>
   </main>
 
-  <div id="profileLightbox" class="profile-lightbox hidden">
-    <button id="closeLightbox" type="button">×</button>
-    <img id="lightboxImage" alt="">
-  </div>
-
+  <div id="profileLightbox" class="profile-lightbox hidden"><button id="closeLightbox" type="button">×</button><img id="lightboxImage" alt=""></div>
   <script src="../config/google-sheet.js"></script>
   <script src="../assets/js/profile.js"></script>
-  <div id="buildVersion" title="THIENKIM build version">TKver3.9</div>
-</body>
-</html>
+  <div id="buildVersion">TKver4.0</div>
+</body></html>

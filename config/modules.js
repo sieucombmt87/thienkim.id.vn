@@ -149,7 +149,7 @@ function tkCanAccess(module, user){
   return false;
 }
 
-// TKver3.9 App helpers
+// TKver4.0 App helpers
 function tkGetAppConfig(){
   let overrides = {};
   try{ overrides = JSON.parse(localStorage.getItem("tk_app_config") || "{}"); }catch(e){}
@@ -220,7 +220,7 @@ function tkGetSortedApps(user){
 }
 
 
-// TKver3.9: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
+// TKver4.0: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
 function tkIsAppManager(user){
   const username = String(user?.username || "").toLowerCase();
   const role = String(user?.role || "").toLowerCase();

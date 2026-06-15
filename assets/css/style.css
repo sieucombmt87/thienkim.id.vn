@@ -939,7 +939,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver3.9 FINAL PRODUCTION
+   TKver4.0 FINAL PRODUCTION
    - Hidden Admin Star icon
    - Hero/subtitle centered
    - Domains hidden on portal
@@ -1121,7 +1121,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver3.9 FINAL PATCH
+   TKver4.0 FINAL PATCH
    - Star icon admin gateway only
    - Subtitle centered exactly below THIENKIM UNIVERSE
    - No Admin text, no clock on portal
@@ -1283,7 +1283,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver3.9 PATCH - Clean transparent admin star + clean login */
+/* TKver4.0 PATCH - Clean transparent admin star + clean login */
 .star-gateway{
   background: transparent !important;
   box-shadow: none !important;
@@ -1317,7 +1317,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver3.9 - UNIFIED LOGIN EXPERIENCE
+   TKver4.0 - UNIFIED LOGIN EXPERIENCE
    - Logo ngôi sao 8 cánh chính giữa trên form
    - Glow xanh-vàng đồng bộ Portal
    - Animation xoay chậm 20s
@@ -1509,7 +1509,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver3.9 - SMALL CENTER ADMIN STAR IN LOGIN
+   TKver4.0 - SMALL CENTER ADMIN STAR IN LOGIN
    - Ngôi sao nhỏ nằm giữa dưới chữ THIENKIM UNIVERSE
    - Không xoay liên tục gây mất tập trung
    - Hover phóng 115% + nghiêng nhẹ
@@ -1620,7 +1620,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver3.9 - Swap Star and Login Mode Position
+   TKver4.0 - Swap Star and Login Mode Position
    - Ngôi sao nằm tại vị trí chữ KHO BÁU VIP / ADMIN GATEWAY cũ.
    - Chữ KHO BÁU VIP / ADMIN GATEWAY / TẠP HÓA CHỐT ĐƠN nằm tại vị trí ngôi sao cũ.
    - Góc trái giữ nút Về Portal.
@@ -1717,7 +1717,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver3.9 - Professional module page template */
+/* TKver4.0 - Professional module page template */
 .module-status{
   display:inline-block;
   margin:14px auto 0;
@@ -1738,7 +1738,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver3.9 - Demo pages + App Center */
+/* TKver4.0 - Demo pages + App Center */
 .module-shell.wide{
   place-items:start center;
   padding-top:76px;
@@ -1919,7 +1919,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver3.9 - Comfort Interaction + Clean App Center */
+/* TKver4.0 - Comfort Interaction + Clean App Center */
 .module-card-wide > .module-domain,
 .module-card-wide > #moduleDesc{
   display:none !important;
@@ -2092,7 +2092,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver3.9 - Identity greeting + login history + 80-minute session */
+/* TKver4.0 - Identity greeting + login history + 80-minute session */
 .module-status b{
   color:#fff;
 }
@@ -2144,11 +2144,11 @@ body.vault-enabled .domain-panel .domain-vault{
   }
 }
 
-/* TKver3.9 - Flex Profile Timeline */
+/* TKver4.0 - Flex Profile Timeline */
 .profile-page{min-height:100vh}.profile-shell{position:relative;z-index:2;width:min(1280px,94vw);margin:0 auto;padding:80px 0 44px}.profile-hero-card{display:grid;grid-template-columns:160px 1fr 130px;gap:24px;align-items:center;padding:26px;border-radius:34px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(18px);box-shadow:0 0 50px rgba(255,83,210,.22)}.profile-avatar-wrap img{width:150px;height:150px;object-fit:cover;border-radius:36px;filter:drop-shadow(0 0 20px rgba(255,211,105,.45))}.profile-kicker{color:#ffd36b;font-weight:900;letter-spacing:1px;font-size:12px}.profile-hero-copy h1{margin:6px 0;font-family:"Playfair Display",Georgia,serif;font-size:clamp(46px,7vw,86px);background:linear-gradient(90deg,#ffe69a,#ff70d8,#a575ff);-webkit-background-clip:text;color:transparent}.profile-hero-copy p{font-size:18px;line-height:1.55;color:#f0e7ff}.profile-socials{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.profile-socials a{color:#fff;text-decoration:none;font-weight:900;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}.profile-qr{text-align:center}.profile-qr img{width:92px;height:92px;object-fit:contain;border-radius:20px}.profile-qr span{display:block;margin-top:8px;color:#ffd36b;font-weight:900;font-size:12px}.profile-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:22px 0}.profile-tabs button{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:12px 16px;font-weight:900;cursor:pointer}.profile-tabs button.active{color:#1b0b2e;background:linear-gradient(90deg,#ffd36b,#ff70d8)}.profile-layout{display:grid;grid-template-columns:280px 1fr;gap:22px}.profile-filter-card,.profile-content-card{padding:22px;border-radius:30px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(14px)}.profile-filter-card label{display:block;margin:14px 0 7px;font-weight:900;color:#ffd36b}.profile-filter-card select,.profile-filter-card button{width:100%;padding:11px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);color:#fff}.profile-filter-card button{margin-top:14px;background:linear-gradient(90deg,#ff6ab8,#8b5cf6);border:0;font-weight:900;cursor:pointer}.profile-intro{margin-top:24px;color:#e8dff5;line-height:1.5}.timeline-year h2{font-size:40px;margin:0 0 14px;color:#ffd36b}.timeline-month h3{margin:18px 0 12px;color:#fff}.post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.profile-post-card{overflow:hidden;border-radius:26px;background:rgba(255,255,255,.085);border:1px solid rgba(255,255,255,.14)}.post-cover{width:100%;height:220px;object-fit:cover;display:block;cursor:pointer}.post-body{padding:18px}.post-meta{color:#ffd36b;font-size:12px;font-weight:900}.post-body h3{margin:8px 0;font-size:22px}.post-body p{color:#e8dff5;line-height:1.55}.post-gallery{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.post-gallery img{width:70px;height:70px;object-fit:cover;border-radius:14px;cursor:pointer;border:1px solid rgba(255,255,255,.16)}.profile-section-title{text-align:center;margin-bottom:22px}.achievement-list,.goal-list{display:grid;gap:14px}.achievement-item,.goal-item{padding:16px;border-radius:20px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12)}.achievement-item b{color:#ffd36b;margin-right:12px}.goal-item{display:grid;grid-template-columns:1fr 220px 50px;align-items:center;gap:14px}.goal-item b{display:block;color:#ffd36b}.goal-bar{height:12px;background:rgba(255,255,255,.13);border-radius:999px;overflow:hidden}.goal-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd36b,#ff70d8)}.goal-item em{font-style:normal;font-weight:900;color:#ffd36b}.profile-gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}.profile-gallery-grid img{width:100%;height:180px;object-fit:cover;border-radius:20px;cursor:pointer;border:1px solid rgba(255,255,255,.14)}.profile-empty{text-align:center;padding:40px;color:#e8dff5}.image-lightbox{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.82)}.image-lightbox img{max-width:92vw;max-height:86vh;border-radius:20px}.image-lightbox button{position:absolute;right:24px;top:20px;width:42px;height:42px;border-radius:50%;border:0;background:#fff;color:#111;font-size:26px;cursor:pointer}.manager-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}.manager-form,.manager-preview{padding:22px;border-radius:26px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}.manager-form label{display:block;margin:13px 0 6px;font-weight:900;color:#ffd36b}.manager-form input,.manager-form textarea,.manager-form select,.manager-preview textarea{width:100%;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);color:#fff}.form-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.manager-form button,.manager-preview button{margin-top:14px;border:0;border-radius:999px;padding:12px 18px;color:white;font-weight:900;background:linear-gradient(90deg,#ff6ab8,#8b5cf6);cursor:pointer}.saved-post-item{padding:12px;border-radius:16px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12);margin-bottom:10px}.saved-post-item b,.saved-post-item span{display:block}.saved-post-item span{color:#e8dff5;font-size:12px;margin-top:4px}.saved-post-item button{padding:8px 12px;margin-top:8px;background:#d13459}@media(max-width:900px){.profile-hero-card{grid-template-columns:1fr;text-align:center}.profile-avatar-wrap img{margin:auto}.profile-layout,.manager-grid{grid-template-columns:1fr}.post-grid{grid-template-columns:1fr}.goal-item{grid-template-columns:1fr}.profile-socials{justify-content:center}}
-/* TKver3.9 - Family role + Academy lessons */
+/* TKver4.0 - Family role + Academy lessons */
 .lesson-list{display:grid;gap:12px;margin-top:12px}.lesson-item{padding:14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}.lesson-item b,.lesson-item span{display:block}.lesson-item span{color:#ffd36b;font-size:12px;margin-top:4px}.lesson-item p{color:#e8dff5;line-height:1.5}
-/* TKver3.9 - Thiên Kim Care side popup */
+/* TKver4.0 - Thiên Kim Care side popup */
 .comfort-panel{display:none!important}
 .comfort-floating-btn{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:880;width:74px;height:74px;border:1px solid rgba(255,255,255,.22);border-radius:26px;background:linear-gradient(135deg,rgba(255,106,184,.94),rgba(139,92,246,.94));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:900;cursor:pointer;box-shadow:0 0 30px rgba(255,83,210,.35),inset 0 0 16px rgba(255,255,255,.16);backdrop-filter:blur(12px);transition:.22s ease}
 .comfort-floating-btn:hover{transform:translateY(-50%) scale(1.08);box-shadow:0 0 42px rgba(255,211,105,.38),0 0 52px rgba(255,83,210,.28)}
@@ -2164,7 +2164,7 @@ body.vault-enabled .domain-panel .domain-vault{
 @media(max-width:760px){.comfort-floating-btn{right:14px;bottom:18px;top:auto;transform:none;width:68px;height:68px}.comfort-floating-btn:hover{transform:scale(1.06)}.comfort-drawer{left:12px;right:12px;top:auto;bottom:96px;width:auto;max-height:72vh}.comfort-drawer-body{max-height:calc(72vh - 92px)}}
 
 
-/* TKver3.9 - Black Gold Edition: global chủ đạo cho portal và domain con */
+/* TKver4.0 - Black Gold Edition: global chủ đạo cho portal và domain con */
 :root{
   --tk-bg-0:#030303;
   --tk-bg-1:#0b0904;
@@ -2373,7 +2373,7 @@ img{
   }
 }
 
-/* TKver3.9 - VIP App Engine + Mood V2 */
+/* TKver4.0 - VIP App Engine + Mood V2 */
 .module-status{
   display:flex !important;
   align-items:center;
@@ -2525,7 +2525,7 @@ img{
   }
 }
 
-/* TKver3.9 cleanup */
+/* TKver4.0 cleanup */
 .comfort-floating-btn{display:none!important}
 .module-actions{display:none!important}
 .quick-mood-heart{
@@ -2577,7 +2577,7 @@ img{
 .vip-badge{font-size:10px!important}
 
 
-/* TKver3.9 fixes */
+/* TKver4.0 fixes */
 .apps-page .module-card-wide{max-width:1500px}
 .app-page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:10px}
 .apps-page .back-link{position:static}
@@ -2592,7 +2592,7 @@ img{
 
 
 /* =========================================================
-   TKver3.9 MOBILE FIX - đúng class thực tế của index.html
+   TKver4.0 MOBILE FIX - đúng class thực tế của index.html
    Fix các class: .page, .hero-line, .welcome-inline, .title-stack,
    .cards-stage, .card-shell, .value-bar, .value-item
    ========================================================= */
@@ -2998,7 +2998,7 @@ img{
   }
 }
 
-/* TKver3.9 MOBILE POWER FIX */
+/* TKver4.0 MOBILE POWER FIX */
 @media (max-width:768px){
   html,body{width:100%!important;min-height:100svh!important;overflow-x:hidden!important}
   body.home-page{overflow-y:hidden!important}
@@ -3082,7 +3082,7 @@ img{
   .home-page .card-shell{max-height:520px!important}
 }
 
-/* TKver3.9 MOBILE TYPOGRAPHY + APP CARD FIX
+/* TKver4.0 MOBILE TYPOGRAPHY + APP CARD FIX
    Sửa lỗi chữ vấp nhau / tự xuống dòng xấu trong App Center và các app con
 */
 @media (max-width:768px){
@@ -3319,7 +3319,7 @@ img{
 }
 
 /* =========================================================
-   TKver3.9 CREATIVE CLEAN OVERHAUL
+   TKver4.0 CREATIVE CLEAN OVERHAUL
    Mục tiêu: desktop cân, mobile thật sự mượt, không chữ vỡ,
    mọi module gọn hơn, xóa cảm giác layout ẩu.
    ========================================================= */
@@ -3638,4 +3638,145 @@ img{
   .home-page .page{max-width:1480px!important}
   .home-page .card-shell{max-height:500px!important}
   .home-page .value-bar{max-width:1120px!important}
+}
+
+/* =========================================================
+   TKver4.0 PROFESSIONAL LAYOUT FIX
+   - Desktop cân lại homepage
+   - Mobile: mỗi lần xem chỉ 1 card ở giữa
+   - Ẩn login-chip của card không active/không hover trên mobile
+   - Profile page layout v2
+   - App placeholder clean
+   ========================================================= */
+
+/* HOME DESKTOP */
+@media (min-width:769px){
+  body.home-page{height:100vh!important;overflow:hidden!important}
+  .home-page .page{
+    height:calc(100vh - 54px)!important;
+    max-width:min(94vw,1440px)!important;
+    padding:0 16px 12px!important;
+    margin:0 auto!important;
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr) auto!important;
+  }
+  .home-page .hero{margin:0!important;padding:2px 0 0!important}
+  .home-page .hero-line{display:flex!important;justify-content:center!important;align-items:center!important;gap:16px!important}
+  .home-page .welcome-inline{font-size:clamp(24px,2.1vw,40px)!important;white-space:nowrap!important}
+  .home-page .hero h1,.home-page .title-stack h1{font-size:clamp(56px,4.8vw,88px)!important;line-height:.88!important;white-space:nowrap!important}
+  .home-page .hero p,.home-page .title-stack p{font-size:clamp(12px,.95vw,17px)!important;margin:9px 0 0!important;white-space:nowrap!important}
+  .home-page .cards-stage{
+    width:100%!important;max-width:1260px!important;height:100%!important;margin:0 auto!important;
+    display:flex!important;justify-content:space-between!important;align-items:center!important;gap:22px!important;
+  }
+  .home-page .card-shell{width:clamp(160px,11.6vw,218px)!important;flex:0 0 clamp(160px,11.6vw,218px)!important;height:clamp(340px,46vh,490px)!important}
+  .home-page .card-button{bottom:11px!important;left:50%!important;transform:translateX(-50%)!important;width:78%!important;height:36px!important;font-size:12px!important}
+  .home-page .value-bar{width:min(84vw,1100px)!important;margin:0 auto!important;padding:8px 14px!important;border-radius:22px!important}
+  .home-page .value-item{grid-template-columns:44px 1fr!important;column-gap:9px!important;padding:0 9px!important}
+  .home-page .value-item img{width:44px!important;height:44px!important}
+  .home-page .value-item b{font-size:15px!important}.home-page .value-item em{font-size:10.5px!important}
+}
+
+/* HOME MOBILE - ONE CENTER CARD */
+@media (max-width:768px){
+  html,body{width:100%!important;min-height:100svh!important;overflow-x:hidden!important}
+  body.home-page{height:100svh!important;overflow:hidden!important}
+  .home-page .topbar{height:32px!important;min-height:32px!important;padding:2px 8px!important}
+  .home-page .star-gateway{width:32px!important;height:32px!important;right:8px!important;top:5px!important}
+  .home-page .star-gateway img{width:26px!important;height:26px!important}
+
+  .home-page .page{
+    width:100vw!important;height:calc(100svh - 32px)!important;min-height:calc(100svh - 32px)!important;
+    padding:0!important;margin:0!important;overflow:hidden!important;
+    display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;
+  }
+  .home-page .hero{padding:2px 8px 0!important;margin:0!important}
+  .home-page .hero-line{display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;flex-wrap:nowrap!important}
+  .home-page .welcome-inline{font-size:7.5px!important;line-height:1!important;white-space:nowrap!important}
+  .home-page .hero h1,.home-page .title-stack h1{font-size:clamp(19px,6vw,28px)!important;line-height:.88!important;white-space:nowrap!important;margin:0!important}
+  .home-page .hero p,.home-page .title-stack p{font-size:7.6px!important;line-height:1!important;margin:2px 0 0!important;white-space:nowrap!important;transform:scale(.82)!important;transform-origin:center top!important}
+  .home-page .hero p span{margin:0 2px!important}
+  .home-page .role-badge{font-size:8.5px!important;padding:4px 8px!important;margin-top:2px!important;max-width:82vw!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .home-page .domain-panel{display:none!important}
+
+  .home-page .cards-stage{
+    width:100vw!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;
+    gap:0!important;overflow-x:auto!important;overflow-y:hidden!important;margin:0!important;padding:0!important;
+    scroll-snap-type:x mandatory!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-x!important;
+  }
+  .home-page .cards-stage::-webkit-scrollbar{display:none!important}
+
+  .home-page .card-shell{
+    flex:0 0 100vw!important;width:100vw!important;min-width:100vw!important;max-width:100vw!important;
+    height:calc(100svh - 146px)!important;min-height:485px!important;max-height:690px!important;
+    scroll-snap-align:center!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    overflow:hidden!important;transform:none!important;
+  }
+  .home-page .cards-stage:hover .card-shell,.home-page .cards-stage .card-shell:hover{opacity:1!important;filter:none!important;transform:none!important}
+  .home-page .card-shell img{
+    position:relative!important;width:86vw!important;max-width:420px!important;height:100%!important;object-fit:contain!important;object-position:center bottom!important;margin:auto!important;
+    filter:drop-shadow(0 0 14px rgba(255,255,255,.22)) drop-shadow(0 16px 30px rgba(0,0,0,.5))!important;
+  }
+  .home-page .card-button{
+    left:50%!important;bottom:14px!important;transform:translateX(-50%)!important;
+    width:min(72vw,300px)!important;height:40px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    font-size:14px!important;font-weight:900!important;padding:0 12px!important;border-radius:999px!important;z-index:20!important;
+  }
+  .home-page .login-chip{display:none!important}
+  .home-page .card-shell:nth-child(3) .login-chip,
+  .home-page .card-shell:nth-child(4) .login-chip{display:inline-flex!important;top:10px!important;right:calc(7vw + 8px)!important;font-size:10px!important;padding:6px 9px!important}
+
+  .home-page .value-bar{
+    width:100vw!important;max-width:100vw!important;height:42px!important;min-height:42px!important;display:flex!important;grid-template-columns:none!important;
+    align-items:center!important;gap:6px!important;overflow-x:auto!important;overflow-y:hidden!important;margin:0!important;padding:4px 10px!important;
+    border-radius:0!important;border-left:0!important;border-right:0!important;white-space:nowrap!important;
+  }
+  .home-page .value-bar::-webkit-scrollbar{display:none!important}
+  .home-page .value-item{flex:0 0 auto!important;display:flex!important;align-items:center!important;gap:5px!important;padding:4px 9px!important;border:0!important;border-radius:999px!important;background:rgba(255,255,255,.065)!important}
+  .home-page .value-item img{width:20px!important;height:20px!important;grid-row:auto!important}
+  .home-page .value-item b{font-size:11px!important;line-height:1!important}
+  .home-page .value-item em{display:none!important}
+}
+
+/* PROFILE V2 */
+.profile-v2 .profile-v2-shell{width:min(1180px,92vw)!important;margin:0 auto!important;padding:64px 0 80px!important}
+.profile-v2-hero,.profile-v2-controls,.profile-v2-content{
+  border:1px solid rgba(255,215,106,.22);background:rgba(0,0,0,.42);box-shadow:0 0 42px rgba(255,215,106,.08);
+  border-radius:28px;padding:28px;margin:0 0 18px;backdrop-filter:blur(10px);
+}
+.profile-v2-hero{display:grid;grid-template-columns:1fr 180px 130px;gap:24px;align-items:center;min-height:280px}
+.profile-v2-left h1{font-family:"Playfair Display",serif;font-size:48px;margin:8px 0;color:#ffd76a}
+.profile-v2-left p{font-size:16px;line-height:1.55;max-width:720px}
+.profile-v2-avatar img{width:170px;height:170px;object-fit:contain;filter:drop-shadow(0 0 24px rgba(76,201,255,.35))}
+.profile-v2-qr{text-align:center}.profile-v2-qr img{width:110px;height:110px;object-fit:contain}.profile-v2-qr span{display:block;margin-top:8px;font-weight:900;color:#ffe69a}
+.profile-v2-controls{display:grid;grid-template-columns:1fr 1.3fr;gap:18px;align-items:end}
+.profile-v2-controls h2{margin:0 0 8px;font-size:26px}.profile-v2-controls p{margin:0;color:#ddd}
+.profile-filters{display:grid;grid-template-columns:1fr 1fr auto;gap:10px}.profile-filters select,.profile-filters button{height:42px;border-radius:12px}
+.profile-tabs{display:flex;justify-content:center;gap:10px;margin-bottom:18px}.profile-tabs button{border-radius:999px;padding:10px 16px;font-weight:900}
+.profile-tab-view{min-height:220px}
+
+@media(max-width:768px){
+  body.module-page.profile-v2{overflow-y:auto!important}
+  .profile-v2 .profile-v2-shell{width:100vw!important;padding:16px 10px 70px!important}
+  .profile-v2-hero,.profile-v2-controls,.profile-v2-content{width:calc(100vw - 20px)!important;margin:0 auto 12px!important;padding:16px 12px!important;border-radius:24px!important}
+  .profile-v2-hero{grid-template-columns:1fr!important;text-align:center!important;min-height:auto!important}
+  .profile-v2-left h1{font-size:38px!important}.profile-v2-left p{font-size:14px!important;line-height:1.45!important}
+  .profile-v2-avatar{order:-1}.profile-v2-avatar img{width:120px!important;height:120px!important}
+  .profile-v2-qr{display:none!important}
+  .profile-v2-controls{grid-template-columns:1fr!important}.profile-filters{grid-template-columns:1fr!important}
+  .profile-tabs{justify-content:flex-start!important;overflow-x:auto!important}.profile-tabs button{flex:0 0 auto;font-size:12px!important}
+}
+
+/* APP/MODULE MOBILE CLEAN */
+@media(max-width:768px){
+  body.module-page{overflow-y:auto!important}
+  .module-shell,.admin-main{width:100vw!important;max-width:100vw!important;padding:14px 10px 66px!important}
+  .module-card,.module-card-wide{width:calc(100vw - 20px)!important;max-width:calc(100vw - 20px)!important;margin:0 auto 12px!important;padding:16px 12px!important;border-radius:24px!important;overflow:hidden!important}
+  .app-grid,.clean-app-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:100%!important}
+  .app-tool,.clean-app-tool{min-height:120px!important;padding:10px 8px!important;border-radius:20px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;overflow:hidden!important}
+  .app-tool img,.clean-app-tool img{width:54px!important;height:54px!important}
+  .app-tool strong,.clean-app-tool strong{font-size:13px!important;line-height:1.15!important;text-align:center!important;word-break:keep-all!important}
+  .demo-grid,.product-grid,.post-grid{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;width:100%!important}
+  .demo-card{width:100%!important;max-width:100%!important;padding:16px!important;border-radius:22px!important}
+  .demo-card p,.module-card>p,.module-card-wide>p{font-size:16px!important;line-height:1.45!important;word-break:normal!important;overflow-wrap:break-word!important}
 }

@@ -1,7 +1,8 @@
-# TKver3.9 - Creative Clean Overhaul
+# TKver4.0 - Professional Layout Fix
 
-- Cân lại desktop homepage.
-- Mobile homepage: 1 card lớn, vuốt ngang.
-- Mobile App Center và app con: sửa chữ vỡ dòng, khung đều.
-- Khôi phục `/me/index.html` Flex Profile.
-- Xóa các file note/report không cần thiết.
+- Homepage desktop cân lại.
+- Mobile homepage: mỗi card chiếm 1 màn hình và snap chính giữa.
+- Ẩn login-chip gây khó chịu trên mobile.
+- Flex Profile `/me/index.html` dựng lại layout v2.
+- App placeholder được dọn sạch, chỉ giữ index gọn.
+- Thêm Apps Script AI Video TKver1.7 merged vào `/apps/ai-video/` và `/apps-script/`.
