@@ -1,11 +1,12 @@
 {
   "app": "TK-AI-VIDEO",
-  "version": "AI.TKver1.7",
+  "version": "AI.TKver1.8",
   "folder": "/apps/ai-video/",
   "release_notes": [
     "Đưa API Gemini lên đầu trang bằng popup 3 tài khoản + hướng dẫn lấy API.",
     "Lưu API Key trên localStorage trình duyệt, không ghi lên Google Sheet.",
     "Thêm giá web, giá hiển thị mong muốn, địa chỉ siêu thị, số điện thoại lưu theo người dùng.",
-    "Nâng cấp prompt ảnh/video theo mẫu chất lượng cao."
+    "Nâng cấp prompt ảnh/video theo mẫu chất lượng cao.",
+    "TKver1.8 FINAL spec approved"
   ]
 }
