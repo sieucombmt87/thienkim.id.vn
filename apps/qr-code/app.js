@@ -1,11 +1,25 @@
-let type="qr", items=[], index=0, timer=null, failed=[], played=0;
-const input=document.getElementById("contentInput"), preview=document.getElementById("preview");
+let type="qr";
+let items=[];
+let index=0;
+let timer=null;
+let failed=[];
+let played=0;
+let scanned=[];
+let scanStream=null;
+let scanTimer=null;
+
+const input=document.getElementById("contentInput");
+const preview=document.getElementById("preview");
+
+function isMobile(){
+  return matchMedia("(max-width: 768px), (pointer: coarse)").matches;
+}
 
 function makeUrl(text){
   const v=encodeURIComponent(text||"");
   return type==="barcode"
     ? `https://bwipjs-api.metafloor.com/?bcid=code128&text=${v}&scale=3&height=12&includetext`
-    : `https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=${v}`;
+    : `https://api.qrserver.com/v1/create-qr-code/?size=520x520&data=${v}`;
 }
 
 function parseInputList(raw){
@@ -13,35 +27,182 @@ function parseInputList(raw){
   if(!text) return [];
   let parts=text.split(/\r?\n|[\t,;]+/).map(x=>x.trim()).filter(Boolean);
 
-  // Nếu người dùng copy từ app khác và trình duyệt biến xuống dòng thành khoảng trắng,
-  // hệ thống tự tách các chuỗi số dài thành từng QR riêng.
+  // Copy từ app khác đôi khi biến xuống dòng thành khoảng trắng:
   if(parts.length===1){
-    const numericTokens=text.match(/[A-Za-z0-9_-]{8,}/g);
-    if(numericTokens && numericTokens.length>1) parts=numericTokens;
+    const tokens=text.match(/[A-Za-z0-9_-]{8,}/g);
+    if(tokens && tokens.length>1) parts=tokens;
   }
+
   return [...new Set(parts)];
 }
 
 function setItems(arr){
   items=[...new Set(arr.map(x=>String(x||"").trim()).filter(Boolean))];
-  index=0; played=0; failed=[];
-  saveList(); renderList(); showCurrent();
+  index=0;
+  played=0;
+  failed=[];
+  saveList();
+  renderAll();
+  showCurrent();
 }
 
-function saveList(){localStorage.setItem("tk_qr_items",JSON.stringify(items));}
-function loadList(){try{items=JSON.parse(localStorage.getItem("tk_qr_items")||"[]");}catch(e){items=[];}renderList();showCurrent();}
-function renderStats(){document.getElementById("totalCount").textContent=items.length;document.getElementById("playedCount").textContent=played;document.getElementById("failedCount").textContent=failed.length;}
+function saveList(){
+  localStorage.setItem("tk_qr_items",JSON.stringify(items));
+  localStorage.setItem("tk_qr_scanned",JSON.stringify(scanned));
+}
+
+function loadList(){
+  try{items=JSON.parse(localStorage.getItem("tk_qr_items")||"[]");}catch(e){items=[];}
+  try{scanned=JSON.parse(localStorage.getItem("tk_qr_scanned")||"[]");}catch(e){scanned=[];}
+  renderAll();
+  showCurrent();
+}
+
+function renderStats(){
+  document.getElementById("totalCount").textContent=items.length;
+  document.getElementById("playedCount").textContent=played;
+  document.getElementById("failedCount").textContent=failed.length;
+  document.getElementById("scannedCount").textContent=scanned.length;
+}
+
+function currentText(){
+  return items[index] || "";
+}
 
 function showCurrent(){
   renderStats();
-  const text=items[index]||"";
-  if(!text){preview.innerHTML="<span>Mã sẽ hiện ở đây...</span>";return;}
+  const text=currentText();
+  preview.classList.toggle("is-failed", failed.includes(index));
+  if(!text){
+    preview.innerHTML="<span>Mã sẽ hiện ở đây...</span>";
+    return;
+  }
   preview.innerHTML=`<img id="codeImg" crossorigin="anonymous" src="${makeUrl(text)}" alt="code"><b class="qr-caption">${index+1}/${items.length||1}</b>`;
+  scrollCurrentItem();
 }
 
-function renderList(){
+function renderAll(){
+  renderStats();
+  renderMainList();
+  renderScannedList();
+}
+
+function renderMainList(){
   const list=document.getElementById("historyList");
-  list.innerHTML=items.map((x,i)=>`<button type="button" data-i="${i}" class="${failed.includes(i)?"failed-item":""}" title="${x.replace(/"/g,'&quot;')}">${i+1}. ${x}</button>`).join("")||"Chưa có danh sách.";
+  list.innerHTML=items.map((x,i)=>{
+    const cls=[
+      "qr-item",
+      i===index ? "active" : "",
+      failed.includes(i) ? "failed" : "",
+      scanned.includes(x) ? "done" : ""
+    ].join(" ");
+    const status=failed.includes(i) ? "Lỗi" : (scanned.includes(x) ? "Đã quét" : "Chờ");
+    return `<div class="${cls}" data-i="${i}">
+      <span class="qr-index">${i+1}</span>
+      <span class="qr-text" title="${escapeHtml(x)}">${escapeHtml(x)}</span>
+      <span class="qr-status">${status}</span>
+    </div>`;
+  }).join("") || "Chưa có danh sách.";
+}
+
+function renderScannedList(){
+  const box=document.getElementById("scannedList");
+  box.innerHTML=scanned.map((x,i)=>`<div class="qr-item done">
+    <span class="qr-index">${i+1}</span>
+    <span class="qr-text" title="${escapeHtml(x)}">${escapeHtml(x)}</span>
+    <span class="qr-status">OK</span>
+  </div>`).join("") || "Chưa có QR đã quét.";
+}
+
+function scrollCurrentItem(){
+  const list=document.getElementById("historyList");
+  const el=list.querySelector(`[data-i="${index}"]`);
+  if(el) el.scrollIntoView({block:"nearest", behavior:"smooth"});
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+
+function markFailed(){
+  if(!items.length) return;
+  if(!failed.includes(index)) failed.push(index);
+  preview.classList.add("is-failed");
+  renderAll();
+}
+
+function markDone(text){
+  const value=String(text||currentText()).trim();
+  if(!value) return;
+  if(!scanned.includes(value)) scanned.push(value);
+  saveList();
+  renderAll();
+}
+
+function nextItem(){
+  if(!items.length) return;
+  markDone(currentText());
+  played++;
+  index++;
+
+  if(index>=items.length){
+    if(failed.length){
+      items=failed.map(i=>items[i]);
+      failed=[];
+      index=0;
+      input.value=items.join("\n");
+      saveList();
+      alert("Đã chạy hết. Bắt đầu chạy lại các mã lỗi.");
+    }else{
+      stop();
+      index=Math.max(0,items.length-1);
+      alert("Đã chạy xong.");
+    }
+  }
+
+  renderAll();
+  showCurrent();
+}
+
+function play(){
+  stop();
+  if(!items.length){
+    const arr=parseInputList(input.value);
+    if(arr.length) setItems(arr);
+    else return alert("Chưa có QR để chạy.");
+  }
+  const delay=Number(document.getElementById("delaySelect").value);
+  timer=setInterval(nextItem, delay);
+}
+
+function stop(){
+  if(timer){
+    clearInterval(timer);
+    timer=null;
+  }
+}
+
+function restart(){
+  stop();
+  index=0;
+  played=0;
+  failed=[];
+  renderAll();
+  showCurrent();
+}
+
+function copyText(text){
+  return navigator.clipboard.writeText(text).then(()=>alert("Đã copy."));
+}
+
+function downloadText(filename, text, type="text/plain"){
+  const blob=new Blob([text],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 input.addEventListener("input",()=>{
@@ -60,10 +221,11 @@ input.addEventListener("paste",()=>{
 });
 
 document.getElementById("historyList").onclick=e=>{
-  const b=e.target.closest("button");
-  if(!b) return;
-  index=Number(b.dataset.i);
+  const row=e.target.closest("[data-i]");
+  if(!row) return;
+  index=Number(row.dataset.i);
   showCurrent();
+  renderAll();
 };
 
 document.querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>{
@@ -86,47 +248,19 @@ document.getElementById("excelInput").onchange=async e=>{
   alert("File này chưa đọc được trực tiếp. Hãy xuất sang CSV để import nhanh.");
 };
 
-function play(){
-  stop();
-  if(!items.length){
-    const arr=parseInputList(input.value);
-    if(arr.length) setItems(arr);
-    else return alert("Chưa có QR để chạy.");
-  }
-  const delay=Number(document.getElementById("delaySelect").value);
-  timer=setInterval(()=>{
-    played++;
-    index++;
-    if(index>=items.length){
-      if(failed.length){
-        items=failed.map(i=>items[i]);
-        failed=[];
-        index=0;
-        input.value=items.join("\n");
-        alert("Đã chạy hết. Bắt đầu chạy lại các mã lỗi.");
-      }else{
-        stop();
-        index=Math.max(0,items.length-1);
-        alert("Đã chạy xong.");
-      }
-    }
-    showCurrent();
-    renderList();
-  },delay);
-}
-
-function stop(){if(timer){clearInterval(timer);timer=null;}}
-
 document.getElementById("playBtn").onclick=play;
 document.getElementById("stopBtn").onclick=stop;
+document.getElementById("restartBtn").onclick=restart;
 
 document.addEventListener("keydown",e=>{
-  if(e.code==="Space"&&items.length){
+  if(!isMobile() && e.code==="Space" && items.length){
     e.preventDefault();
-    if(!failed.includes(index)) failed.push(index);
-    renderStats();
-    renderList();
+    markFailed();
   }
+});
+
+preview.addEventListener("click",()=>{
+  if(isMobile()) markFailed();
 });
 
 document.getElementById("downloadBtn").onclick=()=>{
@@ -138,32 +272,79 @@ document.getElementById("downloadBtn").onclick=()=>{
   a.click();
 };
 
-document.getElementById("scanTab").onclick=async()=>{
-  document.getElementById("scanBox").classList.toggle("hidden");
-  if(!("BarcodeDetector" in window)){
-    document.getElementById("scanResult").textContent="Trình duyệt chưa hỗ trợ quét mã trực tiếp.";
-    return;
-  }
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
-    const video=document.getElementById("video");
-    video.srcObject=stream;
-    await video.play();
-    const detector=new BarcodeDetector({formats:["qr_code","code_128"]});
-    const t=setInterval(async()=>{
-      const codes=await detector.detect(video);
-      if(codes.length){
-        input.value=codes[0].rawValue;
-        setItems([codes[0].rawValue]);
-        document.getElementById("scanResult").textContent="Đã quét: "+codes[0].rawValue;
-        clearInterval(t);
-        stream.getTracks().forEach(x=>x.stop());
-      }
-    },800);
-  }catch(e){
-    document.getElementById("scanResult").textContent="Không mở được camera.";
-  }
+document.getElementById("copyScannedBtn").onclick=()=>{
+  if(!scanned.length) return alert("Chưa có dữ liệu đã quét.");
+  copyText(scanned.join("\n"));
 };
 
-document.getElementById("createTab").onclick=()=>document.getElementById("scanBox").classList.add("hidden");
+document.getElementById("exportTxtBtn").onclick=()=>{
+  if(!scanned.length) return alert("Chưa có dữ liệu đã quét.");
+  downloadText("qr-da-quet.txt", scanned.join("\n"), "text/plain");
+};
+
+document.getElementById("exportCsvBtn").onclick=()=>{
+  if(!scanned.length) return alert("Chưa có dữ liệu đã quét.");
+  const csv="STT,QR\\n"+scanned.map((x,i)=>`${i+1},"${String(x).replace(/"/g,'""')}"`).join("\n");
+  downloadText("qr-da-quet.csv", csv, "text/csv");
+};
+
+document.getElementById("scanTab").onclick=()=>startScan();
+document.getElementById("scanRetryBtn").onclick=()=>startScan(true);
+document.getElementById("stopScanBtn").onclick=stopScan;
+document.getElementById("createTab").onclick=()=>stopScan();
+
+async function startScan(retry=false){
+  document.getElementById("scanBox").classList.remove("hidden");
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+  document.getElementById("scanTab").classList.add("active");
+
+  if(!("BarcodeDetector" in window)){
+    document.getElementById("scanResult").textContent="Trình duyệt chưa hỗ trợ quét mã trực tiếp.";
+    if(confirm("Quét không được. Bạn muốn thử lại không?")) return startScan(true);
+    return;
+  }
+
+  try{
+    stopScan(false);
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
+    const video=document.getElementById("video");
+    video.srcObject=scanStream;
+    await video.play();
+    const detector=new BarcodeDetector({formats:["qr_code","code_128"]});
+    document.getElementById("scanResult").textContent=retry ? "Đang quét lại..." : "Đang mở camera...";
+
+    scanTimer=setInterval(async()=>{
+      try{
+        const codes=await detector.detect(video);
+        if(codes.length){
+          const value=codes[0].rawValue;
+          markDone(value);
+          document.getElementById("scanResult").textContent="Đã quét: "+value;
+          if(!items.includes(value)){
+            items.push(value);
+            input.value=items.join("\n");
+            saveList();
+          }
+          renderAll();
+        }
+      }catch(err){}
+    },650);
+  }catch(e){
+    document.getElementById("scanResult").textContent="Không mở được camera.";
+    if(confirm("Quét không được. Bạn muốn quét lại không?")) startScan(true);
+  }
+}
+
+function stopScan(hide=true){
+  if(scanTimer){
+    clearInterval(scanTimer);
+    scanTimer=null;
+  }
+  if(scanStream){
+    scanStream.getTracks().forEach(t=>t.stop());
+    scanStream=null;
+  }
+  if(hide) document.getElementById("scanBox").classList.add("hidden");
+}
+
 loadList();

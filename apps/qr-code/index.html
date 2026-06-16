@@ -1,27 +1,102 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>QR Code Pro - THIENKIM</title><link rel="stylesheet" href="./style.css?v=TKver4.7"></head>
-<body><main class="tk-app-shell qr-app">
-<div class="modal-card">
-  <a class="close" href="../index.html">×</a>
-  <h1>QR CODE PRO</h1>
-  <div class="tabs qr-tabs-two"><button id="createTab" class="active">🖊 Tạo mã</button><button id="scanTab">📷 Quét</button></div>
-  <div class="tabs mini"><button data-type="qr" class="active">QR Code</button><button data-type="barcode">Barcode 128</button></div>
-  <div class="import-box">
-    <textarea id="contentInput" placeholder="Nhập mỗi mã một dòng hoặc upload Excel/CSV..."></textarea>
-    <input id="excelInput" type="file" accept=".csv,.txt,.xlsx,.xls">
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>QR Code Pro - THIENKIM</title>
+  <link rel="stylesheet" href="./style.css?v=TKver4.8">
+</head>
+<body>
+<main class="tk-app-shell qr-app">
+  <div class="modal-card">
+    <a class="close" href="../index.html">×</a>
+    <h1>QR CODE PRO</h1>
+
+    <div class="tabs qr-tabs-two">
+      <button id="createTab" class="active">🖊 Tạo mã</button>
+      <button id="scanTab">📷 Quét QR</button>
+    </div>
+
+    <div class="tabs mini">
+      <button data-type="qr" class="active">QR Code</button>
+      <button data-type="barcode">Barcode 128</button>
+    </div>
+
+    <div class="import-box">
+      <textarea id="contentInput" placeholder="Nhập mỗi mã một dòng hoặc upload Excel/CSV..."></textarea>
+      <input id="excelInput" type="file" accept=".csv,.txt,.xlsx,.xls">
+    </div>
+
+    <small class="muted">
+      Nhập nhiều mã mỗi dòng. Excel/CSV sẽ tự tách danh sách QR.
+    </small>
+
+    <div class="dashboard">
+      <span>Tổng: <b id="totalCount">0</b></span>
+      <span>Đã chạy: <b id="playedCount">0</b></span>
+      <span>Lỗi: <b id="failedCount">0</b></span>
+      <span>Đã quét: <b id="scannedCount">0</b></span>
+    </div>
+
+    <p class="hint desktop-hint">Máy tính: nhấn <b>SPACE</b> để đánh dấu mã lỗi.</p>
+    <p class="hint mobile-hint">Điện thoại: chạm vào QR đang hiển thị để đánh dấu mã lỗi.</p>
+
+    <div class="code-preview" id="preview">
+      <span>Mã sẽ hiện ở đây...</span>
+    </div>
+
+    <div class="control-row mobile-four">
+      <button class="tk-btn green" id="playBtn">▶ Chạy</button>
+      <button class="tk-btn red" id="stopBtn">⏸ Dừng</button>
+      <button class="tk-btn ghost" id="restartBtn">↺ Bắt đầu lại</button>
+      <button class="tk-btn ghost" id="downloadBtn">⬇ Tải ảnh</button>
+    </div>
+
+    <div class="delay-row">
+      <label>Thời gian chuyển:</label>
+      <select id="delaySelect">
+        <option value="2000">2 giây</option>
+        <option value="3000">3 giây</option>
+        <option value="4000">4 giây</option>
+        <option value="5000">5 giây</option>
+        <option value="10000">10 giây</option>
+      </select>
+    </div>
+
+    <section class="scan-panel hidden" id="scanBox">
+      <video id="video" playsinline></video>
+      <div class="scan-bottom-bar">
+        <button class="tk-btn red" id="scanRetryBtn">Quét lại</button>
+        <button class="tk-btn ghost" id="stopScanBtn">Dừng camera</button>
+      </div>
+      <p id="scanResult"></p>
+    </section>
+
+    <section class="qr-lists">
+      <div class="list-card">
+        <div class="list-head">
+          <b>Danh sách QR</b>
+          <small id="currentListLabel">Chưa chạy</small>
+        </div>
+        <div id="historyList" class="qr-list"></div>
+      </div>
+
+      <div class="list-card">
+        <div class="list-head">
+          <b>QR đã quét / đã chạy</b>
+          <button class="mini-copy" id="copyScannedBtn">Copy toàn bộ</button>
+        </div>
+        <div id="scannedList" class="qr-list scanned-list"></div>
+        <div class="export-row">
+          <button class="tk-btn ghost" id="exportTxtBtn">Xuất TXT</button>
+          <button class="tk-btn ghost" id="exportCsvBtn">Xuất CSV</button>
+        </div>
+      </div>
+    </section>
   </div>
-  <small class="muted">Excel/CSV: hệ thống sẽ đọc từng dòng/cột và tự tạo danh sách QR. Với .xlsx dùng thư viện sheetjs online, nếu mạng chặn hãy xuất CSV.</small>
-  <div class="dashboard"><span>Tổng: <b id="totalCount">0</b></span><span>Đã chạy: <b id="playedCount">0</b></span><span>Lỗi: <b id="failedCount">0</b></span></div>
-  <div class="code-preview" id="preview"><span>Mã sẽ hiện ở đây...</span></div>
-  <div class="control-row">
-    <select id="delaySelect"><option value="2000">2 giây</option><option value="3000">3 giây</option><option value="4000">4 giây</option><option value="5000">5 giây</option><option value="10000">10 giây</option></select>
-    <button class="tk-btn green" id="playBtn">▶ Chạy</button>
-    <button class="tk-btn red" id="stopBtn">⏸ Dừng</button>
-    <button class="tk-btn ghost" id="downloadBtn">⬇ Tải ảnh</button>
-  </div>
-  <p class="hint">Nhấn <b>SPACE</b> để đánh dấu mã lỗi. Khi chạy hết, hệ thống tự quay lại các mã lỗi.</p>
-  <section class="history"><b>Danh sách QR</b><div id="historyList"></div></section>
-  <div id="scanBox" class="hidden"><video id="video" playsinline></video><p id="scanResult"></p></div>
-</div>
-</main><script src="./app.js?v=TKver4.7"></script><div id="buildVersion">TKver4.7</div></body></html>
+</main>
+
+<script src="./app.js?v=TKver4.8"></script>
+<div id="buildVersion">TKver4.8</div>
+</body>
+</html>
