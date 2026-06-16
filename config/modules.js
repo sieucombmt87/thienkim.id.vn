@@ -93,6 +93,7 @@ const TK_MODULES = {
 };
 
 const TK_APP_TOOLS = [
+  { key:"random-race", title:"Random Race", desc:"Quay random bằng hiệu ứng cuộc đua, Top 1/Top 3 và lịch sử.", icon:"assets/images/app-icons/random-race.svg", vip:false },
   { key:"bao-cao", title:"Báo Cáo", desc:"Tổng hợp nhanh báo cáo ngày, tuần, tháng.", icon:"assets/images/app-icons/bao-cao.jpg", vip:false },
   { key:"bai-test", title:"Bài Test", desc:"Tạo bài kiểm tra, checklist và form đánh giá.", icon:"assets/images/app-icons/bai-test.jpg", vip:false },
   { key:"bau-cua", title:"Bầu Cua", desc:"Mini game/tiện ích random vui vẻ cho đội nhóm.", icon:"assets/images/app-icons/bau-cua.jpg", vip:false },
@@ -149,7 +150,7 @@ function tkCanAccess(module, user){
   return false;
 }
 
-// TKver4.7 App helpers
+// TKver5.0 App helpers
 function tkGetAppConfig(){
   let overrides = {};
   try{ overrides = JSON.parse(localStorage.getItem("tk_app_config") || "{}"); }catch(e){}
@@ -220,7 +221,7 @@ function tkGetSortedApps(user){
 }
 
 
-// TKver4.7: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
+// TKver5.0: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
 function tkIsAppManager(user){
   const username = String(user?.username || "").toLowerCase();
   const role = String(user?.role || "").toLowerCase();

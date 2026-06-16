@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TK-RANDOM-RACE • TKver5.0</title>
+  <link rel="stylesheet" href="./style.css?v=TKver5.0">
+</head>
+<body>
+<main class="race-app">
+  <section class="race-setup" id="setupView">
+    <header class="race-head">
+      <a href="../index.html">← App Center</a>
+      <div>
+        <b>TK-RANDOM-RACE</b>
+        <span>TKver5.0</span>
+      </div>
+    </header>
+
+    <section class="hero-card">
+      <div>
+        <p class="kicker">Random Race Studio</p>
+        <h1>Tạo cuộc đua random chuyên nghiệp</h1>
+        <p>Nhập người chơi, chọn kiểu đua, chèn nền sự kiện và bắt đầu quay thưởng công bằng.</p>
+      </div>
+      <button id="openHistoryBtn">Lịch sử</button>
+    </section>
+
+    <section class="setup-grid">
+      <div class="panel">
+        <h2>1. Cài đặt sự kiện</h2>
+        <label>Tên sự kiện<input id="eventTitle" value="MINIGAME THIÊN KIM"></label>
+        <label>Nội dung<textarea id="eventDesc">Ai sẽ là người nhận phần quà VIP hôm nay?</textarea></label>
+        <label>Giải thưởng<input id="eventPrize" value="Quà VIP"></label>
+        <label>Hashtag<input id="eventHash" value="#ThienKimUniverse #RandomRace"></label>
+        <label>Hình nền sự kiện<input id="bgUpload" type="file" accept="image/jpeg,image/png,image/webp"></label>
+        <div class="row2">
+          <button id="clearBgBtn" class="ghost">Xóa nền</button>
+          <button id="defaultBgBtn" class="ghost">Nền mặc định</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>2. Cài đặt cuộc đua</h2>
+        <label>Kiểu đua
+          <select id="raceTheme">
+            <option value="duck">Vịt 🦆</option>
+            <option value="boat">Thuyền ⛵</option>
+            <option value="horse">Ngựa 🐎</option>
+            <option value="dog">Chó 🐕</option>
+            <option value="car">Xe 🏎️</option>
+            <option value="fish">Cá 🐟</option>
+            <option value="vip">VIP Icon 👑</option>
+          </select>
+        </label>
+        <label>Số người thắng
+          <select id="winnerCount">
+            <option value="1">Top 1</option>
+            <option value="3">Top 3</option>
+            <option value="5">Top 5</option>
+          </select>
+        </label>
+        <label>Thời gian đua
+          <select id="raceDuration">
+            <option value="10000">10 giây</option>
+            <option value="20000" selected>20 giây</option>
+            <option value="30000">30 giây</option>
+          </select>
+        </label>
+        <label>Phong cách
+          <select id="displayMode">
+            <option>Vui nhộn</option>
+            <option>Sang trọng</option>
+            <option>Sự kiện</option>
+            <option>Livestream</option>
+            <option>Trẻ em</option>
+          </select>
+        </label>
+        <div class="row2">
+          <label><input id="soundToggle" type="checkbox" checked> Âm thanh</label>
+          <label><input id="historyToggle" type="checkbox" checked> Lưu lịch sử</label>
+        </div>
+      </div>
+
+      <div class="panel players-panel">
+        <h2>3. Danh sách người chơi</h2>
+        <textarea id="playersInput" placeholder="Mỗi dòng là một người chơi...">Nguyễn Văn A
+Trần Thị B
+Lê Văn C
+Phạm Thị D
+Hoàng Văn E
+Thiên Kim
+Minh Quảng</textarea>
+        <div class="row3">
+          <button id="dedupeBtn" class="ghost">Xóa trùng</button>
+          <button id="shuffleBtn" class="ghost">Trộn</button>
+          <button id="numberBtn" class="ghost">Đánh số</button>
+        </div>
+        <button id="previewBtn" class="primary">Lưu cấu hình & Preview</button>
+      </div>
+    </section>
+  </section>
+
+  <section class="race-stage hidden" id="stageView">
+    <div class="stage-overlay"></div>
+    <header class="stage-title">
+      <button id="backSetupBtn">← Chỉnh sửa</button>
+      <div>
+        <h1 id="stageEventTitle">MINIGAME THIÊN KIM</h1>
+        <p id="stageEventDesc">Ai sẽ là người nhận phần quà VIP hôm nay?</p>
+      </div>
+      <button id="startRaceBtn">Bắt đầu</button>
+    </header>
+    <div class="race-track-wrap" id="raceTrack"></div>
+  </section>
+
+  <section class="winner-screen hidden" id="winnerView">
+    <div class="confetti" id="confetti"></div>
+    <div class="winner-card">
+      <p class="kicker">CHÚC MỪNG NGƯỜI CHIẾN THẮNG</p>
+      <h1 id="winnerTitle">Winner</h1>
+      <div id="winnerList"></div>
+      <p id="sessionInfo"></p>
+      <div class="winner-actions">
+        <button id="copyResultBtn">Copy kết quả</button>
+        <button id="raceAgainBtn">Quay tiếp</button>
+        <button id="newRaceBtn">Cuộc đua mới</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="history-modal hidden" id="historyModal">
+    <div class="history-card">
+      <button id="closeHistoryBtn">×</button>
+      <h2>Lịch sử Random Race</h2>
+      <div id="historyList"></div>
+      <button id="clearHistoryBtn" class="danger">Xóa lịch sử</button>
+    </div>
+  </section>
+</main>
+<script src="./history.js?v=TKver5.0"></script>
+<script src="./app.js?v=TKver5.0"></script>
+</body>
+</html>

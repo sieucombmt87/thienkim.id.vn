@@ -1,0 +1,6 @@
+const TKRaceHistory={
+  key:"tk_random_race_history",
+  list(){try{return JSON.parse(localStorage.getItem(this.key)||"[]")}catch(e){return[]}},
+  save(item){const list=this.list();list.unshift(item);localStorage.setItem(this.key,JSON.stringify(list.slice(0,100)))},
+  clear(){localStorage.removeItem(this.key)}
+};
