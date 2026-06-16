@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Flex Profile Chủ Tịch - THIENKIM</title><link rel="stylesheet" href="../assets/css/style.css"></head>
+<body class="module-page profile-page profile-v3">
+<div class="galaxy-bg"><div class="starfield layer-1"></div><div class="starfield layer-2"></div><div class="sparkles"></div><div class="cloud cloud-bottom"></div></div>
+<main class="profile-shell profile-v3-shell">
+<a href="../index.html" class="back-link">← Về trang chủ</a>
+<section class="profile-v3-hero"><div class="profile-v3-copy"><span class="comfort-kicker">FLEX PROFILE CHỦ TỊCH</span><h1 id="profileName">Thiên Kim</h1><p id="profileSubtitle">Một vũ trụ nhỏ đầy sắc màu, học hỏi và tỏa sáng mỗi ngày.</p><p id="profileIntro">Hành trình trưởng thành được lưu lại theo từng năm, từng tháng, từng khoảnh khắc.</p><div id="profileSocials" class="profile-socials"></div></div><div class="profile-v3-avatar"><img id="profileAvatar" src="../assets/images/ui/admin-star.png" alt="Avatar"></div><div class="profile-v3-qr"><img id="profileQr" src="../assets/images/ui/admin-star.png" alt="QR Contact"><span>QR Contact</span></div></section>
+<section class="profile-contribute hidden" id="profileContributeBox">
+  <div class="profile-section-head"><div><span class="comfort-kicker">ĐÓNG GÓP TIMELINE</span><h2>Thêm ảnh/kỷ niệm cho Thiên Kim</h2><p>Chỉ VIP, Family và user 0947924444 được thêm ảnh trực tiếp.</p></div></div>
+  <form id="profilePostForm" class="profile-post-form">
+    <input id="postTitle" placeholder="Tiêu đề kỷ niệm">
+    <input id="postDate" type="date">
+    <select id="postVisibility"><option value="public">Public</option><option value="only">Only Family</option></select>
+    <textarea id="postContent" placeholder="Nội dung chia sẻ..."></textarea>
+    <input id="postImages" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+    <button type="submit">Lưu vào Timeline</button>
+  </form>
+</section>
+<section class="profile-v3-memory"><div class="profile-section-head"><div><span class="comfort-kicker">MEMORY WALL</span><h2>Hành trình từ hiện tại về quá khứ</h2><p>Năm mới nhất hiển thị trước để người xem tò mò khám phá lại từng cột mốc cũ hơn.</p></div><div class="profile-filters compact"><select id="yearFilter"></select><select id="monthFilter"></select><button id="clearFilter" type="button">Xóa lọc</button></div></div><div id="memoryWall" class="memory-wall"></div></section>
+<section class="profile-v3-content"><div class="profile-tabs"><button class="active" data-tab="timeline">Timeline</button><button data-tab="achievements">Thành tích</button><button data-tab="goals">Mục tiêu năm</button><button data-tab="gallery">Hình ảnh</button></div><div id="timelineView" class="profile-tab-view"></div><div id="achievementsView" class="profile-tab-view hidden"></div><div id="goalsView" class="profile-tab-view hidden"></div><div id="galleryView" class="profile-tab-view hidden"></div></section>
+</main><div id="profileLightbox" class="profile-lightbox hidden"><button id="closeLightbox" type="button">×</button><img id="lightboxImage" alt=""></div>
+<script src="../config/google-sheet.js"></script><script src="../assets/js/profile.js"></script><div id="buildVersion">TKver4.6</div></body></html>

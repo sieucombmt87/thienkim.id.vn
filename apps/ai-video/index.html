@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App VIP AI Video Bán Hàng</title>
+  <meta name="description" content="App VIP tạo prompt hình ảnh/video bán hàng thông minh cho Thiên Kim Universe." />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="tk-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Thiên Kim Universe • Apps Mì Ăn Liền</p>
+        <h1>❤️ App VIP AI Video Bán Hàng</h1>
+        <p class="hero-desc">Nhập link hoặc tên sản phẩm, chọn tạo clip/hình ảnh, phân tích sản phẩm và tạo Prompt VIP có thể sửa trước khi copy.</p>
+      </div>
+    </header>
+
+    <section class="api-top panel slim-panel">
+      <div class="section-title-row">
+        <div>
+          <h2>Gemini API cá nhân</h2>
+          <p class="muted">API Key được lưu trên trình duyệt của bạn. Không ghi vào Google Sheet. Khi tạo bằng Gemini, key sẽ được gửi qua Apps Script của bạn để gọi Gemini.</p>
+        </div>
+      </div>
+      <div class="api-pill-grid">
+        <button id="apiPill1" type="button" class="api-pill gray" onclick="openApiModal(1)"><span></span>API tài khoản 1</button>
+        <button id="apiPill2" type="button" class="api-pill gray" onclick="openApiModal(2)"><span></span>API tài khoản 2</button>
+        <button id="apiPill3" type="button" class="api-pill gray" onclick="openApiModal(3)"><span></span>API tài khoản 3</button>
+        <button type="button" class="api-pill help" onclick="openApiHelp()">❓ Hướng dẫn lấy API</button>
+      </div>
+      <div id="apiStatus" class="status"></div>
+    </section>
+
+    <section class="notice-card">
+      <b>Lưu ý:</b> Thiên Kim chỉ hỗ trợ tạo prompt thông minh. Người dùng tự mở công cụ AI bằng tài khoản của mình và tự dùng credit của mình.
+    </section>
+
+    <section class="grid-layout">
+      <form class="panel" onsubmit="return false;">
+        <h2>1. Thông tin sản phẩm</h2>
+
+        <label for="productInput">Tên sản phẩm hoặc link sản phẩm</label>
+        <div class="inline-field">
+          <input id="productInput" placeholder="Ví dụ: Smart Tivi Crystal UHD Samsung 4K hoặc link sản phẩm" />
+          <button class="mini-btn" type="button" onclick="analyzeProduct(true)">🔍 Phân tích sản phẩm</button>
+        </div>
+        <small id="sourceHint">Nếu có link, hệ thống ưu tiên lấy mô tả, giá đang hiển thị, khuyến mãi/voucher/flash sale từ trang sản phẩm hoặc web hãng.</small>
+
+        <label>Mục cần tạo</label>
+        <div class="mode-switch pro" role="group" aria-label="Chọn tạo ảnh hoặc video">
+          <label class="mode-card active" id="modeVideoCard">
+            <input type="radio" name="assetMode" value="video" checked onchange="setAssetMode('video')" />
+            <span class="mode-icon">🎬</span>
+            <span class="mode-copy"><b>Tạo clip</b><small>Kịch bản video 15-30 giây</small></span>
+          </label>
+          <label class="mode-card" id="modeImageCard">
+            <input type="radio" name="assetMode" value="image" onchange="setAssetMode('image')" />
+            <span class="mode-icon">🖼️</span>
+            <span class="mode-copy"><b>Tạo hình ảnh</b><small>Poster/banner quảng cáo</small></span>
+          </label>
+        </div>
+
+        <label for="shortDesc">Mô tả ngắn</label>
+        <textarea id="shortDesc" placeholder="3-5 điểm nhấn tính năng/lợi ích sản phẩm lấy từ website gốc hoặc trang bán hàng."></textarea>
+        <small>Tập trung mô tả sản phẩm. Nếu link không đọc được, app sẽ ghi rõ phần nào là gợi ý.</small>
+
+        <div class="two-cols">
+          <div>
+            <label for="webPrice">Giá bán gợi ý</label>
+            <input id="webPrice" placeholder="Giá thực tế đang hiển thị trên web" />
+            <small>Ưu tiên lấy đúng giá đang hiển thị trên website.</small>
+          </div>
+          <div>
+            <label for="desiredPrice">Giá hiển thị bạn mong muốn</label>
+            <input id="desiredPrice" placeholder="Ví dụ: 13.990.000đ hoặc để trống dùng giá web" />
+            <small>Nếu nhập ô này, prompt sẽ ưu tiên hiển thị giá bạn mong muốn.</small>
+          </div>
+        </div>
+
+        <label for="promotion">Khuyến mãi</label>
+        <div class="inline-field compact">
+          <textarea id="promotion" placeholder="Top 3 khuyến mãi tốt nhất trên web nếu có"></textarea>
+          <button class="mini-btn ghost" type="button" onclick="clearPromotion()">Thay đổi</button>
+        </div>
+        <small>Bấm “Thay đổi” để xóa trắng và nhập khuyến mãi theo ý bạn.</small>
+
+        <label for="customer">Đối tượng khách hàng</label>
+        <input id="customer" placeholder="AI gợi ý theo sản phẩm: ai nên mua, nhu cầu chính, hành vi mua hàng..." />
+
+        <div class="two-cols">
+          <div>
+            <label for="storeAddress">Địa chỉ siêu thị / nơi bán</label>
+            <input id="storeAddress" placeholder="Ví dụ: Điện Máy Xanh Buôn Ma Thuột" />
+          </div>
+          <div>
+            <label for="contactPhone">Số điện thoại liên hệ</label>
+            <div class="inline-field compact single-line">
+              <input id="contactPhone" placeholder="SĐT tư vấn / chốt đơn" />
+              <button class="mini-btn ghost" type="button" onclick="saveContactInfo()">Cập nhật</button>
+            </div>
+            <small>SĐT và địa chỉ sẽ lưu trên trình duyệt để tự điền ở các phiên sau.</small>
+          </div>
+        </div>
+
+        <h2>2. Cấu hình nhanh</h2>
+        <div class="two-cols">
+          <div>
+            <label for="contentStyle">Kiểu nội dung</label>
+            <select id="contentStyle"></select>
+          </div>
+          <div>
+            <label for="formatOption">Thời lượng / định dạng</label>
+            <select id="formatOption"></select>
+          </div>
+        </div>
+
+        <div class="two-cols">
+          <div>
+            <label for="characterFile">Tải file nhân vật</label>
+            <input class="file-input" id="characterFile" type="file" accept="image/*,video/*" onchange="handleCharacterFileChange()" />
+            <label for="character">Nhân vật</label>
+            <select id="character" onchange="updateHelperNotes()">
+              <option>AI tự chọn</option>
+              <option>MC nữ</option>
+              <option>MC nam</option>
+              <option>Chuyên gia</option>
+              <option>KOL</option>
+              <option>Người bán hàng thân thiện</option>
+              <option>Upload file nhân vật riêng</option>
+            </select>
+            <small id="characterNote">Nếu có nhân vật sẵn, hãy upload file trước. Hệ thống sẽ tự chuyển sang chế độ dùng file riêng.</small>
+          </div>
+          <div>
+            <label for="sceneFile">Tải file bối cảnh</label>
+            <input class="file-input" id="sceneFile" type="file" accept="image/*,video/*" onchange="handleSceneFileChange()" />
+            <label for="scene">Bối cảnh</label>
+            <select id="scene" onchange="updateHelperNotes()">
+              <option>AI tự chọn theo mô tả nơi bán</option>
+              <option>Studio sang trọng</option>
+              <option>Cửa hàng</option>
+              <option>Văn phòng</option>
+              <option>Ngoài trời</option>
+              <option>Showroom</option>
+              <option>Upload file bối cảnh riêng</option>
+            </select>
+            <small id="sceneNote">Nếu không chọn bối cảnh, AI sẽ dựa trên mô tả ngắn và nơi bán để dựng cảnh.</small>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button type="button" class="primary-btn" onclick="generatePrompt()">✨ Tạo prompt cho người dùng sửa</button>
+          <button type="button" class="heart-btn" onclick="copyVipPrompt()">❤️ Copy Prompt VIP</button>
+        </div>
+      </form>
+
+      <aside class="panel preview-panel">
+        <h2>3. Bản PROMPT VIP có quyền chỉnh sửa</h2>
+        <div class="api-actions compact-actions">
+          <button class="mini-btn" type="button" onclick="generatePromptWithGemini()">⚡ Tạo bằng Gemini</button>
+          <button class="mini-btn ghost" type="button" onclick="checkSelectedAccount()">🔄 Kiểm tra API đang chọn</button>
+        </div>
+        <p class="muted">Prompt được ẩn cho đến khi bạn bấm “Tạo prompt” hoặc “Tạo bằng Gemini”. Bạn có thể sửa trực tiếp rồi bấm ❤️ để copy.</p>
+        <textarea id="promptOutput" class="prompt-output" placeholder="Prompt VIP sẽ hiện ở đây sau khi tạo..."></textarea>
+        <div id="copyStatus" class="status"></div>
+
+        <div class="quick-links">
+          <h3>Cách dùng sau khi copy</h3>
+          <ol>
+            <li>Bấm ❤️ Copy Prompt VIP.</li>
+            <li>Chọn công cụ bên dưới để mở tab mới.</li>
+            <li>Đăng nhập bằng tài khoản của người dùng.</li>
+            <li>Dán prompt và tạo ảnh/video.</li>
+            <li>Tải file về để đăng TikTok, Facebook, YouTube hoặc Zalo.</li>
+          </ol>
+          <div class="connect-row">
+            <button type="button" id="canvaStatus" onclick="toggleConnected('canva')">Canva: chưa kết nối</button>
+            <button type="button" id="chatgptStatus" onclick="toggleConnected('chatgpt')">ChatGPT: chưa kết nối</button>
+          </div>
+          <div class="tool-links" id="toolLinks"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel feedback-panel">
+      <h2>4. Đóng góp & phản hồi</h2>
+      <p class="muted">Gửi góp ý để Thiên Kim ghi nhận vào Google Sheet. Nếu có phản hồi, lần sau bạn mở lại app sẽ thấy nội dung phản hồi.</p>
+      <div class="feedback-grid">
+        <input id="feedbackName" placeholder="Tên của bạn" />
+        <input id="feedbackEmail" placeholder="Email hoặc mã nhận phản hồi" />
+      </div>
+      <textarea id="feedbackMessage" placeholder="Nhập góp ý của bạn..."></textarea>
+      <div class="action-row feedback-actions">
+        <button type="button" class="primary-btn" onclick="submitFeedback()">📩 Gửi đóng góp</button>
+        <button type="button" class="mini-btn ghost" onclick="loadFeedbackReply()">🔎 Xem phản hồi</button>
+      </div>
+      <div id="feedbackStatus" class="status"></div>
+      <div id="feedbackReply" class="reply-box"></div>
+    </section>
+
+    <footer>
+      <a class="back-link" href="/apps/">← Quay về Apps Mì Ăn Liền</a>
+      <span>AI.TKver4.6</span>
+    </footer>
+  </main>
+
+  <div class="modal-backdrop" id="uploadModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
+      <h2 id="uploadModalTitle">Xác nhận file upload</h2>
+      <p id="uploadModalText">Bạn đã chọn dùng file riêng. Sau khi copy prompt, bạn cần upload đúng file đó lên công cụ AI để kết quả khớp với prompt.</p>
+      <div class="modal-actions">
+        <button class="mini-btn ghost" type="button" onclick="closeUploadModal(false)">Quay lại kiểm tra</button>
+        <button class="mini-btn" type="button" onclick="closeUploadModal(true)">Tôi đã hiểu, tiếp tục copy</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="apiModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="apiModalTitle">
+      <h2 id="apiModalTitle">API tài khoản</h2>
+      <p class="muted">Dán Gemini API Key của tài khoản này. Key chỉ lưu trong trình duyệt đang dùng.</p>
+      <input id="apiModalInput" type="password" placeholder="Dán Gemini API Key tại đây" />
+      <div id="apiModalStatus" class="status"></div>
+      <div class="modal-actions">
+        <button class="mini-btn ghost" type="button" onclick="closeApiModal()">Đóng</button>
+        <button class="mini-btn" type="button" onclick="saveApiFromModal()">Hoàn tất</button>
+        <button class="mini-btn" type="button" onclick="checkApiFromModal()">Kiểm tra API</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="apiHelpModal" aria-hidden="true">
+    <div class="modal-card large" role="dialog" aria-modal="true" aria-labelledby="apiHelpTitle">
+      <h2 id="apiHelpTitle">Hướng dẫn lấy Gemini API Key</h2>
+      <ol class="help-list">
+        <li>Mở Google AI Studio bằng tài khoản Google muốn sử dụng.</li>
+        <li>Vào mục API Key / Get API key.</li>
+        <li>Tạo key mới, copy key và quay lại app.</li>
+        <li>Bấm API tài khoản 1/2/3, dán key, bấm Hoàn tất.</li>
+        <li>Bấm lại tài khoản đó và chọn Kiểm tra API. Màu xanh là dùng được, màu đỏ là lỗi hoặc hết credit.</li>
+      </ol>
+      <p class="muted"><b>Bảo mật:</b> Key lưu trên localStorage của trình duyệt. Nếu xóa cache/cookie, đổi máy hoặc đổi trình duyệt thì sẽ mất. Không nên dùng máy công cộng.</p>
+      <div class="modal-actions">
+        <button class="mini-btn ghost" type="button" onclick="closeApiHelp()">Đóng</button>
+        <button class="mini-btn" type="button" onclick="window.open('https://aistudio.google.com/app/apikey','_blank','noopener,noreferrer')">Mở Google AI Studio</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

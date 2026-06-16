@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>App Manager - THIENKIM</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin-page app-manager-page">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">✦ <span>App<br>Manager</span></div>
+    <div id="adminUserBox" class="admin-user">Đang kiểm tra...</div>
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="../apps/index.html">Xem App Center</a>
+      <a href="../index.html">Trang chủ</a>
+    </nav>
+    <button id="adminLogout">Đăng xuất</button>
+  </aside>
+  <main class="admin-main">
+    <h1>App Manager</h1>
+    <p>Admin có thể set ứng dụng VIP hoặc ứng dụng thường. Cấu hình bản này lưu trong LocalStorage để test nhanh.</p>
+    <section class="manager-preview">
+      <h2>Danh sách ứng dụng</h2>
+      <div id="appManagerList" class="app-manager-list"></div>
+      <button id="resetAppConfig">Reset cấu hình mặc định</button>
+      <button id="exportAppConfig">Copy cấu hình JSON</button>
+      <textarea id="appConfigExport" rows="10" readonly></textarea>
+    </section>
+    <section class="manager-preview">
+      <h2>Gợi ý cột Google Sheet cho User</h2>
+      <div class="domain-table">
+        <div><b>Cột</b><b>Giá trị</b><b>Ý nghĩa</b></div>
+        <div><span>vip_access</span><span>Y/N</span><span>Cho phép dùng toàn bộ app VIP.</span></div>
+        <div><span>create_video</span><span>Y/N</span><span>Cho phép dùng app Create Video.</span></div>
+        <div><span>ai_prompt</span><span>Y/N</span><span>Cho phép dùng app AI Prompt.</span></div>
+        <div><span>app_order</span><span>["ai-prompt","create-video"]</span><span>Sắp xếp app ưu tiên theo user.</span></div>
+        <div><span>mood_tracking</span><span>Y/N</span><span>Bật/tắt trải nghiệm cảm xúc.</span></div>
+      </div>
+    </section>
+  </main>
+  <script src="../config/google-sheet.js"></script>
+  <script src="../config/modules.js"></script>
+  <script src="../assets/js/app-manager.js"></script>
+<div id="buildVersion" title="THIENKIM build version">TKver4.6</div>
+</body>
+</html>

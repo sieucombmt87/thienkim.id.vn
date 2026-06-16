@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR Code Pro - THIENKIM</title><link rel="stylesheet" href="./style.css?v=TKver4.6"></head>
+<body><main class="tk-app-shell qr-app">
+<div class="modal-card">
+  <a class="close" href="../index.html">×</a>
+  <h1>QR CODE PRO</h1>
+  <div class="tabs"><button id="createTab" class="active">🖊 Tạo mã</button><button id="showTab">▶ Trình diễn</button><button id="scanTab">📷 Quét</button></div>
+  <div class="tabs mini"><button data-type="qr" class="active">QR Code</button><button data-type="barcode">Barcode 128</button></div>
+  <div class="import-box">
+    <input id="contentInput" placeholder="Nhập nội dung hoặc upload Excel/CSV...">
+    <input id="excelInput" type="file" accept=".csv,.txt,.xlsx,.xls">
+  </div>
+  <small class="muted">Excel/CSV: hệ thống sẽ đọc từng dòng/cột và tự tạo danh sách QR. Với .xlsx dùng thư viện sheetjs online, nếu mạng chặn hãy xuất CSV.</small>
+  <div class="dashboard"><span>Tổng: <b id="totalCount">0</b></span><span>Đã chạy: <b id="playedCount">0</b></span><span>Lỗi: <b id="failedCount">0</b></span></div>
+  <div class="code-preview" id="preview"><span>Mã sẽ hiện ở đây...</span></div>
+  <div class="control-row">
+    <select id="delaySelect"><option value="2000">2 giây</option><option value="3000">3 giây</option><option value="4000">4 giây</option><option value="5000">5 giây</option><option value="10000">10 giây</option></select>
+    <button class="tk-btn green" id="playBtn">▶ Chạy</button>
+    <button class="tk-btn red" id="stopBtn">⏸ Dừng</button>
+    <button class="tk-btn ghost" id="downloadBtn">⬇ Tải ảnh</button>
+  </div>
+  <p class="hint">Khi trình diễn, nhấn <b>SPACE</b> để đánh dấu QR lỗi. Sau khi chạy hết, hệ thống tự chạy lại danh sách lỗi.</p>
+  <section class="history"><b>Danh sách QR</b><div id="historyList"></div></section>
+  <div id="scanBox" class="hidden"><video id="video" playsinline></video><p id="scanResult"></p></div>
+</div>
+</main><script src="./app.js?v=TKver4.6"></script><div id="buildVersion">TKver4.6</div></body></html>
