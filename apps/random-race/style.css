@@ -1,12 +1,63 @@
-:root{--gold:#ffd76a;--blue:#4cc9ff;--pink:#ff4fd8;--dark:#090d18;--glass:rgba(255,255,255,.11)}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#070b16;color:#fff}.hidden{display:none!important}
-.race-app{min-height:100vh;background:radial-gradient(circle at 20% 0%,rgba(76,201,255,.25),transparent 35%),radial-gradient(circle at 80% 10%,rgba(255,79,216,.20),transparent 34%),linear-gradient(135deg,#070b16,#12091d)}
-button{cursor:pointer;border:0;border-radius:14px;font-weight:900}.race-head{display:flex;justify-content:space-between;align-items:center;max-width:1320px;margin:0 auto;padding:16px}.race-head a{color:#ffd76a;text-decoration:none;font-weight:900}.race-head div{text-align:right}.race-head b{display:block;color:#ffd76a}.race-head span{font-size:12px;color:#aaa}
-.hero-card{max-width:1320px;margin:0 auto 18px;padding:28px;border:1px solid rgba(255,215,106,.2);border-radius:28px;background:rgba(255,255,255,.08);display:flex;justify-content:space-between;gap:18px;align-items:center;box-shadow:0 24px 70px rgba(0,0,0,.25)}.kicker{color:#ffd76a;font-weight:1000;letter-spacing:1.5px}.hero-card h1{font-size:clamp(32px,5vw,68px);line-height:.95;margin:6px 0}.hero-card button,.primary{height:48px;padding:0 22px;background:linear-gradient(90deg,#fff2a8,#ffcc33,#ff8c00);color:#211200}
-.setup-grid{max-width:1320px;margin:0 auto;padding:0 16px 70px;display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:16px}.panel{border:1px solid rgba(255,255,255,.14);border-radius:24px;background:rgba(255,255,255,.08);padding:18px;backdrop-filter:blur(12px)}.panel h2{margin:0 0 14px;color:#ffd76a}label{display:block;font-weight:800;color:#e7dcb7;margin:10px 0}input,textarea,select{width:100%;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.32);color:#fff;border-radius:14px;padding:12px;font-size:15px;margin-top:6px}textarea{min-height:96px;resize:vertical}.players-panel textarea{min-height:260px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.ghost{height:42px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.16)}.danger{height:44px;background:#ff405d;color:white;width:100%;margin-top:12px}
-.race-stage{min-height:100vh;position:relative;background-image:var(--race-bg),linear-gradient(135deg,#071425,#1b0c2b);background-size:cover;background-position:center;overflow:hidden}.stage-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38)}.stage-title{position:relative;z-index:2;display:grid;grid-template-columns:140px 1fr 140px;align-items:center;gap:12px;padding:18px}.stage-title h1{text-align:center;margin:0;font-size:clamp(24px,4vw,58px);text-shadow:0 4px 18px rgba(0,0,0,.6)}.stage-title p{text-align:center;margin:6px 0;color:#f4e7bd}.stage-title button{height:46px;background:#ffd76a;color:#1b1200}
-.race-track-wrap{position:relative;z-index:2;width:min(1200px,96vw);margin:10px auto 80px;display:grid;gap:10px}.lane{position:relative;height:58px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);overflow:hidden}.lane::after{content:"";position:absolute;right:54px;top:0;bottom:0;width:5px;background:repeating-linear-gradient(0deg,#fff 0 8px,#111 8px 16px)}.racer{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:8px;transition:left .2s linear}.racer-icon{font-size:34px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}.racer-name{font-weight:900;text-shadow:0 2px 8px #000}.lane.winner{box-shadow:0 0 28px rgba(255,215,106,.8);border-color:#ffd76a}
-.winner-screen{position:fixed;inset:0;z-index:30;background:radial-gradient(circle,rgba(255,215,106,.25),rgba(0,0,0,.92));display:flex;align-items:center;justify-content:center}.winner-card{width:min(760px,92vw);padding:30px;border-radius:32px;background:rgba(0,0,0,.68);border:1px solid rgba(255,215,106,.35);text-align:center;box-shadow:0 0 70px rgba(255,215,106,.25)}.winner-card h1{font-size:clamp(36px,7vw,82px);margin:8px 0;color:#ffd76a}.winner-row{padding:12px;margin:8px;border-radius:18px;background:rgba(255,255,255,.1);font-size:22px;font-weight:900}.winner-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:18px}.winner-actions button{height:44px;background:#4cc9ff;color:#00101a}
-.history-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:40;display:flex;align-items:center;justify-content:center}.history-card{width:min(800px,92vw);max-height:85vh;overflow:auto;border-radius:24px;background:#111a2a;padding:20px;border:1px solid rgba(255,215,106,.25)}#closeHistoryBtn{float:right;width:38px;height:38px}.history-item{padding:12px;border-bottom:1px solid rgba(255,255,255,.1)}
-.confetti span{position:fixed;top:-20px;font-size:28px;animation:fall 2.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
-@media(max-width:900px){.hero-card{margin:0 10px 12px;display:block}.setup-grid{grid-template-columns:1fr;padding:0 10px 60px}.stage-title{grid-template-columns:1fr}.stage-title button{width:100%}.lane{height:50px}.racer-icon{font-size:28px}.winner-actions{grid-template-columns:1fr}.row2,.row3{grid-template-columns:1fr}}
+:root{--gold:#ffd76a;--green:#1fc515;--water:#2c92a6;--water2:#3aaabc;--dark:#070b16}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#061022;color:#fff}
+.hidden{display:none!important}
+button{border:0;cursor:pointer;font-weight:900}
+.tk-race-app{min-height:100vh;background:radial-gradient(circle at 20% 0%,rgba(255,215,106,.20),transparent 30%),linear-gradient(135deg,#080b16,#211227)}
+.setup-head{max-width:1320px;margin:auto;padding:16px;display:flex;align-items:center;justify-content:space-between}
+.setup-head a{color:var(--gold);text-decoration:none;font-weight:900}
+.setup-head b{display:block;color:var(--gold)}
+.setup-head span{font-size:12px;color:#ccc}
+.setup-hero{max-width:1320px;margin:0 auto 16px;padding:24px;border-radius:28px;border:1px solid rgba(255,215,106,.25);background:rgba(255,255,255,.08);display:flex;justify-content:space-between;gap:16px;align-items:center}
+.setup-hero p{color:var(--gold);font-weight:1000;letter-spacing:1.5px;margin:0}
+.setup-hero h1{font-size:clamp(34px,6vw,74px);line-height:.95;margin:6px 0}
+.setup-hero span{color:#f3e7c5}
+.setup-hero button,.primary{height:48px;border-radius:15px;padding:0 22px;background:linear-gradient(90deg,#fff2a8,#ffcc33,#ff8c00);color:#1a1200}
+.setup-grid{max-width:1320px;margin:auto;padding:0 16px 70px;display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:16px}
+.panel{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:24px;padding:18px;backdrop-filter:blur(12px)}
+.panel h2{color:var(--gold);margin:0 0 12px}
+label{display:block;margin:10px 0;font-weight:800;color:#f2e5bd}
+input,textarea,select{width:100%;margin-top:6px;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.28);color:#fff;font-size:15px}
+textarea{min-height:95px;resize:vertical}.players-panel textarea{min-height:260px}
+.mini-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini-row.three{grid-template-columns:1fr 1fr 1fr}.ghost{height:42px;border-radius:14px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.14)}
+.race-view{min-height:100vh;position:relative;overflow:hidden;background:var(--custom-bg),linear-gradient(#15c719 0 19%,#93551d 19% 22%,#2c91a5 22% 100%);background-size:cover;background-position:center}
+.race-bg-overlay{position:absolute;inset:0;background:rgba(0,0,0,.0)}
+.race-toolbar{position:relative;z-index:5;height:128px;display:grid;grid-template-columns:48px 48px 48px 90px 90px 1fr 120px;gap:7px;align-items:start;padding:14px 10px}
+.square{height:48px;background:#111;color:#fff;font-size:28px;border-radius:0;border:3px solid #000}
+.text-btn{height:38px;background:transparent;color:#fff;font-size:20px;text-shadow:0 1px 2px #000;align-self:center}
+.text-btn.right{justify-self:end;background:rgba(0,0,0,.45);height:42px;border-radius:12px;padding:0 12px}
+.timer{justify-self:center;align-self:start;background:#eef0ff;color:#000;border:5px solid #333;border-radius:15px;font-size:clamp(46px,8vw,90px);line-height:1;padding:8px 26px;font-variant-numeric:tabular-nums;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.event-strip{position:absolute;z-index:4;top:14px;right:10px;text-align:right;max-width:310px;color:white;text-shadow:0 2px 5px #000}
+.event-strip h1{font-size:18px;margin:0;color:#fff}.event-strip p{font-size:13px;margin:4px 0}
+.water-track{position:relative;z-index:3;height:calc(100vh - 128px);min-height:410px;overflow:hidden;background:linear-gradient(180deg,rgba(80,180,205,.7),rgba(35,125,145,.9))}
+.water-track::before,.water-track::after{content:"";position:absolute;left:0;right:0;height:100%;background:
+  radial-gradient(ellipse at 20% 20%,rgba(255,255,255,.18) 0 2px,transparent 3px),
+  repeating-linear-gradient(170deg,transparent 0 45px,rgba(255,255,255,.08) 46px 58px,transparent 59px 110px);
+opacity:.55;animation:wave 7s linear infinite}
+.water-track::after{opacity:.35;animation-duration:11s;transform:translateX(-30px)}
+@keyframes wave{to{background-position:260px 0, 240px 0}}
+.finish-line{position:absolute;top:0;bottom:0;width:64px;z-index:2;transform:skewX(-14deg);background:
+  conic-gradient(#fff 25%,#111 0 50%,#fff 0 75%,#111 0) 0/32px 32px;
+box-shadow:0 0 0 3px rgba(0,0,0,.8)}
+.lane{position:absolute;left:0;right:0;height:78px}
+.duck-racer{position:absolute;left:0;top:50%;transform:translate(-50%,-50%);width:112px;height:82px;z-index:3;transition:filter .2s}
+.duck-racer img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 2px rgba(0,0,0,.20))}
+.racer-name-bubble{position:absolute;left:50%;top:-28px;transform:translateX(-50%);background:#fff;color:#111;border:3px solid #000;border-radius:12px;padding:2px 9px;font-size:22px;line-height:1;font-weight:500;white-space:nowrap}
+.racer-number{position:absolute;right:16px;top:43px;background:white;color:#111;border-radius:50%;width:32px;height:28px;text-align:center;line-height:28px;border:2px solid rgba(0,0,0,.2);font-weight:900}
+.duck-racer.winner{filter:drop-shadow(0 0 18px #fff47a) drop-shadow(0 0 30px #ffb400)}
+.race-again-popup{position:absolute;left:58px;top:22px;z-index:20;width:270px;background:white;border:6px solid #000;border-radius:8px;color:#111;padding:10px;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.race-again-popup label{color:#111;margin:0 34px 6px 0;font-size:13px}
+.race-again-popup input{width:auto;margin:0 4px 0 0}
+.race-again-popup button:not(.close-mini){width:100%;height:46px;border-radius:7px;background:#52ba17;color:white;font-size:23px}
+.close-mini{position:absolute;right:6px;top:5px;width:30px;height:30px;border-radius:50%;background:#f6f6f6;color:#e22;font-size:22px}
+.trophy-btn{position:absolute;right:28px;bottom:22px;z-index:15;width:74px;height:74px;border-radius:50%;background:white;color:#111;border:6px solid #000;font-size:36px}
+.winner-view{position:fixed;inset:0;z-index:50;background:radial-gradient(circle,rgba(255,215,106,.24),rgba(0,0,0,.92));display:flex;align-items:center;justify-content:center}
+.winner-card{width:min(760px,92vw);padding:30px;border-radius:32px;background:rgba(0,0,0,.75);border:1px solid rgba(255,215,106,.35);text-align:center}
+.winner-card p{color:var(--gold);font-weight:1000}.winner-card h1{font-size:clamp(34px,7vw,82px);margin:8px 0;color:var(--gold)}
+.winner-row{padding:12px;margin:8px;border-radius:18px;background:rgba(255,255,255,.11);font-size:22px;font-weight:900}
+.winner-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:18px}.winner-actions button{height:44px;border-radius:13px;background:#4cc9ff;color:#00101a}
+.fireworks span{position:fixed;top:-25px;font-size:28px;animation:fall 2.7s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.history-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:60;display:flex;align-items:center;justify-content:center}.history-card{width:min(820px,94vw);max-height:85vh;overflow:auto;border-radius:24px;background:#111a2a;padding:20px;border:1px solid rgba(255,215,106,.25)}#closeHistoryBtn{float:right;width:38px;height:38px;border-radius:50%}.history-item{padding:12px;border-bottom:1px solid rgba(255,255,255,.1)}.danger{height:44px;border-radius:13px;background:#ff405d;color:white;width:100%;margin-top:12px}
+@media(max-width:860px){
+  .setup-hero{margin:0 10px 12px;display:block}.setup-grid{grid-template-columns:1fr;padding:0 10px 60px}.mini-row,.mini-row.three{grid-template-columns:1fr}.race-toolbar{height:96px;grid-template-columns:36px 36px 36px 1fr;gap:4px;padding:7px}.square{height:36px;font-size:20px}.text-btn{display:none}.timer{grid-column:1/5;grid-row:2;font-size:40px;padding:6px 14px}.event-strip{display:none}.water-track{height:calc(100vh - 96px);min-height:430px}.duck-racer{width:88px;height:66px}.racer-name-bubble{font-size:16px;top:-20px;border-width:2px}.racer-number{width:24px;height:22px;line-height:22px;font-size:12px;right:10px;top:34px}.finish-line{width:46px}.trophy-btn{width:60px;height:60px;font-size:28px;right:12px;bottom:14px}.winner-actions{grid-template-columns:1fr}.race-again-popup{left:10px;top:8px;width:250px}
+}
