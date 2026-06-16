@@ -1,5 +1,5 @@
 /**
- * TKver4.6
+ * TKver4.7
  * Role mới: Family
  * Family được viết/sửa Flex Profile và Academy.
  * Flex Profile thêm trường visibility:

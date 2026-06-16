@@ -1,6 +1,6 @@
 /******************************************************
  * TK-AI-VIDEO Backend - Google Apps Script
- * Version: AI.TKver4.6
+ * Version: AI.TKver4.7
  * Dùng cho: https://thienkim.id.vn/apps/ai-video/
  *
  * Cách dùng nhanh:
@@ -18,7 +18,7 @@ const TK_CONFIG = {
 };
 
 function doGet(e) {
-  return jsonOutput({ ok: true, app: 'TK-AI-VIDEO', version: 'AI.TKver4.6', message: 'Backend đang hoạt động.' });
+  return jsonOutput({ ok: true, app: 'TK-AI-VIDEO', version: 'AI.TKver4.7', message: 'Backend đang hoạt động.' });
 }
 
 function doPost(e) {
@@ -286,7 +286,7 @@ function getFeedbackReply(payload) {
 }
 
 /***********************
- * AI.TKver4.6 Backend Overrides
+ * AI.TKver4.7 Backend Overrides
  ***********************/
 function extractReadableText(html, url) {
   let text = html || '';

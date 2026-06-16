@@ -1,5 +1,5 @@
 /**
- * TKver4.6 - Google Sheet Login API
+ * TKver4.7 - Google Sheet Login API
  * Dùng cho Google Apps Script Web App.
  *
  * Sheet link hiện tại:
@@ -117,7 +117,7 @@ function login_(params) {
         source: 'google_sheet'
       };
 
-      // TKver4.6: trả thêm các cột mở rộng nếu có trong Google Sheet
+      // TKver4.7: trả thêm các cột mở rộng nếu có trong Google Sheet
       headers.forEach((h, colIndex) => {
         if (!user[h] && !['username','password','full_name','role','status'].includes(h)) {
           user[h] = clean_(row[colIndex]);

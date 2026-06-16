@@ -1,4 +1,4 @@
-const APP_VERSION = (window.TK_CONFIG && TK_CONFIG.VERSION) || "AI.TKver4.6";
+const APP_VERSION = (window.TK_CONFIG && TK_CONFIG.VERSION) || "AI.TKver4.7";
 let currentAssetMode = "video";
 let uploadConfirmed = false;
 let pendingCopyAfterConfirm = false;
@@ -157,7 +157,7 @@ async function loadFeedbackReply() { const email = $("feedbackEmail").value.trim
 window.addEventListener("DOMContentLoaded", () => { setAssetMode("video"); renderApiAccounts(); updateConnections(); updateHelperNotes(); autoRecheckDueAccounts(); });
 
 /***********************
- * AI.TKver4.6 Overrides
+ * AI.TKver4.7 Overrides
  ***********************/
 let apiModalAccount = 1;
 

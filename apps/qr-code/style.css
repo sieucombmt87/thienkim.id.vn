@@ -30,3 +30,37 @@ textarea{height:90px;padding:10px 12px;resize:vertical}label{font-weight:800;col
 .code-preview img{max-width:94%;max-height:94%}.control-row{display:grid;grid-template-columns:130px 1fr 1fr 1fr;gap:8px}
 #scanBox.hidden{display:none}video{width:100%;border-radius:16px;background:#000}.history{margin-top:12px;font-size:13px}.history button{margin:4px;padding:6px 10px;border-radius:999px;border:1px solid #ddd;background:#fff}.failed-item{background:#ffe5e5!important;border-color:#ff7b7b!important}.hint{font-size:13px;color:#777}
 @media(max-width:768px){.modal-card{padding:16px;border-width:7px}.code-preview{height:245px}.modal-card h1{font-size:24px}.import-box,.control-row{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}}
+
+/* TKver4.7 QR UX fix */
+.qr-tabs-two{grid-template-columns:1fr 1fr!important}
+#contentInput{
+  min-height:86px;
+  height:86px;
+  resize:vertical;
+  line-height:1.35;
+  padding:10px 12px;
+}
+.qr-caption{
+  position:absolute;
+  right:14px;
+  bottom:12px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:rgba(0,0,0,.65);
+  color:white;
+}
+.code-preview{position:relative}
+#historyList{
+  max-height:180px;
+  overflow:auto;
+  padding-top:6px;
+}
+#historyList button{
+  max-width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+@media(max-width:768px){
+  #contentInput{min-height:110px;height:110px}
+}

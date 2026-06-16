@@ -1,3 +1,16 @@
+
+(function(){
+  if(document.getElementById("tk47AppCenterFix")) return;
+  const style=document.createElement("style");
+  style.id="tk47AppCenterFix";
+  style.textContent=`
+    .clean-app-tool .app-icon-wrap{display:inline-flex!important;position:relative!important;align-items:center!important;justify-content:center!important;margin-bottom:8px!important}
+    .clean-app-tool .app-icon-wrap img,.clean-app-tool img{display:block!important;opacity:1!important;visibility:visible!important}
+    .clean-app-tool .vip-logo-badge{display:inline-flex!important}
+  `;
+  document.head.appendChild(style);
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
   const user = typeof getSavedUser === "function" ? getSavedUser() : null;
   const status = document.getElementById("appUserStatus");

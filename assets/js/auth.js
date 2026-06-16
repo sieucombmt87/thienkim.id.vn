@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let data;
 
-      // TKver4.6 - Offline test accounts, không cần Google Sheet
+      // TKver4.7 - Offline test accounts, không cần Google Sheet
       const offlineUsers = {
         "0947924444": {
           password: "0987471471",
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-/* TKver4.6 behavior: VIP/Sales star redirects to Admin; Admin star pulses only. */
+/* TKver4.7 behavior: VIP/Sales star redirects to Admin; Admin star pulses only. */
 
 function tkSaveVipSession(user){
   if(!user) return;
