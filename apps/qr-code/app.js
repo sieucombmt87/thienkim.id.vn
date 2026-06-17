@@ -54,6 +54,42 @@ document.getElementById("scanTab").onclick=()=>startScan();document.getElementBy
 
 function showScanMode(){document.getElementById("createMode").classList.add("hidden");document.getElementById("scanBox").classList.remove("hidden");document.getElementById("scanTab").classList.add("active");document.getElementById("createTab").classList.remove("active");}
 function showCreateMode(){document.getElementById("createMode").classList.remove("hidden");document.getElementById("scanBox").classList.add("hidden");document.getElementById("createTab").classList.add("active");document.getElementById("scanTab").classList.remove("active");}
+
+function resetScanChoiceUI(){
+  scanPool=[];
+  clearTimeout(singleAutoTimer);
+  const box=document.getElementById("scanCandidateList");
+  if(box)box.innerHTML="";
+  showSingleScan("Đang chờ quét...");
+  lastScan="";
+}
+function showFocusDot(clientX,clientY){
+  const frame=document.querySelector(".scan-frame");
+  if(!frame)return;
+  const rect=frame.getBoundingClientRect();
+  const dot=document.createElement("span");
+  dot.className="scan-focus-dot";
+  dot.style.left=(clientX-rect.left)+"px";
+  dot.style.top=(clientY-rect.top)+"px";
+  frame.appendChild(dot);
+  setTimeout(()=>dot.remove(),760);
+}
+async function tryFocusAtPoint(clientX,clientY){
+  showFocusDot(clientX,clientY);
+  try{
+    const videoTrack=scanStream?.getVideoTracks?.()[0];
+    if(!videoTrack)return;
+    const caps=videoTrack.getCapabilities ? videoTrack.getCapabilities() : {};
+    const settings={advanced:[]};
+    if(caps.focusMode && caps.focusMode.includes("continuous")) settings.advanced.push({focusMode:"continuous"});
+    if(caps.pointsOfInterest){
+      const rect=document.querySelector(".scan-frame").getBoundingClientRect();
+      settings.pointsOfInterest=[{x:Math.max(0,Math.min(1,(clientX-rect.left)/rect.width)),y:Math.max(0,Math.min(1,(clientY-rect.top)/rect.height))}];
+    }
+    if(settings.advanced.length || settings.pointsOfInterest) await videoTrack.applyConstraints(settings);
+  }catch(e){}
+}
+
 function loadJsQr(){if(window.jsQR)return Promise.resolve(true);return new Promise(resolve=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js";s.onload=()=>resolve(true);s.onerror=()=>resolve(false);document.head.appendChild(s);});}
 function candidateType(v){const s=String(v).toUpperCase();if(/^RT[0-9A-Z-]{8,}$/.test(s)||/S\/N|SERIAL|^SN|S-N/.test(s))return"S/N";if(/SN/.test(s))return"SN";if(/IMEI/.test(s)||/^\d{14,17}$/.test(s))return"IMEI";return"CODE";}
 function sortCandidates(arr){const rank={"S/N":0,"SN":1,"IMEI":2,"CODE":3};return[...new Set(arr.map(x=>String(x||"").trim()).filter(Boolean))].sort((a,b)=>(rank[candidateType(a)]??9)-(rank[candidateType(b)]??9)||a.localeCompare(b));}
@@ -61,8 +97,28 @@ function setMergedState(state){const box=document.getElementById("scanMergedBox"
 function showSingleScan(value){const r=document.getElementById("scanResult");if(r)r.textContent=value||"Đang chờ quét...";setMergedState(value?"single":"empty");}
 function renderCandidatesFromPool(){const sorted=sortCandidates(scanPool);const box=document.getElementById("scanCandidateList");if(!box)return;if(sorted.length<=1){box.innerHTML="";setMergedState(sorted.length===1?"single":"empty");return;}setMergedState("multi");box.innerHTML=sorted.map(v=>{const t=candidateType(v);return `<div class="scan-candidate-item ${t!=="CODE"?"priority":""}" data-candidate-value="${escapeHtml(v)}"><span class="scan-candidate-type">${t}</span><span class="scan-candidate-value" title="${escapeHtml(v)}">${escapeHtml(v)}</span><span class="scan-candidate-add">CHỌN</span></div>`;}).join("");}
 function renderCandidates(arr){scanPool=sortCandidates(arr);renderCandidatesFromPool();}
-async function startScan(retry=false){showScanMode();scanPool=[];clearTimeout(singleAutoTimer);renderCandidates([]);showSingleScan("");const result=document.getElementById("scanResult");try{stopScan(false);const constraints={video:{facingMode:isMobile()?{ideal:"environment"}:"user",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"},{exposureMode:"continuous"}]},audio:false};scanStream=await navigator.mediaDevices.getUserMedia(constraints).catch(()=>navigator.mediaDevices.getUserMedia({video:true,audio:false}));const video=document.getElementById("video");video.srcObject=scanStream;video.setAttribute("playsinline","true");video.muted=true;await video.play();result.textContent=retry?"Đang quét lại...":"Đang chờ quét...";const detector=("BarcodeDetector" in window)?new BarcodeDetector({formats:["qr_code","code_128","ean_13","ean_8","upc_a","upc_e"]}):null;const jsqrLoaded=await loadJsQr();const canvas=document.getElementById("scanCanvas");const ctx=canvas.getContext("2d",{willReadFrequently:true});scanTimer=setInterval(async()=>{try{let values=[];if(video.videoWidth>0){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0,canvas.width,canvas.height);if(detector)values=values.concat(await detectAllOrientations(detector,canvas));if(jsqrLoaded&&window.jsQR){const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);const code=jsQR(imageData.data,imageData.width,imageData.height,{inversionAttempts:"attemptBoth"});if(code&&code.data)values.push(code.data);}}if(values.length)onScanValues(values);}catch(err){}},420);}catch(e){result.innerHTML='<span class="scan-error-note">Không mở được camera. Kiểm tra quyền camera hoặc dùng HTTPS.</span>';if(confirm("Quét không được. Bạn muốn quét lại không?"))startScan(true);}}
+async function startScan(retry=false){showScanMode();resetScanChoiceUI();const result=document.getElementById("scanResult");try{stopScan(false);const constraints={video:{facingMode:isMobile()?{ideal:"environment"}:"user",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"},{exposureMode:"continuous"}]},audio:false};scanStream=await navigator.mediaDevices.getUserMedia(constraints).catch(()=>navigator.mediaDevices.getUserMedia({video:true,audio:false}));const video=document.getElementById("video");video.srcObject=scanStream;video.setAttribute("playsinline","true");video.muted=true;await video.play();result.textContent=retry?"Đang quét lại...":"Đang chờ quét...";const detector=("BarcodeDetector" in window)?new BarcodeDetector({formats:["qr_code","code_128","ean_13","ean_8","upc_a","upc_e"]}):null;const jsqrLoaded=await loadJsQr();const canvas=document.getElementById("scanCanvas");const ctx=canvas.getContext("2d",{willReadFrequently:true});scanTimer=setInterval(async()=>{try{let values=[];if(video.videoWidth>0){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0,canvas.width,canvas.height);if(detector)values=values.concat(await detectAllOrientations(detector,canvas));if(jsqrLoaded&&window.jsQR){const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);const code=jsQR(imageData.data,imageData.width,imageData.height,{inversionAttempts:"attemptBoth"});if(code&&code.data)values.push(code.data);}}if(values.length)onScanValues(values);}catch(err){}},420);}catch(e){result.innerHTML='<span class="scan-error-note">Không mở được camera. Kiểm tra quyền camera hoặc dùng HTTPS.</span>';if(confirm("Quét không được. Bạn muốn quét lại không?"))startScan(true);}}
 async function detectAllOrientations(detector,sourceCanvas){let values=[];async function run(c){try{const codes=await detector.detect(c);values=values.concat(codes.map(x=>x.rawValue).filter(Boolean));}catch(e){}}await run(sourceCanvas);const tmp=document.createElement("canvas");const t=tmp.getContext("2d");tmp.width=sourceCanvas.height;tmp.height=sourceCanvas.width;t.translate(tmp.width/2,tmp.height/2);t.rotate(Math.PI/2);t.drawImage(sourceCanvas,-sourceCanvas.width/2,-sourceCanvas.height/2);await run(tmp);t.setTransform(1,0,0,1,0,0);t.clearRect(0,0,tmp.width,tmp.height);t.translate(tmp.width/2,tmp.height/2);t.rotate(-Math.PI/2);t.drawImage(sourceCanvas,-sourceCanvas.width/2,-sourceCanvas.height/2);await run(tmp);return values;}
-function onScanValues(values){const before=scanPool.length;scanPool=sortCandidates(scanPool.concat(values));const sorted=scanPool;if(!sorted.length){renderCandidatesFromPool();showSingleScan("");return;}lastScan=sorted[0];if(sorted.length===1){showSingleScan(sorted[0]);renderCandidatesFromPool();clearTimeout(singleAutoTimer);singleAutoTimer=setTimeout(()=>{if(scanPool.length===1 && lastSingleAdded!==sorted[0])addScanned(sorted[0]);},950);return;}clearTimeout(singleAutoTimer);document.getElementById("scanResult").textContent=sorted[0];renderCandidatesFromPool();}
-function stopScan(hide=true){if(scanTimer){clearInterval(scanTimer);scanTimer=null;}if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}clearTimeout(singleAutoTimer);if(hide)document.getElementById("scanBox").classList.add("hidden");}
-loadList();
+function onScanValues(values){
+  const incoming=sortCandidates(values);
+  if(!incoming.length)return;
+  scanPool=sortCandidates(scanPool.concat(incoming));
+  const sorted=scanPool;
+  if(!sorted.length){renderCandidatesFromPool();showSingleScan("");return;}
+  lastScan=sorted[0];
+
+  if(sorted.length===1){
+    showSingleScan(sorted[0]);
+    renderCandidatesFromPool();
+    clearTimeout(singleAutoTimer);
+    singleAutoTimer=setTimeout(()=>{
+      if(scanPool.length===1 && lastSingleAdded!==sorted[0]) addScanned(sorted[0]);
+    },950);
+    return;
+  }
+
+  clearTimeout(singleAutoTimer);
+  const r=document.getElementById("scanResult");
+  if(r) r.textContent=sorted[0];
+  renderCandidatesFromPool();
+}
