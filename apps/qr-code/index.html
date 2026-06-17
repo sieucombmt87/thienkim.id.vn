@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QR Code Pro - THIENKIM</title>
-<link rel="stylesheet" href="./style.css?v=TKver5.5">
+<link rel="stylesheet" href="./style.css?v=TKver5.6">
 </head>
 <body>
 <main class="tk-app-shell qr-app">
@@ -71,8 +71,16 @@
 <section class="scan-mode hidden" id="scanBox">
 <div class="scan-frame"><video id="video" playsinline muted></video><canvas id="scanCanvas" class="hidden"></canvas><div class="scan-corners"></div></div>
 <p class="scan-help">Đưa camera vào mã QR hoặc mã vạch</p>
-<div class="scan-result-box"><span id="scanResult">Đang chờ quét...</span><button class="mini-copy soft-hidden" id="copyLastScanBtn">COPY</button></div>
-<section class="scan-candidate-card"><div class="list-head"><b>Mã nhận diện được</b><small>Chỉ hiện khi có nhiều mã</small></div><div id="scanCandidateList" class="scan-candidate-list"></div></section>
+<section class="scan-merged-box" id="scanMergedBox">
+  <div class="scan-single-result" id="scanSingleResult">
+    <span id="scanResult">Đang chờ quét...</span>
+  </div>
+  <div class="scan-candidate-card" id="scanCandidateCard">
+    <div class="list-head"><b>Mã nhận diện được</b><small>Chạm để đưa vào danh sách</small></div>
+    <div id="scanCandidateList" class="scan-candidate-list"></div>
+  </div>
+  <button class="mini-copy soft-hidden" id="copyLastScanBtn">COPY</button>
+</section>
 <div class="scan-bottom-bar"><button class="tk-btn red" id="scanRetryBtn">Quét lại</button><button class="tk-btn red" id="stopScanBtn">Dừng camera</button></div>
 <section class="list-card scan-list-card">
 <div class="list-head"><b>Danh sách đã quét</b><button class="mini-copy" id="copyScannedBtn2">Copy toàn bộ</button></div>
@@ -82,5 +90,5 @@
 </section>
 </div>
 </main>
-<script src="./app.js?v=TKver5.5"></script><div id="buildVersion">TKver5.5</div>
+<script src="./app.js?v=TKver5.6"></script><div id="buildVersion">TKver5.6</div>
 </body></html>
