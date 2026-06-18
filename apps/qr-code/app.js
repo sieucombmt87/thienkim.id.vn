@@ -1,3 +1,7 @@
+/* TKver5.9 HTTPS camera redirect */
+if(location.protocol !== "https:" && location.hostname !== "localhost"){
+  location.replace("https://" + location.host + location.pathname + location.search + location.hash);
+}
 let type="qr", items=[], index=0, timer=null, failed=[], played=0, scanned=[], scanStream=null, scanTimer=null, lastScan="";
 const input=document.getElementById("contentInput"), preview=document.getElementById("preview");
 let tapState={value:"",count:0,timer:null};
@@ -97,7 +101,8 @@ function setMergedState(state){const box=document.getElementById("scanMergedBox"
 function showSingleScan(value){const r=document.getElementById("scanResult");if(r)r.textContent=value||"Đang chờ quét...";setMergedState(value?"single":"empty");}
 function renderCandidatesFromPool(){const sorted=sortCandidates(scanPool);const box=document.getElementById("scanCandidateList");if(!box)return;if(sorted.length<=1){box.innerHTML="";setMergedState(sorted.length===1?"single":"empty");return;}setMergedState("multi");box.innerHTML=sorted.map(v=>{const t=candidateType(v);return `<div class="scan-candidate-item ${t!=="CODE"?"priority":""}" data-candidate-value="${escapeHtml(v)}"><span class="scan-candidate-type">${t}</span><span class="scan-candidate-value" title="${escapeHtml(v)}">${escapeHtml(v)}</span><span class="scan-candidate-add">CHỌN</span></div>`;}).join("");}
 function renderCandidates(arr){scanPool=sortCandidates(arr);renderCandidatesFromPool();}
-async function startScan(retry=false){showScanMode();resetScanChoiceUI();const result=document.getElementById("scanResult");try{stopScan(false);const constraints={video:{facingMode:isMobile()?{ideal:"environment"}:"user",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"},{exposureMode:"continuous"}]},audio:false};scanStream=await navigator.mediaDevices.getUserMedia(constraints).catch(()=>navigator.mediaDevices.getUserMedia({video:true,audio:false}));const video=document.getElementById("video");video.srcObject=scanStream;video.setAttribute("playsinline","true");video.muted=true;await video.play();result.textContent=retry?"Đang quét lại...":"Đang chờ quét...";const detector=("BarcodeDetector" in window)?new BarcodeDetector({formats:["qr_code","code_128","ean_13","ean_8","upc_a","upc_e"]}):null;const jsqrLoaded=await loadJsQr();const canvas=document.getElementById("scanCanvas");const ctx=canvas.getContext("2d",{willReadFrequently:true});scanTimer=setInterval(async()=>{try{let values=[];if(video.videoWidth>0){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0,canvas.width,canvas.height);if(detector)values=values.concat(await detectAllOrientations(detector,canvas));if(jsqrLoaded&&window.jsQR){const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);const code=jsQR(imageData.data,imageData.width,imageData.height,{inversionAttempts:"attemptBoth"});if(code&&code.data)values.push(code.data);}}if(values.length)onScanValues(values);}catch(err){}},420);}catch(e){result.innerHTML='<span class="scan-error-note">Không mở được camera. Kiểm tra quyền camera hoặc dùng HTTPS.</span>';if(confirm("Quét không được. Bạn muốn quét lại không?"))startScan(true);}}
+async function startScan(retry=false){showScanMode();resetScanChoiceUI();const result=document.getElementById("scanResult");try{stopScan(false);const constraints={video:{facingMode:isMobile()?{ideal:"environment"}:"user",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"},{exposureMode:"continuous"}]},audio:false};scanStream=await navigator.mediaDevices.getUserMedia(constraints).catch(()=>navigator.mediaDevices.getUserMedia({video:true,audio:false}));const video=document.getElementById("video");video.srcObject=scanStream;video.setAttribute("playsinline","true");video.muted=true;await video.play();
+    setTimeout(tkApplyCameraZoom,180);result.textContent=retry?"Đang quét lại...":"Đang chờ quét...";const detector=("BarcodeDetector" in window)?new BarcodeDetector({formats:["qr_code","code_128","ean_13","ean_8","upc_a","upc_e"]}):null;const jsqrLoaded=await loadJsQr();const canvas=document.getElementById("scanCanvas");const ctx=canvas.getContext("2d",{willReadFrequently:true});scanTimer=setInterval(async()=>{try{let values=[];if(video.videoWidth>0){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0,canvas.width,canvas.height);if(detector)values=values.concat(await detectAllOrientations(detector,canvas));if(jsqrLoaded&&window.jsQR){const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);const code=jsQR(imageData.data,imageData.width,imageData.height,{inversionAttempts:"attemptBoth"});if(code&&code.data)values.push(code.data);}}if(values.length)onScanValues(values);}catch(err){}},420);}catch(e){result.innerHTML='<span class="scan-error-note">Không mở được camera. Kiểm tra quyền camera hoặc dùng HTTPS.</span>';if(confirm("Quét không được. Bạn muốn quét lại không?"))startScan(true);}}
 async function detectAllOrientations(detector,sourceCanvas){let values=[];async function run(c){try{const codes=await detector.detect(c);values=values.concat(codes.map(x=>x.rawValue).filter(Boolean));}catch(e){}}await run(sourceCanvas);const tmp=document.createElement("canvas");const t=tmp.getContext("2d");tmp.width=sourceCanvas.height;tmp.height=sourceCanvas.width;t.translate(tmp.width/2,tmp.height/2);t.rotate(Math.PI/2);t.drawImage(sourceCanvas,-sourceCanvas.width/2,-sourceCanvas.height/2);await run(tmp);t.setTransform(1,0,0,1,0,0);t.clearRect(0,0,tmp.width,tmp.height);t.translate(tmp.width/2,tmp.height/2);t.rotate(-Math.PI/2);t.drawImage(sourceCanvas,-sourceCanvas.width/2,-sourceCanvas.height/2);await run(tmp);return values;}
 function onScanValues(values){
   const incoming=sortCandidates(values);
@@ -122,3 +127,19 @@ function onScanValues(values){
   if(r) r.textContent=sorted[0];
   renderCandidatesFromPool();
 }
+
+/* TKver5.9 camera zoom + image scan scaffold */
+async function tkApplyCameraZoom(){
+  try{
+    const track=scanStream?.getVideoTracks?.()[0]; if(!track) return;
+    const caps=track.getCapabilities?track.getCapabilities():{};
+    const zoom=Number(document.getElementById("zoomSelect")?.value||1);
+    if(caps.zoom){const z=Math.max(caps.zoom.min||1,Math.min(caps.zoom.max||zoom,zoom));await track.applyConstraints({advanced:[{zoom:z}]});}
+  }catch(e){}
+}
+document.getElementById("zoomSelect")?.addEventListener("change",tkApplyCameraZoom);
+document.getElementById("pickImageScanBtn")?.addEventListener("click",()=>document.getElementById("imageScanInput")?.click());
+document.getElementById("imageScanInput")?.addEventListener("change",async e=>{
+  const file=e.target.files?.[0]; if(!file) return;
+  alert("Đã nhận ảnh. Bản này chuẩn bị nền chọn ảnh; nếu camera lỗi hãy dùng HTTPS hoặc cấp lại quyền camera.");
+});

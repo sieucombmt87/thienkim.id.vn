@@ -1,4 +1,31 @@
 
+/* TKver5.9 guest usage sort */
+function tkGetCurrentUserForAppCenter(){try{return JSON.parse(localStorage.getItem("tk_current_user")||localStorage.getItem("currentUser")||localStorage.getItem("tk_user")||"null")}catch(e){return null}}
+function tkReadAppUsage(){try{return JSON.parse(localStorage.getItem("tk_app_usage")||"{}")}catch(e){return {}}}
+function tkTrackAppUsage(key){try{const u=tkReadAppUsage();u[key]=(u[key]||0)+1;localStorage.setItem("tk_app_usage",JSON.stringify(u))}catch(e){}}
+document.addEventListener("click",e=>{const a=e.target.closest("[data-app-key],.app-card,a[href*='/apps/']");if(!a)return;const key=a.dataset.appKey||a.dataset.key||(a.getAttribute("href")||"").split("/").filter(Boolean).pop()||a.textContent.trim();if(key)tkTrackAppUsage(key)});
+function tkApplyGuestUsageDomSort(){const user=tkGetCurrentUserForAppCenter();if(user&&(user.role||user.phone||user.name||user.username))return;const grid=document.querySelector(".app-grid,.apps-grid,#appGrid");if(!grid)return;const usage=tkReadAppUsage();[...grid.children].sort((a,b)=>{const ak=a.dataset.appKey||a.dataset.key||a.textContent.trim();const bk=b.dataset.appKey||b.dataset.key||b.textContent.trim();return (usage[bk]||0)-(usage[ak]||0)}).forEach(el=>grid.appendChild(el))}
+document.addEventListener("DOMContentLoaded",()=>setTimeout(tkApplyGuestUsageDomSort,180));
+
+(function(){
+  window.TK_APP_TOOLS = Array.isArray(window.TK_APP_TOOLS) ? window.TK_APP_TOOLS : (typeof TK_APP_TOOLS !== "undefined" ? TK_APP_TOOLS : []);
+  const hasRace = window.TK_APP_TOOLS.some(app => app && app.key === "random-race");
+  if(!hasRace){
+    window.TK_APP_TOOLS.unshift({
+      key:"random-race",
+      title:"Random Race",
+      desc:"Quay random bằng hiệu ứng cuộc đua, Top 1/Top 3 và lịch sử.",
+      icon:"assets/images/app-icons/random-race.svg",
+      vip:false
+    });
+  }
+  document.addEventListener("DOMContentLoaded",()=>{
+    const v=document.getElementById("buildVersion");
+    if(v) v.textContent="TKver5.9";
+  });
+})();
+
+
 (function(){
   if(document.getElementById("tk47AppCenterFix")) return;
   const style=document.createElement("style");
