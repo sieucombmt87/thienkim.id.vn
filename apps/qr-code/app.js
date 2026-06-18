@@ -1,4 +1,4 @@
-/* TKver7.0 QR Scanner Engine Rewrite */
+/* TKver7.1 QR Scanner Engine Rewrite */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false;
@@ -159,6 +159,7 @@ function addScanned(v){
   scanned=scanned.filter(x=>x.value!==v);
   scanned.unshift({value:v,deleted:false});
   if(inventoryMode) inventoryRecordScan(v);
+  showSuccessLock(v);
   renderScanned();
 }
 function renderScanned(){
@@ -242,3 +243,40 @@ $("#imageInput").addEventListener("change",async e=>{
 });
 
 renderScanned(); renderInventory();
+
+
+/* TKver7.1 one-hand + success lock */
+let lastSuccessTimer=null;
+function initHandedness(){
+  const saved=localStorage.getItem("tk_qr_hand")||"right";
+  document.body.classList.toggle("hand-left",saved==="left");
+  document.body.classList.toggle("hand-right",saved!=="left");
+  document.getElementById("handLeft")?.classList.toggle("active",saved==="left");
+  document.getElementById("handRight")?.classList.toggle("active",saved!=="left");
+}
+function setHandedness(side){
+  localStorage.setItem("tk_qr_hand",side);
+  initHandedness();
+}
+function findInventoryName(code){
+  const idx=inventoryMap?.[normalizeCode(code)];
+  return idx!==undefined ? (inventoryRows[idx]?.name||"") : "";
+}
+function findInventoryCount(code){
+  const idx=inventoryMap?.[normalizeCode(code)];
+  return idx!==undefined ? Number(inventoryRows[idx]?.count||0) : "";
+}
+function showSuccessLock(code){
+  const box=document.getElementById("successLock");
+  if(!box)return;
+  const name=findInventoryName(code);
+  const count=findInventoryCount(code);
+  document.getElementById("successCode").textContent=code||"---";
+  document.getElementById("successName").textContent=name || (inventoryMode ? "Mã ngoài bảng / chưa nạp dữ liệu" : "");
+  document.getElementById("successCount").textContent = count!=="" ? ("SL: "+count) : "Đã quét";
+  box.classList.remove("hidden");
+  clearTimeout(lastSuccessTimer);
+}
+document.getElementById("handLeft")?.addEventListener("click",()=>setHandedness("left"));
+document.getElementById("handRight")?.addEventListener("click",()=>setHandedness("right"));
+initHandedness();
