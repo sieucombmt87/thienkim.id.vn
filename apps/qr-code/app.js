@@ -1,4 +1,4 @@
-/* TKver6.0 HTTPS camera redirect */
+/* TKver6.1 HTTPS camera redirect */
 if(location.protocol !== "https:" && location.hostname !== "localhost"){
   location.replace("https://" + location.host + location.pathname + location.search + location.hash);
 }
@@ -102,7 +102,7 @@ function setMergedState(state){const box=document.getElementById("scanMergedBox"
 function showSingleScan(value){const r=document.getElementById("scanResult");if(r)r.textContent=value||"Đang chờ quét...";setMergedState(value?"single":"empty");}
 function renderCandidatesFromPool(){const sorted=sortCandidates(scanPool);const box=document.getElementById("scanCandidateList");if(!box)return;if(sorted.length<=1){box.innerHTML="";setMergedState(sorted.length===1?"single":"empty");return;}setMergedState("multi");box.innerHTML=sorted.map(v=>{const t=candidateType(v);return `<div class="scan-candidate-item ${t!=="CODE"?"priority":""}" data-candidate-value="${escapeHtml(v)}"><span class="scan-candidate-type">${t}</span><span class="scan-candidate-value" title="${escapeHtml(v)}">${escapeHtml(v)}</span><span class="scan-candidate-add">CHỌN</span></div>`;}).join("");}
 function renderCandidates(arr){scanPool=sortCandidates(arr);renderCandidatesFromPool();}
-async function startScan(retry=false){showScanMode();resetScanChoiceUI();const result=document.getElementById("scanResult");try{stopScan(false);const constraints={video:{facingMode:isMobile()?{ideal:"environment"}:"user",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"},{exposureMode:"continuous"}]},audio:false};scanStream=await navigator.mediaDevices.getUserMedia(constraints).catch(()=>navigator.mediaDevices.getUserMedia({video:true,audio:false}));const video=document.getElementById("video");video.srcObject=scanStream;video.setAttribute("playsinline","true");video.muted=true;await video.play();
+async function startScan(retry=false){showScanMode();resetScanChoiceUI();const result=document.getElementById("scanResult");try{stopScan(false);const constraints={video:{facingMode:isMobile()?{ideal:"environment"}:"user",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"},{exposureMode:"continuous"}]},audio:false};scanStream=await tkOpenBestCamera();const video=document.getElementById("video");video.srcObject=scanStream;video.setAttribute("playsinline","true");video.muted=true;await video.play();
     setTimeout(tkApplyCameraZoom,180);result.textContent=retry?"Đang quét lại...":"Đang chờ quét...";const detector=("BarcodeDetector" in window)?new BarcodeDetector({formats:["qr_code","code_128","ean_13","ean_8","upc_a","upc_e"]}):null;const jsqrLoaded=await loadJsQr();const canvas=document.getElementById("scanCanvas");const ctx=canvas.getContext("2d",{willReadFrequently:true});scanTimer=setInterval(async()=>{try{let values=[];if(video.videoWidth>0){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0,canvas.width,canvas.height);if(detector)values=values.concat(await detectAllOrientations(detector,canvas));if(jsqrLoaded&&window.jsQR){const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);const code=jsQR(imageData.data,imageData.width,imageData.height,{inversionAttempts:"attemptBoth"});if(code&&code.data)values.push(code.data);}}if(values.length)onScanValues(values);}catch(err){}},420);}catch(e){result.innerHTML='<span class="scan-error-note">Không mở được camera. Kiểm tra quyền camera hoặc dùng HTTPS.</span>';renderCameraHelp();}}
 async function detectAllOrientations(detector,sourceCanvas){let values=[];async function run(c){try{const codes=await detector.detect(c);values=values.concat(codes.map(x=>x.rawValue).filter(Boolean));}catch(e){}}await run(sourceCanvas);const tmp=document.createElement("canvas");const t=tmp.getContext("2d");tmp.width=sourceCanvas.height;tmp.height=sourceCanvas.width;t.translate(tmp.width/2,tmp.height/2);t.rotate(Math.PI/2);t.drawImage(sourceCanvas,-sourceCanvas.width/2,-sourceCanvas.height/2);await run(tmp);t.setTransform(1,0,0,1,0,0);t.clearRect(0,0,tmp.width,tmp.height);t.translate(tmp.width/2,tmp.height/2);t.rotate(-Math.PI/2);t.drawImage(sourceCanvas,-sourceCanvas.width/2,-sourceCanvas.height/2);await run(tmp);return values;}
 function onScanValues(values){
@@ -129,7 +129,7 @@ function onScanValues(values){
   renderCandidatesFromPool();
 }
 
-/* TKver6.0 camera zoom + image scan scaffold */
+/* TKver6.1 camera zoom + image scan scaffold */
 async function tkApplyCameraZoom(){
   try{
     const track=scanStream?.getVideoTracks?.()[0]; if(!track) return;
@@ -147,18 +147,91 @@ document.getElementById("imageScanInput")?.addEventListener("change",async e=>{
 
 function renderCameraHelp(){const result=document.getElementById('scanResult');if(result)result.innerHTML='Không mở được camera. Bấm Quét lại hoặc dùng Chọn ảnh.';}
 
-/* TKver6.0 Inventory Module */
-let inventoryRows=[], inventoryMap={}, inventoryExtra=[];
-function normalizeCode(v){return String(v||"").trim().replace(/\s+/g,"").toUpperCase()}
-function parseInventoryText(text){return String(text||"").split(/\r?\n/).map(line=>line.trim()).filter(Boolean).map((line,i)=>{const parts=line.split(/\t|\||,/);const code=normalizeCode(parts[0]);const name=(parts.slice(1).join(" ").trim())||"";return code?{code,name,count:0,order:i+1}:null}).filter(Boolean)}
-function saveInventory(){localStorage.setItem('tk_inventory_rows',JSON.stringify(inventoryRows));localStorage.setItem('tk_inventory_extra',JSON.stringify(inventoryExtra))}
-function loadInventory(){try{inventoryRows=JSON.parse(localStorage.getItem('tk_inventory_rows')||'[]')}catch(e){inventoryRows=[]}try{inventoryExtra=JSON.parse(localStorage.getItem('tk_inventory_extra')||'[]')}catch(e){inventoryExtra=[]}rebuildInventoryMap();renderInventory()}
-function rebuildInventoryMap(){inventoryMap={};inventoryRows.forEach((r,i)=>{inventoryMap[normalizeCode(r.code)]=i})}
-function setInventoryRows(rows){inventoryRows=rows.map((r,i)=>({code:normalizeCode(r.code),name:r.name||'',count:Number(r.count||0),order:i+1}));inventoryExtra=[];rebuildInventoryMap();saveInventory();renderInventory()}
-function inventoryRecordScan(raw){const code=normalizeCode(raw);if(!code)return false;const idx=inventoryMap[code];if(idx!==undefined){inventoryRows[idx].count=(inventoryRows[idx].count||0)+1;saveInventory();renderInventory(code);return true}const found=inventoryExtra.find(x=>x.code===code);if(found)found.count++;else inventoryExtra.unshift({code,count:1});saveInventory();renderInventory();return false}
-function renderInventory(activeCode=''){const body=document.getElementById('inventoryTableBody');if(!body)return;const missing=inventoryRows.filter(r=>(r.count||0)===0);const done=inventoryRows.length-missing.length;document.getElementById('invTotal').textContent=inventoryRows.length;document.getElementById('invDone').textContent=done;document.getElementById('invMissing').textContent=missing.length;document.getElementById('invExtra').textContent=inventoryExtra.reduce((s,x)=>s+x.count,0);document.getElementById('inventoryStatus').textContent=inventoryRows.length?`Đã nạp ${inventoryRows.length} mã`:'Chưa nạp dữ liệu';body.innerHTML=inventoryRows.map((r,i)=>{const ok=(r.count||0)>0;const cls=ok?'inv-ok':'inv-missing';const status=ok?((r.count||0)>1?`<span class="inv-count">${r.count} lần</span>`:'<span class="inv-status">OK</span>'):'<span class="inv-status">Thiếu</span>';return `<tr class="${cls}" data-code="${r.code}"><td>${i+1}</td><td><b>${r.code}</b></td><td>${escapeHtml(r.name||'')}</td><td>${status}</td></tr>`}).join('')||'<tr><td colspan="4">Chưa có dữ liệu kiểm kê.</td></tr>';const extraBox=document.getElementById('inventoryExtraList');extraBox.innerHTML=inventoryExtra.length?inventoryExtra.map(x=>`<div class="inventory-extra-item">${escapeHtml(x.code)}${x.count>1?` • ${x.count} lần`:''}</div>`).join(''):'Chưa có.';if(activeCode){const row=body.querySelector(`[data-code="${CSS.escape(activeCode)}"]`);if(row)row.scrollIntoView({block:'center',behavior:'smooth'})}}
-function getMissingText(){return inventoryRows.filter(r=>(r.count||0)===0).map(r=>r.name?`${r.code} | ${r.name}`:r.code).join('\n')}
-function exportInventoryMissing(type){const missing=inventoryRows.filter(r=>(r.count||0)===0);if(!missing.length)return alert('Không còn mã thiếu.');if(type==='csv'){const csv='STT,Code,Ten san pham\n'+missing.map((r,i)=>`${i+1},"${r.code.replace(/"/g,'""')}","${(r.name||'').replace(/"/g,'""')}"`).join('\n');downloadText('ma-chua-quet.csv',csv,'text/csv')}else downloadText('ma-chua-quet.txt',getMissingText(),'text/plain')}
-function showInventoryMode(){stopScan(true);document.getElementById('createMode')?.classList.add('hidden');document.getElementById('scanBox')?.classList.add('hidden');document.getElementById('inventoryMode')?.classList.remove('hidden');document.getElementById('inventoryTab')?.classList.add('active');document.getElementById('createTab')?.classList.remove('active');document.getElementById('scanTab')?.classList.remove('active')}
-function hideInventoryMode(){document.getElementById('inventoryMode')?.classList.add('hidden');document.getElementById('inventoryTab')?.classList.remove('active')}
-document.getElementById('inventoryTab')?.addEventListener('click',showInventoryMode);document.getElementById('createTab')?.addEventListener('click',hideInventoryMode);document.getElementById('scanTab')?.addEventListener('click',hideInventoryMode);document.getElementById('loadInventoryBtn')?.addEventListener('click',()=>setInventoryRows(parseInventoryText(document.getElementById('inventoryInput').value)));document.getElementById('clearInventoryBtn')?.addEventListener('click',()=>{if(confirm('Xóa toàn bộ bảng kiểm kê?'))setInventoryRows([])});document.getElementById('manualScanBtn')?.addEventListener('click',()=>{const inp=document.getElementById('manualScanInput');inventoryRecordScan(inp.value);inp.value='';inp.focus()});document.getElementById('manualScanInput')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('manualScanBtn').click()}});document.getElementById('finishInventoryBtn')?.addEventListener('click',()=>{renderInventory();alert(`Còn thiếu ${inventoryRows.filter(r=>(r.count||0)===0).length} mã.`)});document.getElementById('copyMissingBtn')?.addEventListener('click',()=>{const t=getMissingText();if(!t)return alert('Không còn mã thiếu.');copyText(t,true);alert('Đã copy mã chưa quét.')});document.getElementById('exportMissingTxtBtn')?.addEventListener('click',()=>exportInventoryMissing('txt'));document.getElementById('exportMissingCsvBtn')?.addEventListener('click',()=>exportInventoryMissing('csv'));document.getElementById('copyExtraBtn')?.addEventListener('click',()=>{const t=inventoryExtra.map(x=>`${x.code}${x.count>1?` | ${x.count} lần`:''}`).join('\n');if(!t)return alert('Chưa có mã ngoài bảng.');copyText(t,true);alert('Đã copy mã ngoài bảng.')});document.getElementById('inventoryFileBtn')?.addEventListener('click',()=>document.getElementById('inventoryFile')?.click());document.getElementById('inventoryFile')?.addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;const text=await file.text();document.getElementById('inventoryInput').value=text;setInventoryRows(parseInventoryText(text))});loadInventory();
+/* TKver6.1 Inventory Module */
+let inventoryRows=[], inventoryMap={}, inventoryExtra=[], inventoryMode=false;
+
+function normalizeCode(v){return String(v||"").trim().replace(/\s+/g,"").toUpperCase();}
+function parseInventoryLine(line, idx){
+  const raw=String(line||"").trim();
+  if(!raw)return null;
+  const parts=raw.split(/\s+/);
+  const code=normalizeCode(parts.shift());
+  const name=parts.join(" ").trim();
+  return code?{code,name,count:0,order:idx+1}:null;
+}
+function parseInventoryText(text){return String(text||"").split(/\r?\n/).map(parseInventoryLine).filter(Boolean);}
+function rebuildInventoryMap(){inventoryMap={};inventoryRows.forEach((r,i)=>{inventoryMap[normalizeCode(r.code)]=i});}
+function saveInventory(){localStorage.setItem("tk_inventory_rows",JSON.stringify(inventoryRows));localStorage.setItem("tk_inventory_extra",JSON.stringify(inventoryExtra));}
+function loadInventory(){
+  try{inventoryRows=JSON.parse(localStorage.getItem("tk_inventory_rows")||"[]")}catch(e){inventoryRows=[]}
+  try{inventoryExtra=JSON.parse(localStorage.getItem("tk_inventory_extra")||"[]")}catch(e){inventoryExtra=[]}
+  inventoryRows=inventoryRows.map((r,i)=>({code:normalizeCode(r.code),name:r.name||"",count:Number(r.count||0),order:i+1}));
+  rebuildInventoryMap(); renderInventory();
+}
+function setInventoryRows(rows){
+  inventoryRows=rows.map((r,i)=>({code:normalizeCode(r.code),name:r.name||"",count:0,order:i+1}));
+  inventoryExtra=[];rebuildInventoryMap();saveInventory();renderInventory();
+}
+function inventoryRecordScan(raw){
+  const code=normalizeCode(raw);
+  if(!code || !inventoryRows.length)return false;
+  const idx=inventoryMap[code];
+  if(idx!==undefined){inventoryRows[idx].count=(inventoryRows[idx].count||0)+1;saveInventory();renderInventory(code);return true;}
+  const found=inventoryExtra.find(x=>x.code===code);
+  if(found)found.count++;else inventoryExtra.unshift({code,count:1});
+  saveInventory();renderInventory();return false;
+}
+function inventoryDeleteOne(raw){
+  const code=normalizeCode(raw), idx=inventoryMap[code];
+  if(idx!==undefined && inventoryRows[idx].count>0){inventoryRows[idx].count--;saveInventory();renderInventory(code);return true;}
+  return false;
+}
+function inventoryCopy(raw){const code=normalizeCode(raw);if(code)copyText(code,true);}
+function renderInventory(activeCode=""){
+  const body=document.getElementById("inventoryTableBody"); if(!body)return;
+  const total=inventoryRows.length, done=inventoryRows.filter(r=>(r.count||0)>0).length;
+  const missing=inventoryRows.filter(r=>(r.count||0)===0).length;
+  const totalCount=inventoryRows.reduce((s,r)=>s+Number(r.count||0),0);
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val};
+  set("invTotal",total);set("invDone",done);set("invMissing",missing);set("invTotalCount",totalCount);
+  const st=document.getElementById("inventoryStatus");if(st)st.textContent=total?`Đã nạp ${total} mã • Tổng SL ${totalCount}`:"Chưa nạp dữ liệu";
+  body.innerHTML=inventoryRows.map((r,i)=>{
+    const count=Number(r.count||0), cls=count>0?"inv-ok":"inv-missing";
+    const badge=count>0?`<span class="inv-count-badge">${count===1?"OK":count}</span>`:`<span class="inv-count-badge">0</span>`;
+    return `<tr class="${cls}" data-code="${escapeHtml(r.code)}"><td>${i+1}</td><td>${escapeHtml(r.code)}</td><td>${escapeHtml(r.name||"")}</td><td>${badge}</td></tr>`;
+  }).join("") || `<tr><td colspan="4">Chưa có dữ liệu kiểm kê.</td></tr>`;
+  const extraBox=document.getElementById("inventoryExtraList");
+  if(extraBox)extraBox.innerHTML=inventoryExtra.length?inventoryExtra.map(x=>`<div class="inventory-extra-item">${escapeHtml(x.code)}${x.count>1?` • ${x.count} lần`:""}</div>`).join(""):"Chưa có.";
+  if(activeCode){const row=body.querySelector(`[data-code="${CSS.escape(activeCode)}"]`);if(row)row.scrollIntoView({block:"center",behavior:"smooth"});}
+}
+function getMissingText(){return inventoryRows.filter(r=>Number(r.count||0)===0).map(r=>r.name?`${r.code} ${r.name}`:r.code).join("\n");}
+function exportInventoryMissing(type){
+  const missing=inventoryRows.filter(r=>Number(r.count||0)===0);
+  if(!missing.length)return alert("Không còn mã chưa bắn.");
+  if(type==="csv"){
+    const csv="STT,Code,Ten san pham\n"+missing.map((r,i)=>`${i+1},"${r.code.replace(/"/g,'""')}","${(r.name||"").replace(/"/g,'""')}"`).join("\n");
+    downloadText("imei-chua-ban.csv",csv,"text/csv");
+  }else downloadText("imei-chua-ban.txt",getMissingText(),"text/plain");
+}
+function setScanSubMode(mode){
+  inventoryMode=mode==="inventory";
+  document.getElementById("inventoryPanel")?.classList.toggle("hidden",!inventoryMode);
+  document.getElementById("scanSubModeInventory")?.classList.toggle("active",inventoryMode);
+  document.getElementById("scanSubModeNormal")?.classList.toggle("active",!inventoryMode);
+}
+document.getElementById("scanSubModeInventory")?.addEventListener("click",()=>setScanSubMode("inventory"));
+document.getElementById("scanSubModeNormal")?.addEventListener("click",()=>setScanSubMode("normal"));
+document.getElementById("loadInventoryBtn")?.addEventListener("click",()=>setInventoryRows(parseInventoryText(document.getElementById("inventoryInput").value)));
+document.getElementById("clearInventoryBtn")?.addEventListener("click",()=>{if(confirm("Xóa toàn bộ bảng kiểm kê?"))setInventoryRows([])});
+document.getElementById("manualScanBtn")?.addEventListener("click",()=>{const inp=document.getElementById("manualScanInput");inventoryRecordScan(inp.value);inp.value="";inp.focus();});
+document.getElementById("manualScanInput")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("manualScanBtn").click();}});
+document.getElementById("finishInventoryBtn")?.addEventListener("click",()=>{renderInventory();alert(`Chưa bắn ${inventoryRows.filter(r=>Number(r.count||0)===0).length} mã. Tổng SL IMEI đã đếm: ${inventoryRows.reduce((s,r)=>s+Number(r.count||0),0)}`)});
+document.getElementById("copyMissingBtn")?.addEventListener("click",()=>{const t=getMissingText();if(!t)return alert("Không còn mã chưa bắn.");copyText(t,true);alert("Đã copy mã chưa bắn.");});
+document.getElementById("exportMissingTxtBtn")?.addEventListener("click",()=>exportInventoryMissing("txt"));
+document.getElementById("exportMissingCsvBtn")?.addEventListener("click",()=>exportInventoryMissing("csv"));
+document.getElementById("copyExtraBtn")?.addEventListener("click",()=>{const t=inventoryExtra.map(x=>`${x.code}${x.count>1?` ${x.count} lần`:""}`).join("\n");if(!t)return alert("Chưa có mã ngoài bảng.");copyText(t,true);alert("Đã copy mã ngoài bảng.");});
+document.getElementById("inventoryFileBtn")?.addEventListener("click",()=>document.getElementById("inventoryFile")?.click());
+document.getElementById("inventoryFile")?.addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;const text=await file.text();document.getElementById("inventoryInput").value=text;setInventoryRows(parseInventoryText(text));});
+document.addEventListener("dblclick",e=>{const row=e.target.closest("#inventoryTableBody tr[data-code]");if(row)inventoryDeleteOne(row.dataset.code);});
+document.addEventListener("contextmenu",e=>{const row=e.target.closest("#inventoryTableBody tr[data-code]");if(row){e.preventDefault();inventoryCopy(row.dataset.code);}});
+loadInventory();
