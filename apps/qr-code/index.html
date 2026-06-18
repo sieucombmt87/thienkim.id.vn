@@ -3,27 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver7.1</title>
-  <link rel="stylesheet" href="style.css?v=TKver7.1">
+  <title>QR CODE PRO • TKver7.3</title>
+  <link rel="stylesheet" href="style.css?v=TKver7.3">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 </head>
 <body>
   <main class="qr-app">
     <button class="close-btn" onclick="history.length>1?history.back():location.href='../index.html'">×</button>
     <h1>QR CODE PRO</h1>
 
-    <section class="mode-tabs">
-      <button class="mode-tab active" id="normalModeBtn">Quét thường</button>
-      <button class="mode-tab" id="inventoryModeBtn">📦 Kiểm kê</button>
-    </section>
-    <section class="hand-panel" id="handPanel">
-      <span>Thuận tay:</span>
-      <button class="hand-btn" id="handLeft">Trái</button>
-      <button class="hand-btn active" id="handRight">Phải</button>
+    <section class="main-tabs">
+      <button class="main-tab active" data-mode="create">✍️ Tạo QR</button>
+      <button class="main-tab" data-mode="scan">📷 Quét thường</button>
+      <button class="main-tab" data-mode="inventory">📦 Kiểm kê</button>
     </section>
 
-    <section class="scanner-card">
+    <section class="panel create-panel" id="createPanel">
+      <div class="type-tabs">
+        <button class="type-tab active" data-code-type="qr">QR Code</button>
+        <button class="type-tab" data-code-type="barcode">Barcode 128</button>
+      </div>
+      <textarea id="createInput" placeholder="Nhập mỗi mã một dòng hoặc dán danh sách..."></textarea>
+      <div class="create-actions">
+        <button class="btn primary" id="generateBtn">Tạo mã</button>
+        <button class="btn ghost" id="downloadCodeBtn">Tải ảnh</button>
+        <button class="btn ghost" id="clearCreateBtn">Xóa</button>
+      </div>
+      <div class="code-preview" id="codePreview">Mã sẽ hiện ở đây...</div>
+    </section>
+
+    <section class="panel scanner-panel hidden" id="scanPanel">
+      <div class="camera-actions">
+        <button class="btn primary" id="startBtn"><span>▶</span><b>Quét</b></button>
+        <button class="btn danger" id="stopBtn"><span>■</span><b>Dừng</b></button>
+        <button class="btn ghost" id="imageBtn"><span>📷</span><b>Ảnh</b></button>
+        <input id="imageInput" type="file" accept="image/*" hidden>
+      </div>
+
       <div class="camera-wrap" id="cameraWrap">
         <video id="video" playsinline muted autoplay></video>
         <canvas id="scanCanvas" hidden></canvas>
@@ -31,14 +50,14 @@
         <div class="focus-dot hidden" id="focusDot">●</div>
       </div>
 
-      <div class="camera-status" id="cameraStatus">Bấm “Bắt đầu quét” để mở camera.</div>
+      <div class="camera-status" id="cameraStatus">Bấm “Quét” để mở camera.</div>
+
       <section class="success-lock hidden" id="successLock">
         <div class="success-title">✅ Vừa quét thành công</div>
         <div class="success-code" id="successCode">---</div>
         <div class="success-name" id="successName"></div>
         <div class="success-count" id="successCount">SL: 0</div>
       </section>
-
 
       <section class="candidate-card hidden" id="candidateCard">
         <div class="section-head">
@@ -55,27 +74,22 @@
         </div>
         <div id="lastScan" class="last-scan">Chưa có mã.</div>
       </section>
-
-      <div class="camera-actions">
-        <button class="btn primary" id="startBtn"><span>▶</span><b>Quét</b></button>
-        <button class="btn danger" id="stopBtn"><span>■</span><b>Dừng</b></button>
-        <button class="btn ghost" id="imageBtn"><span>📷</span><b>Ảnh</b></button>
-        <input id="imageInput" type="file" accept="image/*" hidden>
-      </div>
     </section>
 
-    <section class="inventory-panel hidden" id="inventoryPanel">
+    <section class="panel inventory-panel hidden" id="inventoryPanel">
       <h2>📦 Kiểm kê sản phẩm</h2>
       <p class="hint">Dán dữ liệu theo mẫu: <b>Mã code + khoảng trắng + tên sản phẩm</b>.</p>
-      <textarea id="inventoryInput" placeholder="4844156000267 Nồi cơm điện nắp gài Delites NCG1805 (Imei)
+      <section class="inventory-import" id="inventoryImportBox">
+        <textarea id="inventoryInput" placeholder="4844156000267 Nồi cơm điện nắp gài Delites NCG1805 (Imei)
 4844156000268 Nồi cơm điện nắp rời Delites NCR1502 (Imei)
 4844156000287 Nồi cơm nắp gài Cuckoo CR-1122 (imei)
 4844156000288 Nồi cơm nắp gài Cuckoo CR-0671V (imei)"></textarea>
-
-      <div class="inventory-actions">
-        <button class="btn ghost" id="loadInventoryBtn">Nạp dữ liệu</button>
-        <button class="btn ghost" id="clearInventoryBtn">Xóa bảng</button>
-      </div>
+        <div class="inventory-actions">
+          <button class="btn ghost" id="loadInventoryBtn">Nạp dữ liệu</button>
+          <button class="btn ghost" id="clearInventoryBtn">Xóa bảng</button>
+          <button class="btn ghost" id="collapseInventoryBtn">Thu gọn</button>
+        </div>
+      </section>
 
       <div class="stats-grid">
         <span>Tổng mã <b id="invTotal">0</b></span>
@@ -91,9 +105,7 @@
 
       <div class="inventory-actions">
         <button class="btn success" id="finishInventoryBtn">Đã quét xong</button>
-        <button class="btn ghost" id="copyMissingBtn">Copy mã chưa bắn</button>
-        <button class="btn ghost" id="exportMissingTxtBtn">Xuất TXT</button>
-        <button class="btn ghost" id="exportMissingCsvBtn">Xuất CSV</button>
+        <button class="btn primary" id="openScanFromInventoryBtn">Mở camera kiểm kê</button>
       </div>
 
       <div class="table-wrap">
@@ -104,19 +116,24 @@
       </div>
     </section>
 
-    <section class="scanned-card">
+    <section class="export-tools-card" id="exportToolsCard">
       <div class="section-head">
-        <b>Danh sách đã quét</b>
-        <button class="mini-btn" id="copyScannedBtn">Copy toàn bộ</button>
+        <b>Xuất dữ liệu</b>
+        <small>Chọn nhóm rồi copy hoặc xuất file</small>
       </div>
-      <div id="scannedList" class="scanned-list">Chưa có mã.</div>
-      <div class="export-row">
-        <button class="btn ghost" id="exportTxtBtn">Xuất TXT</button>
-        <button class="btn ghost" id="exportCsvBtn">Xuất CSV</button>
-        <button class="btn danger" id="clearScannedBtn">Xóa hết</button>
+      <div class="export-filter-row">
+        <button class="filter-btn active" data-export-filter="all">Toàn bộ danh sách</button>
+        <button class="filter-btn" data-export-filter="missing">Mã chưa bắn</button>
+        <button class="filter-btn" data-export-filter="done">Mã đã bắn</button>
       </div>
+      <div class="export-action-row">
+        <button class="btn primary" id="copySelectedExportBtn">Copy</button>
+        <button class="btn ghost" id="exportSelectedTxtBtn">Xuất TXT</button>
+        <button class="btn ghost" id="exportSelectedCsvBtn">Xuất CSV</button>
+      </div>
+      <div id="exportPreview" class="export-preview">Chọn nhóm dữ liệu để thao tác.</div>
     </section>
   </main>
-  <script src="app.js?v=TKver7.1"></script>
+  <script src="app.js?v=TKver7.3"></script>
 </body>
 </html>
