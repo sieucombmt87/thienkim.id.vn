@@ -9,6 +9,7 @@ const TK_MODULES = {
   academy: {
     title: "Vũ Trụ Cày Cuốc 📚",
     domain: "academy.thienkim.id.vn",
+    url: "/apps/edu-lab/",
     description: "Khu vực học tập: tài liệu, ghi chú, khóa học, SOP và nội dung đào tạo.",
     access: "public",
     type: "academy"
@@ -151,7 +152,7 @@ function tkCanAccess(module, user){
   return false;
 }
 
-// TKver6.2 App helpers
+// TKver6.3 App helpers
 function tkGetAppConfig(){
   let overrides = {};
   try{ overrides = JSON.parse(localStorage.getItem("tk_app_config") || "{}"); }catch(e){}
@@ -222,7 +223,7 @@ function tkGetSortedApps(user){
 }
 
 
-// TKver6.2: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
+// TKver6.3: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
 function tkIsAppManager(user){
   const username = String(user?.username || "").toLowerCase();
   const role = String(user?.role || "").toLowerCase();

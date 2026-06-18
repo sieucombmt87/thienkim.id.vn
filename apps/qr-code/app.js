@@ -1,4 +1,4 @@
-/* TKver6.2 HTTPS camera redirect */
+/* TKver6.3 HTTPS camera redirect */
 if(location.protocol !== "https:" && location.hostname !== "localhost"){
   location.replace("https://" + location.host + location.pathname + location.search + location.hash);
 }
@@ -130,7 +130,7 @@ function onScanValues(values){
   renderCandidatesFromPool();
 }
 
-/* TKver6.2 camera zoom + image scan scaffold */
+/* TKver6.3 camera zoom + image scan scaffold */
 async function tkApplyCameraZoom(){
   try{
     const track=scanStream?.getVideoTracks?.()[0]; if(!track) return;
@@ -164,7 +164,7 @@ async function tkOpenBestCamera(){
   throw lastErr||new Error("Cannot open camera");
 }
 
-/* TKver6.2 Inventory inside scan final */
+/* TKver6.3 Inventory inside scan final */
 if(typeof inventoryRows==="undefined"){var inventoryRows=[], inventoryMap={}, inventoryExtra=[], inventoryMode=false;}
 function normalizeCode(v){return String(v||"").trim().replace(/\s+/g,"").toUpperCase();}
 function parseInventoryLine(line, idx){
@@ -219,3 +219,94 @@ function bindInventoryUI(){
   loadInventory();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindInventoryUI);else bindInventoryUI();
+
+
+/* TKver6.3 HARD FIX: camera open and inventory panel */
+async function tkOpenBestCameraV63(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    throw new Error("Thiết bị/trình duyệt không hỗ trợ camera");
+  }
+  const tries=[
+    {video:{facingMode:{ideal:"environment"}},audio:false},
+    {video:{width:{ideal:1280},height:{ideal:720}},audio:false},
+    {video:true,audio:false}
+  ];
+  let lastErr=null;
+  for(const opt of tries){
+    try{return await navigator.mediaDevices.getUserMedia(opt);}
+    catch(e){lastErr=e;}
+  }
+  throw lastErr || new Error("Không mở được camera");
+}
+async function startScan(retry=false){
+  showScanMode();
+  if(typeof resetScanChoiceUI==="function") resetScanChoiceUI();
+  const result=document.getElementById("scanResult");
+  const debug=document.getElementById("cameraDebug");
+  try{
+    stopScan(false);
+    if(debug)debug.textContent="Đang xin quyền camera...";
+    scanStream=await tkOpenBestCameraV63();
+    const video=document.getElementById("video");
+    video.srcObject=scanStream;
+    video.setAttribute("playsinline","true");
+    video.setAttribute("autoplay","true");
+    video.muted=true;
+    await video.play();
+    if(debug)debug.textContent="Camera đã mở.";
+    if(result)result.textContent=retry?"Đang quét lại...":"Đang chờ quét...";
+
+    let detector=null;
+    if("BarcodeDetector" in window){
+      try{
+        let formats=["qr_code","code_128","ean_13","ean_8","upc_a","upc_e"];
+        if(BarcodeDetector.getSupportedFormats){
+          const supported=await BarcodeDetector.getSupportedFormats();
+          formats=formats.filter(f=>supported.includes(f));
+        }
+        detector=formats.length?new BarcodeDetector({formats}):null;
+      }catch(e){detector=null;}
+    }
+    const jsqrLoaded=await loadJsQr().catch(()=>false);
+    const canvas=document.getElementById("scanCanvas");
+    const ctx=canvas.getContext("2d",{willReadFrequently:true});
+    scanTimer=setInterval(async()=>{
+      try{
+        let values=[];
+        if(video.videoWidth>0){
+          canvas.width=video.videoWidth;
+          canvas.height=video.videoHeight;
+          ctx.drawImage(video,0,0,canvas.width,canvas.height);
+          if(detector)values=values.concat(await detectAllOrientations(detector,canvas));
+          if(jsqrLoaded&&window.jsQR){
+            const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+            const code=jsQR(imageData.data,imageData.width,imageData.height,{inversionAttempts:"attemptBoth"});
+            if(code&&code.data)values.push(code.data);
+          }
+        }
+        if(values.length)onScanValues(values);
+      }catch(e){}
+    },420);
+  }catch(e){
+    if(debug)debug.textContent="Lỗi camera: "+(e && (e.name || e.message) ? (e.name || e.message) : "không rõ");
+    if(result)result.innerHTML='<span class="scan-camera-error">Không mở được camera. Hãy cấp quyền camera cho thienkim.id.vn, đóng app đang dùng camera, hoặc thử Chọn ảnh.</span>';
+  }
+}
+function setScanSubMode(mode){
+  inventoryMode = mode==="inventory";
+  const panel=document.getElementById("inventoryPanel");
+  if(panel){
+    panel.classList.toggle("hidden",!inventoryMode);
+    panel.classList.toggle("force-show",inventoryMode);
+    panel.style.display=inventoryMode?"grid":"";
+    if(inventoryMode)setTimeout(()=>panel.scrollIntoView({block:"start",behavior:"smooth"}),80);
+  }
+  document.getElementById("scanSubModeInventory")?.classList.toggle("active",inventoryMode);
+  document.getElementById("scanSubModeNormal")?.classList.toggle("active",!inventoryMode);
+}
+(function bindInventoryV63(){
+  const inv=document.getElementById("scanSubModeInventory");
+  const normal=document.getElementById("scanSubModeNormal");
+  if(inv)inv.onclick=()=>setScanSubMode("inventory");
+  if(normal)normal.onclick=()=>setScanSubMode("normal");
+})();

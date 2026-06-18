@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const routeMap = {
     profile: "me/index.html",
-    learning: "academy/index.html",
+    learning: "apps/edu-lab/",
     tools: "apps/index.html",
     vip: "bi/index.html",
     sales: "store/index.html"
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         location.href = `login.html?mode=${section}`;
         return;
       }
-      location.href = routeMap[section] || "index.html";
+      location.href = card.dataset.url || routeMap[section] || "index.html";
     });
   });
 });
