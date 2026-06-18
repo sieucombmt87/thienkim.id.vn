@@ -1,4 +1,4 @@
-/* TKver7.3 QR Code Pro: 3 clean modes */
+/* TKver7.4 QR Code Pro: 3 clean modes */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false, currentCodeType="qr";
@@ -15,6 +15,9 @@ function sortCodes(arr){const rank={IMEI:0,"S/N":1,SN:2,EAN:3,CODE:4};return uni
 
 function switchMode(mode){
   stopScan(false);
+  stopInventoryScan(false);
+  document.body.classList.remove("mode-create","mode-scan","mode-inventory");
+  document.body.classList.add("mode-"+mode);
   $("#createPanel").classList.toggle("hidden",mode!=="create");
   $("#scanPanel").classList.toggle("hidden",mode!=="scan");
   $("#inventoryPanel").classList.toggle("hidden",mode!=="inventory");
@@ -125,7 +128,7 @@ function getExportCsv(){return"STT,Code,Ten san pham,SL dem\n"+getInventoryExpor
 function setExportFilter(key){if(key==="all")exportFilters=new Set(["all"]);else{exportFilters.delete("all");exportFilters.has(key)?exportFilters.delete(key):exportFilters.add(key);if(!exportFilters.size)exportFilters.add(key)}renderExportFilters()}
 function renderExportFilters(){
   document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",exportFilters.has(b.dataset.exportFilter)));
-  const text=getExportText(); $("#exportPreview").textContent=text?text.split("\n").slice(0,20).join("\n"):"Chưa có dữ liệu.";
+  const text=getExportText(); const prev=$("#exportPreview"); if(prev && prev.classList.contains("show")) prev.textContent=text?text.split("\n").slice(0,20).join("\n"):"Chưa có dữ liệu.";
 }
 
 function generateCode(){
@@ -147,7 +150,7 @@ $("#collapseInventoryBtn").onclick=()=>{const p=$("#inventoryPanel");p.classList
 $("#manualScanBtn").onclick=()=>{inventoryRecordScan($("#manualScanInput").value);$("#manualScanInput").value=""};
 $("#manualScanInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("#manualScanBtn").click()});
 $("#finishInventoryBtn").onclick=()=>alert(`Chưa bắn ${inventoryRows.filter(x=>(x.count||0)===0).length} mã. Tổng SL IMEI đã đếm: ${inventoryRows.reduce((s,x)=>s+(x.count||0),0)}`);
-$("#openScanFromInventoryBtn").onclick=()=>{switchMode("scan");inventoryMode=true;startScan()};
+$("#openScanFromInventoryBtn").onclick=()=>{showInventoryCamera();};
 document.querySelectorAll(".filter-btn").forEach(b=>b.onclick=()=>setExportFilter(b.dataset.exportFilter));
 $("#copySelectedExportBtn").onclick=async()=>{await copyText(getExportText());alert("Đã copy dữ liệu đã chọn.")};
 $("#exportSelectedTxtBtn").onclick=()=>downloadText("kiem-ke-da-chon.txt",getExportText(),"text/plain");
@@ -159,3 +162,79 @@ $("#cameraWrap").addEventListener("pointerdown",e=>{const dot=$("#focusDot"),r=$
 $("#lastScan").addEventListener("pointerdown",()=>{if(lastValue)copyText(lastValue)});
 $("#inventoryTableBody").addEventListener("dblclick",e=>{const row=e.target.closest("tr[data-code]");if(row)inventoryDeleteOne(row.dataset.code)});
 switchMode("create"); renderInventory(); renderExportFilters();
+
+
+/* TKver7.4 embedded inventory camera */
+let invStream=null, invTimer=null, invZxingReader=null;
+const inventoryVideo = document.getElementById("inventoryVideo");
+const inventoryCanvas = document.getElementById("inventoryScanCanvas");
+const inventoryCtx = inventoryCanvas ? inventoryCanvas.getContext("2d",{willReadFrequently:true}) : null;
+
+function setInventoryCameraStatus(t){
+  const el=document.getElementById("inventoryCameraStatus");
+  if(el)el.textContent=t;
+}
+function showInventoryCamera(){
+  const box=document.getElementById("inventoryCameraBox");
+  if(box){
+    box.classList.remove("hidden");
+    setTimeout(()=>box.scrollIntoView({block:"start",behavior:"smooth"}),60);
+  }
+}
+async function startInventoryScan(){
+  showInventoryCamera();
+  await stopInventoryScan(false);
+  setInventoryCameraStatus("Đang xin quyền camera kiểm kê...");
+  try{
+    invStream=await openCamera();
+    inventoryVideo.srcObject=invStream;
+    await inventoryVideo.play();
+    setInventoryCameraStatus("Camera kiểm kê đang chạy. Quét mã sản phẩm.");
+    if(window.ZXing){
+      try{invZxingReader=new ZXing.BrowserMultiFormatReader()}catch(e){invZxingReader=null}
+    }
+    invTimer=setInterval(scanInventoryFrame,380);
+  }catch(e){
+    setInventoryCameraStatus("Không mở được camera kiểm kê: "+((e&&e.message)||"không rõ lỗi"));
+  }
+}
+async function stopInventoryScan(clearStatus=true){
+  if(invTimer){clearInterval(invTimer);invTimer=null}
+  if(invZxingReader){try{invZxingReader.reset()}catch(e){} invZxingReader=null}
+  if(invStream){invStream.getTracks().forEach(t=>t.stop());invStream=null}
+  if(inventoryVideo)inventoryVideo.srcObject=null;
+  if(clearStatus)setInventoryCameraStatus("Đã dừng camera kiểm kê.");
+}
+async function scanInventoryFrame(){
+  if(!inventoryVideo || !inventoryVideo.videoWidth)return;
+  inventoryCanvas.width=inventoryVideo.videoWidth;
+  inventoryCanvas.height=inventoryVideo.videoHeight;
+  inventoryCtx.drawImage(inventoryVideo,0,0,inventoryCanvas.width,inventoryCanvas.height);
+  const values=[];
+  if(invZxingReader){
+    try{const r=await invZxingReader.decodeFromCanvas(inventoryCanvas); if(r?.text)values.push(r.text)}catch(e){}
+  }
+  if(window.jsQR){
+    try{
+      const data=inventoryCtx.getImageData(0,0,inventoryCanvas.width,inventoryCanvas.height);
+      const q=jsQR(data.data,data.width,data.height,{inversionAttempts:"attemptBoth"});
+      if(q?.data)values.push(q.data);
+    }catch(e){}
+  }
+  if(values.length){
+    const v=sortCodes(values)[0];
+    inventoryRecordScan(v);
+    lastValue=v;
+    document.getElementById("lastScan").textContent=v;
+    showSuccessLock(v);
+    setInventoryCameraStatus("Đã quét: "+v);
+  }
+}
+document.getElementById("invStartBtn")?.addEventListener("click",startInventoryScan);
+document.getElementById("invStopBtn")?.addEventListener("click",()=>stopInventoryScan(true));
+document.getElementById("invImageBtn")?.addEventListener("click",()=>document.getElementById("imageInput")?.click());
+
+const oldCopySelectedExport74 = document.getElementById("copySelectedExportBtn")?.onclick;
+document.getElementById("copySelectedExportBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportText()||"Chưa có dữ liệu.";}});
+document.getElementById("exportSelectedTxtBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportText()||"Chưa có dữ liệu.";}}); 
+document.getElementById("exportSelectedCsvBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportCsv().split("\n").slice(0,20).join("\n");}});

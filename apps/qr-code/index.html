@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver7.3</title>
-  <link rel="stylesheet" href="style.css?v=TKver7.3">
+  <title>QR CODE PRO • TKver7.4</title>
+  <link rel="stylesheet" href="style.css?v=TKver7.4">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -16,7 +16,7 @@
     <h1>QR CODE PRO</h1>
 
     <section class="main-tabs">
-      <button class="main-tab active" data-mode="create">✍️ Tạo QR</button>
+      <button class="main-tab active" data-mode="create">✍️ Tạo mã</button>
       <button class="main-tab" data-mode="scan">📷 Quét thường</button>
       <button class="main-tab" data-mode="inventory">📦 Kiểm kê</button>
     </section>
@@ -98,6 +98,21 @@
         <span>Tổng SL IMEI đã đếm <b id="invTotalCount">0</b></span>
       </div>
 
+
+      <section class="inventory-camera-box hidden" id="inventoryCameraBox">
+        <div class="camera-actions inventory-camera-actions">
+          <button class="btn primary" id="invStartBtn"><span>▶</span><b>Quét</b></button>
+          <button class="btn danger" id="invStopBtn"><span>■</span><b>Dừng</b></button>
+          <button class="btn ghost" id="invImageBtn"><span>📷</span><b>Ảnh</b></button>
+        </div>
+        <div class="camera-wrap inventory-camera-wrap" id="inventoryCameraWrap">
+          <video id="inventoryVideo" playsinline muted autoplay></video>
+          <canvas id="inventoryScanCanvas" hidden></canvas>
+          <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        </div>
+        <div class="camera-status" id="inventoryCameraStatus">Bấm “Quét” để mở camera kiểm kê.</div>
+      </section>
+
       <div class="manual-row">
         <input id="manualScanInput" placeholder="Dán mã rồi Enter nếu muốn nhập tay...">
         <button class="btn primary" id="manualScanBtn">Ghi nhận</button>
@@ -105,7 +120,7 @@
 
       <div class="inventory-actions">
         <button class="btn success" id="finishInventoryBtn">Đã quét xong</button>
-        <button class="btn primary" id="openScanFromInventoryBtn">Mở camera kiểm kê</button>
+        <button class="btn primary" id="openScanFromInventoryBtn">Hiện camera kiểm kê</button>
       </div>
 
       <div class="table-wrap">
@@ -131,9 +146,9 @@
         <button class="btn ghost" id="exportSelectedTxtBtn">Xuất TXT</button>
         <button class="btn ghost" id="exportSelectedCsvBtn">Xuất CSV</button>
       </div>
-      <div id="exportPreview" class="export-preview">Chọn nhóm dữ liệu để thao tác.</div>
+      <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver7.3"></script>
+  <script src="app.js?v=TKver7.4"></script>
 </body>
 </html>
