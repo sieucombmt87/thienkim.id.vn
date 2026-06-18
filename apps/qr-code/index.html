@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QR Code Pro - THIENKIM</title>
-<link rel="stylesheet" href="./style.css?v=TKver6.3">
+<link rel="stylesheet" href="./style.css?v=TKver6.4">
 </head>
 <body>
 <main class="tk-app-shell qr-app">
@@ -82,7 +82,7 @@
   </div>
   <button class="mini-copy soft-hidden" id="copyLastScanBtn">COPY</button>
 </section>
-<div class="scan-bottom-bar"><button class="tk-btn red" id="scanRetryBtn">Quét lại</button><button class="tk-btn red" id="stopScanBtn">Dừng camera</button></div>
+<div class="scan-bottom-bar"><button class="tk-btn red" id="scanRetryBtn">Quét lại</button><button class="tk-btn" id="openSimpleCameraBtn">Mở camera đơn giản</button><button class="tk-btn red" id="stopScanBtn">Dừng camera</button><input id="imageScanInput" type="file" accept="image/*" hidden><button class="tk-btn ghost scan-extra-btn" id="pickImageScanBtn">📷 Chọn ảnh</button></div>
 <div class="inventory-panel hidden" id="inventoryPanel">
   <div class="inventory-head"><h3>📦 Kiểm kê sản phẩm</h3><p>Dán dữ liệu theo mẫu: <b>Mã code + khoảng trắng + tên sản phẩm</b>.</p></div>
   <section class="inventory-import card-lite">
@@ -106,5 +106,5 @@
 </div>
 
 </main>
-<script src="./app.js?v=TKver6.3"></script><div id="buildVersion">TKver6.3</div>
+<script src="./app.js?v=TKver6.4"></script><div id="buildVersion">TKver6.4</div>
 </body></html>
