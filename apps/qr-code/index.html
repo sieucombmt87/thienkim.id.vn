@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QR Code Pro - THIENKIM</title>
-<link rel="stylesheet" href="./style.css?v=TKver5.9">
+<link rel="stylesheet" href="./style.css?v=TKver6.0">
 </head>
 <body>
 <main class="tk-app-shell qr-app">
@@ -13,7 +13,7 @@
 
 <div class="tabs qr-tabs-two">
 <button id="createTab" class="active">🖊 Tạo mã</button>
-<button id="scanTab">📷 Quét camera</button>
+<button id="scanTab">📷 Quét camera</button><button class="tab-btn" id="inventoryTab">📦 Kiểm kê</button>
 </div>
 
 <div class="create-mode" id="createMode">
@@ -89,6 +89,16 @@
 </section>
 </section>
 </div>
+
+<section class="inventory-mode hidden" id="inventoryMode">
+  <div class="inventory-head"><h2>📦 Kiểm kê QR / Barcode</h2><p>Nhập danh sách mã và tên sản phẩm. Quét trúng mã thì dòng tự chuyển xanh và ghi số lần bắn.</p></div>
+  <div class="inventory-grid">
+    <section class="inventory-import card-lite"><h3>1. Dữ liệu cần kiểm</h3><textarea id="inventoryInput" placeholder="Mỗi dòng: MÃ CODE | Tên sản phẩm&#10;RT0058-KP0084201 | Huawei Watch Fit 4&#10;358066819767111 | Masstel Watch"></textarea><div class="inventory-actions"><input id="inventoryFile" type="file" accept=".csv,.txt" hidden><button class="tk-btn ghost" id="inventoryFileBtn">Upload TXT/CSV</button><button class="tk-btn" id="loadInventoryBtn">Nạp bảng</button><button class="tk-btn ghost" id="clearInventoryBtn">Xóa bảng</button></div></section>
+    <section class="inventory-scan card-lite"><h3>2. Quét / dán mã</h3><div class="manual-scan-row"><input id="manualScanInput" placeholder="Dán hoặc nhập mã rồi Enter..."><button class="tk-btn" id="manualScanBtn">Ghi nhận</button></div><div class="scan-summary"><span>Tổng: <b id="invTotal">0</b></span><span>Đã quét: <b id="invDone">0</b></span><span>Còn thiếu: <b id="invMissing">0</b></span><span>Bắn ngoài bảng: <b id="invExtra">0</b></span></div><div class="inventory-complete-row"><button class="tk-btn success" id="finishInventoryBtn">Đã quét xong</button><button class="tk-btn ghost" id="copyMissingBtn">Copy mã chưa quét</button><button class="tk-btn ghost" id="exportMissingTxtBtn">Xuất TXT</button><button class="tk-btn ghost" id="exportMissingCsvBtn">Xuất CSV</button></div></section>
+  </div>
+  <section class="inventory-table-card card-lite"><div class="list-head"><b>Bảng kiểm kê</b><small id="inventoryStatus">Chưa nạp dữ liệu</small></div><div class="inventory-table-wrap"><table class="inventory-table"><thead><tr><th>STT</th><th>Mã code</th><th>Tên sản phẩm</th><th>Trạng thái</th></tr></thead><tbody id="inventoryTableBody"></tbody></table></div></section>
+  <section class="inventory-extra-card card-lite"><div class="list-head"><b>Mã quét không có trong bảng</b><button class="mini-copy" id="copyExtraBtn">Copy</button></div><div id="inventoryExtraList" class="inventory-extra-list">Chưa có.</div></section>
+</section>
 </main>
-<script src="./app.js?v=TKver5.9"></script><div id="buildVersion">TKver5.9</div>
+<script src="./app.js?v=TKver6.0"></script><div id="buildVersion">TKver6.0</div>
 </body></html>
