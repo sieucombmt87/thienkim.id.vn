@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QR Code Pro - THIENKIM</title>
-<link rel="stylesheet" href="./style.css?v=TKver6.1">
+<link rel="stylesheet" href="./style.css?v=TKver6.2">
 </head>
 <body>
 <main class="tk-app-shell qr-app">
@@ -83,6 +83,20 @@
   <button class="mini-copy soft-hidden" id="copyLastScanBtn">COPY</button>
 </section>
 <div class="scan-bottom-bar"><button class="tk-btn red" id="scanRetryBtn">Quét lại</button><button class="tk-btn red" id="stopScanBtn">Dừng camera</button></div>
+<div class="inventory-panel hidden" id="inventoryPanel">
+  <div class="inventory-head"><h3>📦 Kiểm kê sản phẩm</h3><p>Dán dữ liệu theo mẫu: <b>Mã code + khoảng trắng + tên sản phẩm</b>.</p></div>
+  <section class="inventory-import card-lite">
+    <textarea id="inventoryInput" placeholder="4844156000267 Nồi cơm điện nắp gài Delites NCG1805 (Imei)&#10;4844156000268 Nồi cơm điện nắp rời Delites NCR1502 (Imei)&#10;4844156000287 Nồi cơm nắp gài Cuckoo CR-1122 (imei)&#10;4844156000288 Nồi cơm nắp gài Cuckoo CR-0671V (imei)"></textarea>
+    <div class="inventory-actions"><input id="inventoryFile" type="file" accept=".csv,.txt" hidden><button class="tk-btn ghost" id="inventoryFileBtn">Upload TXT/CSV</button><button class="tk-btn" id="loadInventoryBtn">Nạp dữ liệu</button><button class="tk-btn ghost" id="clearInventoryBtn">Xóa bảng</button></div>
+  </section>
+  <section class="inventory-summary card-lite">
+    <div class="scan-summary"><span>Tổng mã: <b id="invTotal">0</b></span><span>Đã bắn: <b id="invDone">0</b></span><span>Chưa bắn: <b id="invMissing">0</b></span><span>Tổng SL IMEI đã đếm: <b id="invTotalCount">0</b></span></div>
+    <div class="manual-scan-row"><input id="manualScanInput" placeholder="Dán mã rồi Enter nếu muốn nhập tay..."><button class="tk-btn" id="manualScanBtn">Ghi nhận</button></div>
+    <div class="inventory-complete-row"><button class="tk-btn success" id="finishInventoryBtn">Đã quét xong</button><button class="tk-btn ghost" id="copyMissingBtn">Copy mã chưa bắn</button><button class="tk-btn ghost" id="exportMissingTxtBtn">Xuất TXT</button><button class="tk-btn ghost" id="exportMissingCsvBtn">Xuất CSV</button></div>
+  </section>
+  <section class="inventory-table-card card-lite"><div class="list-head"><b>Bảng kiểm kê</b><small id="inventoryStatus">Chưa nạp dữ liệu</small></div><div class="inventory-table-wrap"><table class="inventory-table"><thead><tr><th>STT</th><th>Mã code</th><th>Tên sản phẩm</th><th>SL đếm</th></tr></thead><tbody id="inventoryTableBody"></tbody></table></div></section>
+  <section class="inventory-extra-card card-lite"><div class="list-head"><b>Mã ngoài bảng</b><button class="mini-copy" id="copyExtraBtn">Copy</button></div><div id="inventoryExtraList" class="inventory-extra-list">Chưa có.</div></section>
+</div>
 <section class="list-card scan-list-card">
 <div class="list-head"><b>Danh sách đã quét</b><button class="mini-copy" id="copyScannedBtn2">Copy toàn bộ</button></div>
 <div id="scannedListCamera" class="qr-list scanned-list"></div>
@@ -92,5 +106,5 @@
 </div>
 
 </main>
-<script src="./app.js?v=TKver6.1"></script><div id="buildVersion">TKver6.1</div>
+<script src="./app.js?v=TKver6.2"></script><div id="buildVersion">TKver6.2</div>
 </body></html>

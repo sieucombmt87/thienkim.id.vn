@@ -1,4 +1,4 @@
-/* TKver6.1 HTTPS camera redirect */
+/* TKver6.2 HTTPS camera redirect */
 if(location.protocol !== "https:" && location.hostname !== "localhost"){
   location.replace("https://" + location.host + location.pathname + location.search + location.hash);
 }
@@ -26,6 +26,7 @@ function renderScannedList(){const html=scanned.map((x,i)=>`<div class="qr-item 
 function scrollCurrentItem(){const el=document.getElementById("historyList")?.querySelector(`[data-i="${index}"]`);if(el)el.scrollIntoView({block:"nearest",behavior:"smooth"});}
 function markFailed(){if(!items.length)return;if(!failed.includes(index))failed.push(index);preview.classList.add("is-failed");renderAll();}
 function addScanned(value){
+  try{ if(inventoryMode && typeof inventoryRecordScan==='function') inventoryRecordScan(value); }catch(e){}
   try{ if(typeof inventoryRecordScan==='function' && inventoryRows && inventoryRows.length) inventoryRecordScan(value); }catch(e){}value=String(value||"").trim();if(!value)return;scanned=scanned.filter(x=>x.value!==value);scanned.unshift({value,state:"ok",deleted:false});lastSingleAdded=value;saveList();renderAll();}
 function markDone(text){addScanned(text||currentText());}
 function nextItem(){if(!items.length)return;markDone(currentText());played++;index++;if(index>=items.length){if(failed.length){items=failed.map(i=>items[i]);failed=[];index=0;input.value=items.join("\n");saveList();alert("Đã chạy hết. Bắt đầu chạy lại các mã lỗi.");}else{stop();index=Math.max(0,items.length-1);alert("Đã chạy xong.");}}renderAll();showCurrent();}
@@ -129,7 +130,7 @@ function onScanValues(values){
   renderCandidatesFromPool();
 }
 
-/* TKver6.1 camera zoom + image scan scaffold */
+/* TKver6.2 camera zoom + image scan scaffold */
 async function tkApplyCameraZoom(){
   try{
     const track=scanStream?.getVideoTracks?.()[0]; if(!track) return;
@@ -147,16 +148,28 @@ document.getElementById("imageScanInput")?.addEventListener("change",async e=>{
 
 function renderCameraHelp(){const result=document.getElementById('scanResult');if(result)result.innerHTML='Không mở được camera. Bấm Quét lại hoặc dùng Chọn ảnh.';}
 
-/* TKver6.1 Inventory Module */
-let inventoryRows=[], inventoryMap={}, inventoryExtra=[], inventoryMode=false;
+function renderCameraHelp(){
+  const result=document.getElementById("scanResult");
+  if(result) result.innerHTML='Không mở được camera. Bấm Quét lại, kiểm tra quyền camera hoặc dùng HTTPS.';
+}
+async function tkOpenBestCamera(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Browser does not support camera");
+  const attempts=[
+    {video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false},
+    {video:{width:{ideal:1280},height:{ideal:720}},audio:false},
+    {video:true,audio:false}
+  ];
+  let lastErr;
+  for(const c of attempts){try{return await navigator.mediaDevices.getUserMedia(c)}catch(e){lastErr=e}}
+  throw lastErr||new Error("Cannot open camera");
+}
 
+/* TKver6.2 Inventory inside scan final */
+if(typeof inventoryRows==="undefined"){var inventoryRows=[], inventoryMap={}, inventoryExtra=[], inventoryMode=false;}
 function normalizeCode(v){return String(v||"").trim().replace(/\s+/g,"").toUpperCase();}
 function parseInventoryLine(line, idx){
-  const raw=String(line||"").trim();
-  if(!raw)return null;
-  const parts=raw.split(/\s+/);
-  const code=normalizeCode(parts.shift());
-  const name=parts.join(" ").trim();
+  const raw=String(line||"").trim(); if(!raw)return null;
+  const parts=raw.split(/\s+/); const code=normalizeCode(parts.shift()); const name=parts.join(" ").trim();
   return code?{code,name,count:0,order:idx+1}:null;
 }
 function parseInventoryText(text){return String(text||"").split(/\r?\n/).map(parseInventoryLine).filter(Boolean);}
@@ -168,70 +181,41 @@ function loadInventory(){
   inventoryRows=inventoryRows.map((r,i)=>({code:normalizeCode(r.code),name:r.name||"",count:Number(r.count||0),order:i+1}));
   rebuildInventoryMap(); renderInventory();
 }
-function setInventoryRows(rows){
-  inventoryRows=rows.map((r,i)=>({code:normalizeCode(r.code),name:r.name||"",count:0,order:i+1}));
-  inventoryExtra=[];rebuildInventoryMap();saveInventory();renderInventory();
-}
+function setInventoryRows(rows){inventoryRows=rows.map((r,i)=>({code:normalizeCode(r.code),name:r.name||"",count:0,order:i+1}));inventoryExtra=[];rebuildInventoryMap();saveInventory();renderInventory();}
 function inventoryRecordScan(raw){
-  const code=normalizeCode(raw);
-  if(!code || !inventoryRows.length)return false;
+  const code=normalizeCode(raw); if(!code||!inventoryRows.length)return false;
   const idx=inventoryMap[code];
   if(idx!==undefined){inventoryRows[idx].count=(inventoryRows[idx].count||0)+1;saveInventory();renderInventory(code);return true;}
-  const found=inventoryExtra.find(x=>x.code===code);
-  if(found)found.count++;else inventoryExtra.unshift({code,count:1});
+  const found=inventoryExtra.find(x=>x.code===code); if(found)found.count++; else inventoryExtra.unshift({code,count:1});
   saveInventory();renderInventory();return false;
 }
-function inventoryDeleteOne(raw){
-  const code=normalizeCode(raw), idx=inventoryMap[code];
-  if(idx!==undefined && inventoryRows[idx].count>0){inventoryRows[idx].count--;saveInventory();renderInventory(code);return true;}
-  return false;
-}
-function inventoryCopy(raw){const code=normalizeCode(raw);if(code)copyText(code,true);}
+function inventoryDeleteOne(raw){const code=normalizeCode(raw),idx=inventoryMap[code];if(idx!==undefined&&inventoryRows[idx].count>0){inventoryRows[idx].count--;saveInventory();renderInventory(code);return true}return false}
 function renderInventory(activeCode=""){
   const body=document.getElementById("inventoryTableBody"); if(!body)return;
-  const total=inventoryRows.length, done=inventoryRows.filter(r=>(r.count||0)>0).length;
-  const missing=inventoryRows.filter(r=>(r.count||0)===0).length;
-  const totalCount=inventoryRows.reduce((s,r)=>s+Number(r.count||0),0);
-  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val};
-  set("invTotal",total);set("invDone",done);set("invMissing",missing);set("invTotalCount",totalCount);
-  const st=document.getElementById("inventoryStatus");if(st)st.textContent=total?`Đã nạp ${total} mã • Tổng SL ${totalCount}`:"Chưa nạp dữ liệu";
-  body.innerHTML=inventoryRows.map((r,i)=>{
-    const count=Number(r.count||0), cls=count>0?"inv-ok":"inv-missing";
-    const badge=count>0?`<span class="inv-count-badge">${count===1?"OK":count}</span>`:`<span class="inv-count-badge">0</span>`;
-    return `<tr class="${cls}" data-code="${escapeHtml(r.code)}"><td>${i+1}</td><td>${escapeHtml(r.code)}</td><td>${escapeHtml(r.name||"")}</td><td>${badge}</td></tr>`;
-  }).join("") || `<tr><td colspan="4">Chưa có dữ liệu kiểm kê.</td></tr>`;
-  const extraBox=document.getElementById("inventoryExtraList");
-  if(extraBox)extraBox.innerHTML=inventoryExtra.length?inventoryExtra.map(x=>`<div class="inventory-extra-item">${escapeHtml(x.code)}${x.count>1?` • ${x.count} lần`:""}</div>`).join(""):"Chưa có.";
-  if(activeCode){const row=body.querySelector(`[data-code="${CSS.escape(activeCode)}"]`);if(row)row.scrollIntoView({block:"center",behavior:"smooth"});}
+  const total=inventoryRows.length, done=inventoryRows.filter(r=>(r.count||0)>0).length, missing=inventoryRows.filter(r=>(r.count||0)===0).length, totalCount=inventoryRows.reduce((s,r)=>s+Number(r.count||0),0);
+  [["invTotal",total],["invDone",done],["invMissing",missing],["invTotalCount",totalCount]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
+  const st=document.getElementById("inventoryStatus"); if(st)st.textContent=total?`Đã nạp ${total} mã • Tổng SL ${totalCount}`:"Chưa nạp dữ liệu";
+  body.innerHTML=inventoryRows.map((r,i)=>{const c=Number(r.count||0),cls=c>0?"inv-ok":"inv-missing",badge=c>0?`<span class="inv-count-badge">${c===1?"OK":c}</span>`:`<span class="inv-count-badge">0</span>`;return `<tr class="${cls}" data-code="${escapeHtml(r.code)}"><td>${i+1}</td><td>${escapeHtml(r.code)}</td><td>${escapeHtml(r.name||"")}</td><td>${badge}</td></tr>`}).join("")||`<tr><td colspan="4">Chưa có dữ liệu kiểm kê.</td></tr>`;
+  const extraBox=document.getElementById("inventoryExtraList"); if(extraBox)extraBox.innerHTML=inventoryExtra.length?inventoryExtra.map(x=>`<div class="inventory-extra-item">${escapeHtml(x.code)}${x.count>1?` • ${x.count} lần`:""}</div>`).join(""):"Chưa có.";
+  if(activeCode){const row=body.querySelector(`[data-code="${CSS.escape(activeCode)}"]`); if(row)row.scrollIntoView({block:"center",behavior:"smooth"});}
 }
 function getMissingText(){return inventoryRows.filter(r=>Number(r.count||0)===0).map(r=>r.name?`${r.code} ${r.name}`:r.code).join("\n");}
-function exportInventoryMissing(type){
-  const missing=inventoryRows.filter(r=>Number(r.count||0)===0);
-  if(!missing.length)return alert("Không còn mã chưa bắn.");
-  if(type==="csv"){
-    const csv="STT,Code,Ten san pham\n"+missing.map((r,i)=>`${i+1},"${r.code.replace(/"/g,'""')}","${(r.name||"").replace(/"/g,'""')}"`).join("\n");
-    downloadText("imei-chua-ban.csv",csv,"text/csv");
-  }else downloadText("imei-chua-ban.txt",getMissingText(),"text/plain");
+function exportInventoryMissing(type){const m=inventoryRows.filter(r=>Number(r.count||0)===0);if(!m.length)return alert("Không còn mã chưa bắn.");if(type==="csv"){downloadText("imei-chua-ban.csv","STT,Code,Ten san pham\n"+m.map((r,i)=>`${i+1},"${r.code.replace(/"/g,'""')}","${(r.name||"").replace(/"/g,'""')}"`).join("\n"),"text/csv")}else downloadText("imei-chua-ban.txt",getMissingText(),"text/plain")}
+function setScanSubMode(mode){inventoryMode=mode==="inventory";document.getElementById("inventoryPanel")?.classList.toggle("hidden",!inventoryMode);document.getElementById("scanSubModeInventory")?.classList.toggle("active",inventoryMode);document.getElementById("scanSubModeNormal")?.classList.toggle("active",!inventoryMode);}
+function bindInventoryUI(){
+  document.getElementById("scanSubModeInventory")?.addEventListener("click",()=>setScanSubMode("inventory"));
+  document.getElementById("scanSubModeNormal")?.addEventListener("click",()=>setScanSubMode("normal"));
+  document.getElementById("loadInventoryBtn")?.addEventListener("click",()=>setInventoryRows(parseInventoryText(document.getElementById("inventoryInput").value)));
+  document.getElementById("clearInventoryBtn")?.addEventListener("click",()=>{if(confirm("Xóa toàn bộ bảng kiểm kê?"))setInventoryRows([])});
+  document.getElementById("manualScanBtn")?.addEventListener("click",()=>{const inp=document.getElementById("manualScanInput");inventoryRecordScan(inp.value);inp.value="";inp.focus();});
+  document.getElementById("manualScanInput")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("manualScanBtn").click();}});
+  document.getElementById("finishInventoryBtn")?.addEventListener("click",()=>alert(`Chưa bắn ${inventoryRows.filter(r=>Number(r.count||0)===0).length} mã. Tổng SL IMEI đã đếm: ${inventoryRows.reduce((s,r)=>s+Number(r.count||0),0)}`));
+  document.getElementById("copyMissingBtn")?.addEventListener("click",()=>{const t=getMissingText();if(!t)return alert("Không còn mã chưa bắn.");copyText(t,true);alert("Đã copy mã chưa bắn.");});
+  document.getElementById("exportMissingTxtBtn")?.addEventListener("click",()=>exportInventoryMissing("txt"));
+  document.getElementById("exportMissingCsvBtn")?.addEventListener("click",()=>exportInventoryMissing("csv"));
+  document.getElementById("inventoryFileBtn")?.addEventListener("click",()=>document.getElementById("inventoryFile")?.click());
+  document.getElementById("inventoryFile")?.addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;const text=await file.text();document.getElementById("inventoryInput").value=text;setInventoryRows(parseInventoryText(text));});
+  document.addEventListener("dblclick",e=>{const row=e.target.closest("#inventoryTableBody tr[data-code]");if(row)inventoryDeleteOne(row.dataset.code);});
+  loadInventory();
 }
-function setScanSubMode(mode){
-  inventoryMode=mode==="inventory";
-  document.getElementById("inventoryPanel")?.classList.toggle("hidden",!inventoryMode);
-  document.getElementById("scanSubModeInventory")?.classList.toggle("active",inventoryMode);
-  document.getElementById("scanSubModeNormal")?.classList.toggle("active",!inventoryMode);
-}
-document.getElementById("scanSubModeInventory")?.addEventListener("click",()=>setScanSubMode("inventory"));
-document.getElementById("scanSubModeNormal")?.addEventListener("click",()=>setScanSubMode("normal"));
-document.getElementById("loadInventoryBtn")?.addEventListener("click",()=>setInventoryRows(parseInventoryText(document.getElementById("inventoryInput").value)));
-document.getElementById("clearInventoryBtn")?.addEventListener("click",()=>{if(confirm("Xóa toàn bộ bảng kiểm kê?"))setInventoryRows([])});
-document.getElementById("manualScanBtn")?.addEventListener("click",()=>{const inp=document.getElementById("manualScanInput");inventoryRecordScan(inp.value);inp.value="";inp.focus();});
-document.getElementById("manualScanInput")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("manualScanBtn").click();}});
-document.getElementById("finishInventoryBtn")?.addEventListener("click",()=>{renderInventory();alert(`Chưa bắn ${inventoryRows.filter(r=>Number(r.count||0)===0).length} mã. Tổng SL IMEI đã đếm: ${inventoryRows.reduce((s,r)=>s+Number(r.count||0),0)}`)});
-document.getElementById("copyMissingBtn")?.addEventListener("click",()=>{const t=getMissingText();if(!t)return alert("Không còn mã chưa bắn.");copyText(t,true);alert("Đã copy mã chưa bắn.");});
-document.getElementById("exportMissingTxtBtn")?.addEventListener("click",()=>exportInventoryMissing("txt"));
-document.getElementById("exportMissingCsvBtn")?.addEventListener("click",()=>exportInventoryMissing("csv"));
-document.getElementById("copyExtraBtn")?.addEventListener("click",()=>{const t=inventoryExtra.map(x=>`${x.code}${x.count>1?` ${x.count} lần`:""}`).join("\n");if(!t)return alert("Chưa có mã ngoài bảng.");copyText(t,true);alert("Đã copy mã ngoài bảng.");});
-document.getElementById("inventoryFileBtn")?.addEventListener("click",()=>document.getElementById("inventoryFile")?.click());
-document.getElementById("inventoryFile")?.addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;const text=await file.text();document.getElementById("inventoryInput").value=text;setInventoryRows(parseInventoryText(text));});
-document.addEventListener("dblclick",e=>{const row=e.target.closest("#inventoryTableBody tr[data-code]");if(row)inventoryDeleteOne(row.dataset.code);});
-document.addEventListener("contextmenu",e=>{const row=e.target.closest("#inventoryTableBody tr[data-code]");if(row){e.preventDefault();inventoryCopy(row.dataset.code);}});
-loadInventory();
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindInventoryUI);else bindInventoryUI();

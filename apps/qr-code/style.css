@@ -10,7 +10,7 @@
 .scan-mode.hidden{display:none}.scan-frame{position:relative;border-radius:16px;overflow:hidden;background:#000}.scan-frame video{width:100%;display:block;max-height:62vh;object-fit:cover}.scan-corners::before{content:"";position:absolute;inset:12%;background:linear-gradient(#fff,#fff) left top/58px 6px no-repeat,linear-gradient(#fff,#fff) left top/6px 58px no-repeat,linear-gradient(#fff,#fff) right top/58px 6px no-repeat,linear-gradient(#fff,#fff) right top/6px 58px no-repeat,linear-gradient(#fff,#fff) left bottom/58px 6px no-repeat,linear-gradient(#fff,#fff) left bottom/6px 58px no-repeat,linear-gradient(#fff,#fff) right bottom/58px 6px no-repeat,linear-gradient(#fff,#fff) right bottom/6px 58px no-repeat;pointer-events:none}.scan-help{text-align:center;color:#777}.scan-result-box{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-radius:14px;background:#f8fafc;box-shadow:0 4px 12px rgba(0,0,0,.08);font-weight:800}.scan-bottom-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.scan-list-card{margin-top:12px}
 @media(max-width:768px){body.qr-running{overflow:hidden}.tk-app-shell{padding:0;background:#fff}.modal-card{width:100%;min-height:100vh;border:0;border-radius:0;padding:14px}.close{right:10px;top:10px}.modal-card h1{font-size:24px;margin-top:18px}.import-box,.delay-row,.qr-lists{grid-template-columns:1fr}.dashboard{grid-template-columns:repeat(2,1fr);margin-top:0}#contentInput{min-height:110px;height:110px}.desktop-hint{display:none}.mobile-hint{display:block}.mobile-run-panel{background:#fff}body.qr-running .mobile-run-panel{position:fixed;left:0;right:0;top:0;bottom:0;z-index:9999;overflow:hidden;padding:10px 18px 18px;background:#fff}body.qr-running .modal-card{padding:0}body.qr-running .create-mode>*:not(.mobile-run-panel){display:none!important}body.qr-running .close,body.qr-running h1,body.qr-running .qr-tabs-two{display:none!important}body.qr-running .dashboard{grid-template-columns:repeat(2,1fr);gap:8px}.code-preview{height:42vh;min-height:280px}body.qr-running .code-preview{height:calc(100vh - 315px);min-height:260px;margin:8px 0}.control-row.mobile-four{grid-template-columns:repeat(2,1fr);gap:8px;background:#fff;padding:6px 0}body.qr-running .delay-row{display:none!important}.qr-list{max-height:230px}.qr-item{grid-template-columns:38px 1fr 64px}.scan-mode{position:fixed;inset:0;z-index:9998;background:linear-gradient(135deg,#161e41,#2a1740);padding:18px 10px;overflow:auto}.scan-frame{border:7px solid rgba(255,255,255,.75);border-radius:22px}.scan-frame video{height:58vh;max-height:none}.scan-result-box{margin:12px 0}.scan-bottom-bar{position:sticky;bottom:10px;z-index:5}}
 
-/* TKver6.1 QR UX upgrade */
+/* TKver6.2 QR UX upgrade */
 .qr-workspace{
   display:grid;
   grid-template-columns:260px 1fr;
@@ -92,7 +92,7 @@
   .export-row.three{grid-template-columns:1fr}
 }
 
-/* TKver6.1 QR scan-only improvements */
+/* TKver6.2 QR scan-only improvements */
 .scan-candidate-card{margin:12px 0;border:1px solid #e4e8ef;border-radius:16px;padding:12px;background:#fafafa}
 .scan-candidate-list{display:grid;gap:8px;max-height:230px;overflow:auto}
 .scan-candidate-item{display:grid;grid-template-columns:74px 1fr auto;gap:10px;align-items:center;border:1px solid #e7edf4;background:white;border-radius:14px;padding:8px;cursor:pointer}
@@ -110,10 +110,10 @@
   .export-row.three{grid-template-columns:1fr}
 }
 
-/* TKver6.1 QR scan rules */
+/* TKver6.2 QR scan rules */
 .soft-hidden{display:none!important}.scan-candidate-card.empty,.scan-candidate-card.single{display:none!important}.scan-result-box{cursor:pointer;user-select:none;-webkit-user-select:none}.scan-result-box.hold-copy{box-shadow:0 0 0 3px rgba(8,125,231,.25)}.scan-candidate-item .scan-candidate-add{display:none}.scan-candidate-list.multi .scan-candidate-add{display:inline}.scanned-list .qr-item{user-select:none;-webkit-user-select:none}
 
-/* TKver6.1 QR merged result/candidates */
+/* TKver6.2 QR merged result/candidates */
 .scan-merged-box{
   margin:12px 0;
   border:1px solid #e4e8ef;
@@ -154,7 +154,7 @@
   display:inline!important;
 }
 
-/* TKver6.1 QR focus/tap UX */
+/* TKver6.2 QR focus/tap UX */
 .scan-frame{
   touch-action:manipulation;
 }
@@ -185,16 +185,16 @@
   display:block!important;
 }
 
-/* TKver6.1 QR extras */
+/* TKver6.2 QR extras */
 .scan-zoom-row{display:flex;justify-content:center;align-items:center;gap:8px;margin:6px 0 10px;color:#666;font-weight:800}
 .scan-zoom-row select{width:auto;min-width:84px;padding:6px 10px;border:1px solid #d9e0e8;border-radius:10px}
 .scan-extra-btn{margin-top:10px}
 @media(max-width:768px){.scan-zoom-row{font-size:14px;margin-top:2px}}
 
-/* TKver6.1 Inventory module */
+/* TKver6.2 Inventory module */
 .inventory-mode{max-width:1100px;margin:0 auto;padding:10px 0 40px}.inventory-head{text-align:center;margin:8px 0 14px}.inventory-head h2{margin:0;font-size:28px;color:#1f2937}.inventory-head p{margin:6px auto;color:#667085;max-width:760px}.inventory-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card-lite{background:#fff;border:1px solid #e4e8ef;border-radius:18px;padding:14px;box-shadow:0 6px 20px rgba(15,23,42,.06)}.inventory-import textarea{width:100%;min-height:210px;border:1px solid #d9e0e8;border-radius:14px;padding:12px;font-size:15px;resize:vertical}.inventory-actions,.inventory-complete-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.manual-scan-row{display:grid;grid-template-columns:1fr 120px;gap:8px}.manual-scan-row input{height:46px;border:1px solid #d9e0e8;border-radius:12px;padding:0 12px;font-size:16px}.scan-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.scan-summary span{background:#f5f8fc;border-radius:13px;padding:10px;text-align:center;font-weight:800}.scan-summary b{color:#087de7}.inventory-complete-row{grid-template-columns:1.2fr 1fr 1fr 1fr}.tk-btn.success{background:#0f8f49;color:white}.inventory-table-card,.inventory-extra-card{margin-top:14px}.inventory-table-wrap{max-height:420px;overflow:auto;border-radius:14px;border:1px solid #eef2f6}.inventory-table{width:100%;border-collapse:collapse;font-size:14px}.inventory-table th,.inventory-table td{padding:10px;border-bottom:1px solid #eef2f6;text-align:left}.inventory-table th{position:sticky;top:0;background:#f8fafc;z-index:1}.inventory-table tr.inv-ok{background:#eaf3ff}.inventory-table tr.inv-ok td{border-bottom-color:#c9e0ff}.inv-status{display:inline-flex;align-items:center;justify-content:center;min-width:54px;padding:5px 9px;border-radius:999px;font-weight:900;background:#f2f4f7;color:#667085}.inv-ok .inv-status{background:#0759c8;color:white;border:2px solid #053b84}.inv-missing .inv-status{background:#fff1f3;color:#d92d20}.inv-count{background:#0759c8;color:#fff;border-radius:999px;padding:4px 8px;font-weight:1000}.inventory-extra-list{display:grid;gap:7px}.inventory-extra-item{background:#fff6e8;border:1px solid #fed7aa;border-radius:12px;padding:8px 10px;font-weight:800}@media(max-width:768px){.inventory-mode{padding:6px 0 30px}.inventory-head h2{font-size:22px}.inventory-grid{grid-template-columns:1fr}.inventory-actions,.inventory-complete-row{grid-template-columns:1fr}.manual-scan-row{grid-template-columns:1fr}.scan-summary{grid-template-columns:repeat(2,1fr)}.inventory-table{font-size:12px}.inventory-table th,.inventory-table td{padding:8px 6px}}
 
-/* TKver6.1 Inventory inside scan */
+/* TKver6.2 Inventory inside scan */
 .scan-sub-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 12px}
 .scan-sub-btn{height:42px;border-radius:14px;border:1px solid #dbe3ec;background:#f5f7fa;font-weight:900;color:#667085}
 .scan-sub-btn.active{background:#087de7;color:#fff;border-color:#087de7}
@@ -212,3 +212,8 @@
 .inv-count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:38px;padding:5px 9px;border-radius:999px;background:#0759c8;color:#fff;border:2px solid #053b84;font-weight:1000}.inv-missing .inv-count-badge{background:#ffe4e8;border-color:#ffb3bf;color:#d92d20}
 .inventory-extra-list{display:grid;gap:7px}.inventory-extra-item{background:#fff6e8;border:1px solid #fed7aa;border-radius:12px;padding:8px 10px;font-weight:800}
 @media(max-width:768px){.inventory-actions,.inventory-complete-row{grid-template-columns:1fr}.manual-scan-row{grid-template-columns:1fr}.scan-summary{grid-template-columns:repeat(2,1fr)}.inventory-table{font-size:12px}.inventory-table th,.inventory-table td{padding:8px 5px}}
+
+/* TKver6.2 Inventory visibility + camera UX */
+.scan-mode #inventoryPanel.hidden{display:none!important}
+.scan-mode #inventoryPanel:not(.hidden){display:grid!important}
+.scan-camera-error{font-size:16px!important;line-height:1.25!important;color:#ff405d!important;font-weight:900!important}
