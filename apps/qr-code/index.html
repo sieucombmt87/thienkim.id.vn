@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver8.0</title>
-  <link rel="stylesheet" href="style.css?v=TKver8.0">
+  <title>QR CODE PRO • TKver8.1</title>
+  <link rel="stylesheet" href="style.css?v=TKver8.1">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -38,7 +38,7 @@
         </div>
         <div class="code-preview" id="codePreview">Mã sẽ hiện ở đây...</div>
         <div class="runner-actions">
-          <button class="btn primary" id="playRunnerBtn">▶ Chạy</button><button class="btn danger" id="pauseRunnerBtn">⏸ Tạm dừng</button><button class="btn ghost" id="resetRunnerBtn">↻ Bắt đầu lại</button><button class="btn ghost" id="downloadCurrentBtn">⇩ Tải ảnh</button>
+          <button class="btn primary" id="playRunnerBtn">▶ Chạy</button><button class="btn danger" id="pauseRunnerBtn">Ⅱ Tạm dừng</button><button class="btn ghost" id="resetRunnerBtn">↻ Bắt đầu lại</button><button class="btn ghost" id="downloadCurrentBtn">⇩ Tải ảnh</button>
         </div>
         <label class="runner-delay">Thời gian chuyển:<select id="runnerDelay"><option value="2000">2 giây</option><option value="3000">3 giây</option><option value="4000">4 giây</option><option value="5000">5 giây</option></select></label>
         <p class="runner-help" id="runnerHelp">Máy tính: nhấn SPACE để đánh dấu mã lỗi. Điện thoại: chạm vào mã đang hiển thị để đánh dấu lỗi.</p>
@@ -55,7 +55,7 @@
       <section class="scan-compact-result hidden" id="scanCompactResult"><b>✓</b><div><span id="scanStickyCode">---</span><small id="scanStickyName"></small></div></section>
       <div class="camera-actions">
         <button class="btn primary" id="startBtn"><span>▶</span><b>Quét</b></button>
-        <button class="btn danger" id="stopBtn"><span>⏸</span><b>Tạm dừng</b></button>
+        <button class="btn danger" id="stopBtn"><span>Ⅱ</span><b>Tạm dừng</b></button>
         <button class="btn ghost" id="imageBtn"><span>📷</span><b>Ảnh</b></button>
         <input id="imageInput" type="file" accept="image/*" hidden>
       </div>
@@ -125,7 +125,7 @@
           <button class="btn ghost" id="invImageBtn"><span>📷</span><b>Ảnh</b></button>
         </div>
         <div class="camera-wrap inventory-camera-wrap" id="inventoryCameraWrap">
-          <div class="inv-overlay-controls" id="invOverlayControls"><button class="round-scan-btn start" id="invOverlayStartBtn" type="button">▶</button><button class="round-scan-btn stop" id="invOverlayStopBtn" type="button">⏸</button></div>
+          <div class="inv-overlay-controls" id="invOverlayControls"><button class="round-scan-btn start" id="invOverlayStartBtn" type="button">▶</button><button class="round-scan-btn stop" id="invOverlayStopBtn" type="button">Ⅱ</button></div>
           <video id="inventoryVideo" playsinline muted autoplay></video>
           <canvas id="inventoryScanCanvas" hidden></canvas>
           <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
@@ -169,6 +169,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver8.0"></script>
+  <script src="app.js?v=TKver8.1"></script>
 </body>
 </html>
