@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver8.1</title>
-  <link rel="stylesheet" href="style.css?v=TKver8.1">
+  <title>QR CODE PRO • TKver8.2</title>
+  <link rel="stylesheet" href="style.css?v=TKver8.2">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -119,6 +119,13 @@
 
       <section class="inventory-camera-box hidden" id="inventoryCameraBox">
         <div class="inv-hand-panel" id="invHandPanel"><span>Thuận tay:</span><button class="hand-btn active" id="invHandRight" type="button">Phải</button><button class="hand-btn" id="invHandLeft" type="button">Trái</button></div>
+        <div class="scan-speed-panel" id="scanSpeedPanel">
+          <button class="speed-btn" data-speed-mode="fast" type="button">⚡ Nhanh</button>
+          <button class="speed-btn active" data-speed-mode="inventory" type="button">📦 Kiểm kê</button>
+          <button class="speed-btn" data-speed-mode="safe" type="button">🐢 Chính xác</button>
+          <select id="scanSpeedMode" hidden><option value="fast">fast</option><option value="inventory" selected>inventory</option><option value="safe">safe</option></select>
+        </div>
+
         <div class="camera-actions inventory-camera-actions">
           <button class="btn primary" id="invStartBtn"><span>▶</span><b>Quét</b></button>
           <button class="btn danger" id="invStopBtn"><span>■</span><b>Dừng</b></button>
@@ -169,6 +176,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver8.1"></script>
+  <script src="app.js?v=TKver8.2"></script>
 </body>
 </html>

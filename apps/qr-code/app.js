@@ -1,4 +1,4 @@
-/* TKver8.1 QR Code Pro: 3 clean modes */
+/* TKver8.2 QR Code Pro: 3 clean modes */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false, currentCodeType="qr";
@@ -173,7 +173,7 @@ $("#inventoryTableBody").addEventListener("dblclick",e=>{const row=e.target.clos
 switchMode("create"); renderInventory(); renderExportFilters();
 
 
-/* TKver8.1 embedded inventory camera */
+/* TKver8.2 embedded inventory camera */
 let invStream=null, invTimer=null, invZxingReader=null;
 const inventoryVideo = document.getElementById("inventoryVideo");
 const inventoryCanvas = document.getElementById("inventoryScanCanvas");
@@ -228,15 +228,17 @@ async function scanInventoryFrame(){
     const v=sortCodes(values)[0];
     const now=Date.now();
     const code=normalizeCode(v);
-    if(now-invLastAcceptedAt<500)return;
-    if(code && code===invLastAcceptedCode && now-invLastAcceptedAt<1500)return;
+    const cfg = getScanCooldownConfig ? getScanCooldownConfig() : {any:1000,same:5000,label:"Kiểm kê"};
+    if(now-invLastAcceptedAt < cfg.any) return;
+    if(code && code===invLastAcceptedCode && now-invLastAcceptedAt < cfg.same) return;
     invLastAcceptedAt=now;
     invLastAcceptedCode=code;
     inventoryRecordScan(v);
     lastValue=v;
     document.getElementById("lastScan").textContent=v;
     showSuccessLock(v);
-    setInventoryCameraStatus("Đã quét: "+v+" — chờ 0.5s rồi quét tiếp");
+    tkScanSuccessFeedback(v);
+    setInventoryCameraStatus("Đã quét: "+v+" — chờ "+(cfg.any/1000)+"s rồi quét tiếp");
   }
 }
 document.getElementById("invStartBtn")?.addEventListener("click",startInventoryScan);
@@ -249,7 +251,7 @@ document.getElementById("exportSelectedTxtBtn")?.addEventListener("click",()=>{c
 document.getElementById("exportSelectedCsvBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportCsv().split("\n").slice(0,20).join("\n");}});
 
 
-/* TKver8.1 native barcode first + advanced QR runner */
+/* TKver8.2 native barcode first + advanced QR runner */
 let nativeDetector=null;
 async function getNativeDetector(){
   if(nativeDetector!==null)return nativeDetector;
@@ -291,7 +293,7 @@ function downloadCurrentCode(){const c=document.querySelector("#codePreview canv
 document.getElementById("playRunnerBtn")?.addEventListener("click",playRunner);document.getElementById("pauseRunnerBtn")?.addEventListener("click",()=>pauseRunner(true));document.getElementById("resetRunnerBtn")?.addEventListener("click",resetRunner);document.getElementById("downloadCurrentBtn")?.addEventListener("click",downloadCurrentCode);document.getElementById("codePreview")?.addEventListener("click",markCurrentError);document.addEventListener("keydown",e=>{if(e.code==="Space"&&!document.getElementById("createPanel")?.classList.contains("hidden")){e.preventDefault();markCurrentError();}});document.getElementById("copyErrorBtn")?.addEventListener("click",()=>copyText([...runErrors].join("\n")));document.getElementById("copyRunDoneBtn")?.addEventListener("click",()=>copyText([...runDone].join("\n")));document.getElementById("exportRunTxtBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.txt",runCodes.map((c,i)=>`${i+1}. ${c}${runErrors.has(c)?" | LOI":runDone.has(c)?" | DA CHAY":""}`).join("\n"),"text/plain"));document.getElementById("exportRunCsvBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.csv","STT,Code,Trang thai\n"+runCodes.map((c,i)=>`${i+1},"${String(c).replace(/"/g,'""')}","${runErrors.has(c)?"LOI":runDone.has(c)?"DA CHAY":"CHO"}"`).join("\n"),"text/csv"));document.getElementById("clearRunStateBtn")?.addEventListener("click",()=>{if(confirm("Xóa phiên chạy hiện tại?")){runCodes=[];runIndex=0;runErrors.clear();runDone.clear();document.getElementById("createInput").value="";document.getElementById("codePreview").textContent="Mã sẽ hiện ở đây...";updateRunStats();}});
 
 
-/* TKver8.1 sticky result + no manual scan buttons */
+/* TKver8.2 sticky result + no manual scan buttons */
 function setStickyResult77(code, name="", target="scan"){
   const box=document.getElementById(target==="inventory"?"inventoryStickyResult":"scanCompactResult");
   const c=document.getElementById(target==="inventory"?"inventoryStickyCode":"scanStickyCode");
@@ -314,7 +316,7 @@ showSuccessLock = function(code){
 };
 
 
-/* TKver8.1 inventory one-hand controls + mobile inline actions */
+/* TKver8.2 inventory one-hand controls + mobile inline actions */
 function initInvHand79(){
   const saved=localStorage.getItem("tk_inv_hand")||"right";
   document.body.classList.toggle("inv-hand-right",saved!=="left");
@@ -335,7 +337,7 @@ document.getElementById("invOverlayStopBtn")?.addEventListener("click",()=>stopI
 })();
 initInvHand79();
 
-/* TKver8.1 live create refresh */
+/* TKver8.2 live create refresh */
 let createRefreshTimer=null;
 document.getElementById("createInput")?.addEventListener("input",()=>{
   clearTimeout(createRefreshTimer);
@@ -346,6 +348,16 @@ document.getElementById("createInput")?.addEventListener("input",()=>{
   },250);
 });
 
-/* TKver8.1 inventory scan throttle */
+/* TKver8.2 inventory scan throttle */
 let invLastAcceptedAt=0;
 let invLastAcceptedCode='';
+
+
+/* TKver8.2 scan cooldown modes */
+const TK_SCAN_SPEEDS = {fast:{any:500,same:3000,label:"Nhanh"},inventory:{any:1000,same:5000,label:"Kiểm kê"},safe:{any:2000,same:7000,label:"Chính xác"}};
+let tkScanSpeedMode = localStorage.getItem("tk_scan_speed_mode") || "inventory";
+function getScanCooldownConfig(){return TK_SCAN_SPEEDS[tkScanSpeedMode] || TK_SCAN_SPEEDS.inventory;}
+function setScanSpeedMode(mode){tkScanSpeedMode = TK_SCAN_SPEEDS[mode] ? mode : "inventory";localStorage.setItem("tk_scan_speed_mode",tkScanSpeedMode);const sel=document.getElementById("scanSpeedMode");if(sel)sel.value=tkScanSpeedMode;document.querySelectorAll(".speed-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.speedMode===tkScanSpeedMode));}
+document.querySelectorAll(".speed-btn").forEach(btn=>btn.addEventListener("click",()=>setScanSpeedMode(btn.dataset.speedMode)));
+setScanSpeedMode(tkScanSpeedMode);
+function tkScanSuccessFeedback(code){try{const box=document.getElementById("inventoryCameraWrap")||document.getElementById("cameraWrap");if(box){box.classList.remove("scan-cooldown-flash");void box.offsetWidth;box.classList.add("scan-cooldown-flash");}if(navigator.vibrate)navigator.vibrate(60);}catch(e){}}
