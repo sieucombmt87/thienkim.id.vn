@@ -1,1 +1,33 @@
-<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tính Trả Góp - THIENKIM</title><link rel="stylesheet" href="./style.css?v=TKver5.1"></head><body><main class="tk-app-shell installment-app"><div class="tk-app-top"><a class="tk-back" href="../index.html">← App Center</a><h1 class="tk-app-title">TƯ VẤN TRẢ CHẬM</h1><span></span></div><section class="tk-card insurance"><div class="check-row"><label><input type="checkbox" class="ins" data-name="BHKV" data-price="211000" checked> BHKV</label><label><input type="checkbox" class="ins" data-name="BHRV" data-price="715000" checked> BHRV</label><label><input type="checkbox" class="ins" data-name="BHMR" data-price="750000" checked> BHMR</label><label><input type="checkbox" class="ins" data-name="BH1-1" data-price="554000" checked> BH1-1</label></div><div class="form-line"><label>Sản phẩm:</label><select id="productType"><option>Điện thoại</option><option>Máy tính</option><option>Gia dụng</option></select></div></section><section class="tk-card calc"><div class="form-line"><input id="productName" placeholder="Tên sản phẩm..."><select id="vipSp"><option>🔐 VIP SP</option><option>SP thường</option></select></div><div class="form-line"><label>Giá gốc:</label><input id="basePrice" value="12000000" inputmode="numeric"></div><div class="form-line"><label>Giá bán:</label><input id="salePrice" value="11590000" inputmode="numeric"></div><div class="form-line"><label>Ngân hàng:</label><select id="bank"><option>Home Credit</option><option>FE Credit</option><option>HD Saison</option><option>MCredit</option></select></div><div class="form-line"><label>Phí thu hộ:</label><output id="fee">11.000</output></div><div class="form-line"><label>Trả trước:</label><input id="downPercent" value="30" inputmode="numeric"><select id="downType"><option>%</option><option>VNĐ</option></select></div><div class="form-line"><label>Tổng trả trước:</label><output id="downTotal">0</output></div><div class="form-line"><label>Nợ lại:</label><output id="remain">0</output></div><div class="form-line"><label>Lãi suất tháng:</label><input id="interest" value="0" inputmode="numeric"><span>%</span></div><div class="form-line"><label>Số kỳ góp:</label><select id="months"><option>6</option><option>9</option><option>12</option><option>18</option><option>24</option></select><span>tháng</span></div><div class="form-line"><label>Góp mỗi tháng:</label><output id="monthly">0</output></div><div class="form-line"><label>Tổng phải trả:</label><output id="totalPay">0</output></div><div class="form-line"><label>Chênh lệch:</label><output id="diff">0</output></div><p class="note" id="note"></p></section></main><script src="./app.js?v=TKver5.1"></script><div id="buildVersion">TKver5.1</div></body></html>
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tính Trả Góp • TKver7.6</title>
+<link rel="stylesheet" href="../_shared/app-lite.css?v=TKver7.6">
+</head>
+<body>
+<main class="app-shell">
+  <a class="back" href="../index.html">← App Center</a>
+  <section class="hero">
+    <h1>Tính Trả Góp</h1>
+    <span class="ver">TKver7.6</span>
+  </section>
+  
+<section class="grid">
+ <div class="card">
+  <label>Tên sản phẩm</label><input id="name" placeholder="Điện thoại / Laptop...">
+  <label>Giá bán</label><input id="price" inputmode="numeric" value="12000000">
+  <label>Trả trước (%)</label><input id="pre" inputmode="numeric" value="30">
+  <label>Số tháng</label><select id="months"><option>6</option><option>9</option><option>12</option><option>18</option><option>24</option></select>
+  <label>Lãi suất/tháng (%)</label><input id="rate" inputmode="decimal" value="0">
+  <label>Phí thu hộ</label><input id="fee" inputmode="numeric" value="11000">
+  <div class="btns"><button class="btn" id="calcBtn">Tính</button><button class="btn alt" id="copyBtn">Copy</button><button class="btn red" id="clearBtn">Reset</button></div>
+ </div>
+ <div class="card"><h2>Kết quả</h2><div class="result" id="result">Chưa tính.</div></div>
+</section>
+</main>
+<script src="app.js?v=TKver7.6"></script>
+
+</body>
+</html>

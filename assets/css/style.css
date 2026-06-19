@@ -939,7 +939,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver7.5 FINAL PRODUCTION
+   TKver7.6 FINAL PRODUCTION
    - Hidden Admin Star icon
    - Hero/subtitle centered
    - Domains hidden on portal
@@ -1121,7 +1121,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver7.5 FINAL PATCH
+   TKver7.6 FINAL PATCH
    - Star icon admin gateway only
    - Subtitle centered exactly below THIENKIM UNIVERSE
    - No Admin text, no clock on portal
@@ -1283,7 +1283,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver7.5 PATCH - Clean transparent admin star + clean login */
+/* TKver7.6 PATCH - Clean transparent admin star + clean login */
 .star-gateway{
   background: transparent !important;
   box-shadow: none !important;
@@ -1317,7 +1317,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver7.5 - UNIFIED LOGIN EXPERIENCE
+   TKver7.6 - UNIFIED LOGIN EXPERIENCE
    - Logo ngôi sao 8 cánh chính giữa trên form
    - Glow xanh-vàng đồng bộ Portal
    - Animation xoay chậm 20s
@@ -1509,7 +1509,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver7.5 - SMALL CENTER ADMIN STAR IN LOGIN
+   TKver7.6 - SMALL CENTER ADMIN STAR IN LOGIN
    - Ngôi sao nhỏ nằm giữa dưới chữ THIENKIM UNIVERSE
    - Không xoay liên tục gây mất tập trung
    - Hover phóng 115% + nghiêng nhẹ
@@ -1620,7 +1620,7 @@ body.vault-enabled .domain-panel .domain-vault{
 
 
 /* =========================================================
-   TKver7.5 - Swap Star and Login Mode Position
+   TKver7.6 - Swap Star and Login Mode Position
    - Ngôi sao nằm tại vị trí chữ KHO BÁU VIP / ADMIN GATEWAY cũ.
    - Chữ KHO BÁU VIP / ADMIN GATEWAY / TẠP HÓA CHỐT ĐƠN nằm tại vị trí ngôi sao cũ.
    - Góc trái giữ nút Về Portal.
@@ -1717,7 +1717,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver7.5 - Professional module page template */
+/* TKver7.6 - Professional module page template */
 .module-status{
   display:inline-block;
   margin:14px auto 0;
@@ -1738,7 +1738,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver7.5 - Demo pages + App Center */
+/* TKver7.6 - Demo pages + App Center */
 .module-shell.wide{
   place-items:start center;
   padding-top:76px;
@@ -1919,7 +1919,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver7.5 - Comfort Interaction + Clean App Center */
+/* TKver7.6 - Comfort Interaction + Clean App Center */
 .module-card-wide > .module-domain,
 .module-card-wide > #moduleDesc{
   display:none !important;
@@ -2092,7 +2092,7 @@ body.vault-enabled .domain-panel .domain-vault{
 }
 
 
-/* TKver7.5 - Identity greeting + login history + 80-minute session */
+/* TKver7.6 - Identity greeting + login history + 80-minute session */
 .module-status b{
   color:#fff;
 }
@@ -2144,11 +2144,11 @@ body.vault-enabled .domain-panel .domain-vault{
   }
 }
 
-/* TKver7.5 - Flex Profile Timeline */
+/* TKver7.6 - Flex Profile Timeline */
 .profile-page{min-height:100vh}.profile-shell{position:relative;z-index:2;width:min(1280px,94vw);margin:0 auto;padding:80px 0 44px}.profile-hero-card{display:grid;grid-template-columns:160px 1fr 130px;gap:24px;align-items:center;padding:26px;border-radius:34px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(18px);box-shadow:0 0 50px rgba(255,83,210,.22)}.profile-avatar-wrap img{width:150px;height:150px;object-fit:cover;border-radius:36px;filter:drop-shadow(0 0 20px rgba(255,211,105,.45))}.profile-kicker{color:#ffd36b;font-weight:900;letter-spacing:1px;font-size:12px}.profile-hero-copy h1{margin:6px 0;font-family:"Playfair Display",Georgia,serif;font-size:clamp(46px,7vw,86px);background:linear-gradient(90deg,#ffe69a,#ff70d8,#a575ff);-webkit-background-clip:text;color:transparent}.profile-hero-copy p{font-size:18px;line-height:1.55;color:#f0e7ff}.profile-socials{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.profile-socials a{color:#fff;text-decoration:none;font-weight:900;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}.profile-qr{text-align:center}.profile-qr img{width:92px;height:92px;object-fit:contain;border-radius:20px}.profile-qr span{display:block;margin-top:8px;color:#ffd36b;font-weight:900;font-size:12px}.profile-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:22px 0}.profile-tabs button{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:12px 16px;font-weight:900;cursor:pointer}.profile-tabs button.active{color:#1b0b2e;background:linear-gradient(90deg,#ffd36b,#ff70d8)}.profile-layout{display:grid;grid-template-columns:280px 1fr;gap:22px}.profile-filter-card,.profile-content-card{padding:22px;border-radius:30px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(14px)}.profile-filter-card label{display:block;margin:14px 0 7px;font-weight:900;color:#ffd36b}.profile-filter-card select,.profile-filter-card button{width:100%;padding:11px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);color:#fff}.profile-filter-card button{margin-top:14px;background:linear-gradient(90deg,#ff6ab8,#8b5cf6);border:0;font-weight:900;cursor:pointer}.profile-intro{margin-top:24px;color:#e8dff5;line-height:1.5}.timeline-year h2{font-size:40px;margin:0 0 14px;color:#ffd36b}.timeline-month h3{margin:18px 0 12px;color:#fff}.post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.profile-post-card{overflow:hidden;border-radius:26px;background:rgba(255,255,255,.085);border:1px solid rgba(255,255,255,.14)}.post-cover{width:100%;height:220px;object-fit:cover;display:block;cursor:pointer}.post-body{padding:18px}.post-meta{color:#ffd36b;font-size:12px;font-weight:900}.post-body h3{margin:8px 0;font-size:22px}.post-body p{color:#e8dff5;line-height:1.55}.post-gallery{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.post-gallery img{width:70px;height:70px;object-fit:cover;border-radius:14px;cursor:pointer;border:1px solid rgba(255,255,255,.16)}.profile-section-title{text-align:center;margin-bottom:22px}.achievement-list,.goal-list{display:grid;gap:14px}.achievement-item,.goal-item{padding:16px;border-radius:20px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12)}.achievement-item b{color:#ffd36b;margin-right:12px}.goal-item{display:grid;grid-template-columns:1fr 220px 50px;align-items:center;gap:14px}.goal-item b{display:block;color:#ffd36b}.goal-bar{height:12px;background:rgba(255,255,255,.13);border-radius:999px;overflow:hidden}.goal-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd36b,#ff70d8)}.goal-item em{font-style:normal;font-weight:900;color:#ffd36b}.profile-gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}.profile-gallery-grid img{width:100%;height:180px;object-fit:cover;border-radius:20px;cursor:pointer;border:1px solid rgba(255,255,255,.14)}.profile-empty{text-align:center;padding:40px;color:#e8dff5}.image-lightbox{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.82)}.image-lightbox img{max-width:92vw;max-height:86vh;border-radius:20px}.image-lightbox button{position:absolute;right:24px;top:20px;width:42px;height:42px;border-radius:50%;border:0;background:#fff;color:#111;font-size:26px;cursor:pointer}.manager-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}.manager-form,.manager-preview{padding:22px;border-radius:26px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}.manager-form label{display:block;margin:13px 0 6px;font-weight:900;color:#ffd36b}.manager-form input,.manager-form textarea,.manager-form select,.manager-preview textarea{width:100%;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);color:#fff}.form-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.manager-form button,.manager-preview button{margin-top:14px;border:0;border-radius:999px;padding:12px 18px;color:white;font-weight:900;background:linear-gradient(90deg,#ff6ab8,#8b5cf6);cursor:pointer}.saved-post-item{padding:12px;border-radius:16px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12);margin-bottom:10px}.saved-post-item b,.saved-post-item span{display:block}.saved-post-item span{color:#e8dff5;font-size:12px;margin-top:4px}.saved-post-item button{padding:8px 12px;margin-top:8px;background:#d13459}@media(max-width:900px){.profile-hero-card{grid-template-columns:1fr;text-align:center}.profile-avatar-wrap img{margin:auto}.profile-layout,.manager-grid{grid-template-columns:1fr}.post-grid{grid-template-columns:1fr}.goal-item{grid-template-columns:1fr}.profile-socials{justify-content:center}}
-/* TKver7.5 - Family role + Academy lessons */
+/* TKver7.6 - Family role + Academy lessons */
 .lesson-list{display:grid;gap:12px;margin-top:12px}.lesson-item{padding:14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}.lesson-item b,.lesson-item span{display:block}.lesson-item span{color:#ffd36b;font-size:12px;margin-top:4px}.lesson-item p{color:#e8dff5;line-height:1.5}
-/* TKver7.5 - Thiên Kim Care side popup */
+/* TKver7.6 - Thiên Kim Care side popup */
 .comfort-panel{display:none!important}
 .comfort-floating-btn{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:880;width:74px;height:74px;border:1px solid rgba(255,255,255,.22);border-radius:26px;background:linear-gradient(135deg,rgba(255,106,184,.94),rgba(139,92,246,.94));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:900;cursor:pointer;box-shadow:0 0 30px rgba(255,83,210,.35),inset 0 0 16px rgba(255,255,255,.16);backdrop-filter:blur(12px);transition:.22s ease}
 .comfort-floating-btn:hover{transform:translateY(-50%) scale(1.08);box-shadow:0 0 42px rgba(255,211,105,.38),0 0 52px rgba(255,83,210,.28)}
@@ -2164,7 +2164,7 @@ body.vault-enabled .domain-panel .domain-vault{
 @media(max-width:760px){.comfort-floating-btn{right:14px;bottom:18px;top:auto;transform:none;width:68px;height:68px}.comfort-floating-btn:hover{transform:scale(1.06)}.comfort-drawer{left:12px;right:12px;top:auto;bottom:96px;width:auto;max-height:72vh}.comfort-drawer-body{max-height:calc(72vh - 92px)}}
 
 
-/* TKver7.5 - Black Gold Edition: global chủ đạo cho portal và domain con */
+/* TKver7.6 - Black Gold Edition: global chủ đạo cho portal và domain con */
 :root{
   --tk-bg-0:#030303;
   --tk-bg-1:#0b0904;
@@ -2373,7 +2373,7 @@ img{
   }
 }
 
-/* TKver7.5 - VIP App Engine + Mood V2 */
+/* TKver7.6 - VIP App Engine + Mood V2 */
 .module-status{
   display:flex !important;
   align-items:center;
@@ -2525,7 +2525,7 @@ img{
   }
 }
 
-/* TKver7.5 cleanup */
+/* TKver7.6 cleanup */
 .comfort-floating-btn{display:none!important}
 .module-actions{display:none!important}
 .quick-mood-heart{
@@ -2577,7 +2577,7 @@ img{
 .vip-badge{font-size:10px!important}
 
 
-/* TKver7.5 fixes */
+/* TKver7.6 fixes */
 .apps-page .module-card-wide{max-width:1500px}
 .app-page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:10px}
 .apps-page .back-link{position:static}
@@ -2590,7 +2590,7 @@ img{
 .module-actions{display:none!important}
 .comfort-floating-btn{display:none!important}
 
-/* TKver7.5 FINAL FIX */
+/* TKver7.6 FINAL FIX */
 .home-page .login-chip{display:none!important}
 @media (max-width:768px){
   .home-page .card-shell{overflow:hidden!important;padding:0!important}
@@ -2624,7 +2624,7 @@ img{
   .profile-tabs{justify-content:flex-start!important;overflow-x:auto!important;gap:8px!important}.profile-tabs button{flex:0 0 auto!important;white-space:nowrap!important;font-size:12px!important}
 }
 
-/* TKver7.5 Global patch */
+/* TKver7.6 Global patch */
 .app-icon-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
 .vip-logo-badge{position:absolute;right:-8px;top:-8px;z-index:3;padding:3px 7px;border-radius:999px;font-size:10px;font-weight:1000;color:#180f00;background:linear-gradient(135deg,#fff2a8,#ffcc33,#ff8c00);border:1px solid rgba(255,255,255,.75);box-shadow:0 0 14px rgba(255,208,67,.7),0 4px 10px rgba(0,0,0,.35)}
 .vip-app .app-icon-wrap::after{content:"";position:absolute;inset:-7px;border-radius:22px;border:1px solid rgba(255,213,106,.75);box-shadow:0 0 18px rgba(255,213,106,.35);pointer-events:none}
@@ -2632,7 +2632,7 @@ img{
 .profile-post-form{display:grid;grid-template-columns:1fr 180px 160px;gap:10px}.profile-post-form textarea,.profile-post-form input[type=file]{grid-column:1/-1}.profile-post-form button{grid-column:1/-1;height:44px;border:0;border-radius:999px;background:linear-gradient(90deg,#fff2a8,#ffcc33,#ff8c00);font-weight:1000}
 @media(max-width:768px){.vip-logo-badge{font-size:9px;right:-6px;top:-6px;padding:2px 6px}.profile-contribute{width:calc(100vw - 20px)!important;margin:0 auto 12px!important;padding:16px 12px!important;border-radius:24px!important}.profile-post-form{grid-template-columns:1fr}}
 
-/* TKver7.5 FIX - restore App Center icons, VIP badge, mobile layout */
+/* TKver7.6 FIX - restore App Center icons, VIP badge, mobile layout */
 .clean-app-tool .app-icon-wrap{
   display:inline-flex!important;
   position:relative!important;
@@ -2701,7 +2701,7 @@ img{
   }
 }
 
-/* TKver7.5 HOME MOBILE FINAL */
+/* TKver7.6 HOME MOBILE FINAL */
 @media (max-width:768px){
   html,body{width:100%!important;min-height:100svh!important;overflow-x:hidden!important}
   body.home-page{height:100svh!important;overflow:hidden!important}
@@ -2735,7 +2735,7 @@ img{
   .home-page .page{max-width:min(94vw,1440px)!important;margin:0 auto!important}
 }
 
-/* TKver7.5 HOME MOBILE HARD FIX - final override */
+/* TKver7.6 HOME MOBILE HARD FIX - final override */
 @media (max-width:768px){
   html{width:100%!important;height:100%!important;overflow:hidden!important}
   body.home-page{width:100vw!important;height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;position:fixed!important;inset:0!important}
@@ -2773,10 +2773,10 @@ img{
   .home-page .card-button{bottom:16px!important}
 }
 
-/* TKver7.5 APP VERSION FORCE */
+/* TKver7.6 APP VERSION FORCE */
 #buildVersion{position:fixed!important;right:8px!important;bottom:8px!important;z-index:99999!important;color:#12b7ff!important;font-size:11px!important;opacity:.72!important}
 
-/* TKver7.5 HOME BALANCE FIX - desktop + mobile */
+/* TKver7.6 HOME BALANCE FIX - desktop + mobile */
 @media (min-width:769px){
   body.home-page{
     overflow:hidden!important;
@@ -3120,7 +3120,7 @@ img{
   .home-page .value-item em{display:none!important}
 }
 
-/* TKver7.5 MOBILE CARD BUTTON FINAL - keep CTA inside visual card */
+/* TKver7.6 MOBILE CARD BUTTON FINAL - keep CTA inside visual card */
 @media (max-width:768px){
   .home-page .page{grid-template-rows:78px minmax(0,1fr) 46px!important}
   .home-page .hero{height:78px!important;min-height:78px!important}
@@ -3140,7 +3140,7 @@ img{
   .home-page .card-button{width:min(46vw,190px)!important;max-width:46vw!important;bottom:clamp(38px,5.8vh,56px)!important;font-size:11px!important}
 }
 
-/* TKver7.5 SCOPE FIX - không khóa nhầm App Center/mobile modules */
+/* TKver7.6 SCOPE FIX - không khóa nhầm App Center/mobile modules */
 @media (max-width:768px){
   body:not(.home-page){position:static!important;overflow-x:hidden!important;overflow-y:auto!important;height:auto!important;max-height:none!important}
   body:not(.home-page) .page,body:not(.home-page) main,body:not(.home-page) .app-center,body:not(.home-page) .apps-page{position:relative!important;height:auto!important;max-height:none!important;overflow:visible!important}
@@ -3149,7 +3149,7 @@ img{
   .home-page .card-shell img{max-width:72vw!important;height:calc(100% - 46px)!important}
 }
 
-/* TKver7.5 APP CENTER UNLOCK MOBILE */
+/* TKver7.6 APP CENTER UNLOCK MOBILE */
 @media (max-width:768px){
   html:has(body.apps-center-page){
     overflow:auto!important;
@@ -3186,7 +3186,7 @@ img{
   }
 }
 
-/* TKver7.5 APPS CENTER MOBILE REAL UNLOCK + GREETING SIZE */
+/* TKver7.6 APPS CENTER MOBILE REAL UNLOCK + GREETING SIZE */
 @media (max-width:768px){
   html,
   html:has(body.apps-center-page){
@@ -3267,7 +3267,7 @@ img{
   }
 }
 
-/* TKver7.5 App Center mobile polish */
+/* TKver7.6 App Center mobile polish */
 @media (max-width:768px){
   body.apps-center-page .module-shell.wide{
     padding:12px 10px 108px!important;
@@ -3343,7 +3343,7 @@ img{
   }
 }
 
-/* TKver7.5 FINAL UI/UX POLISH */
+/* TKver7.6 FINAL UI/UX POLISH */
 @media (max-width:768px){
   body.home-page .page{grid-template-rows:86px minmax(0,1fr) 72px!important}
   body.home-page .hero{height:86px!important;min-height:86px!important;padding:0 10px!important;overflow:visible!important}
