@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver7.5</title>
-  <link rel="stylesheet" href="style.css?v=TKver7.5">
+  <title>QR CODE PRO • TKver7.7</title>
+  <link rel="stylesheet" href="style.css?v=TKver7.7">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -16,9 +16,9 @@
     <h1>QR CODE PRO</h1>
 
     <section class="main-tabs">
-      <button class="main-tab active" data-mode="create">✍️ Tạo mã</button>
-      <button class="main-tab" data-mode="scan">📷 Quét thường</button>
-      <button class="main-tab" data-mode="inventory">📦 Kiểm kê</button>
+      <button class="main-tab active" data-mode="create">✍️ Tạo</button>
+      <button class="main-tab" data-mode="scan">📷 Quét</button>
+      <button class="main-tab" data-mode="inventory">📦 Kho</button>
     </section>
 
     <section class="panel create-panel" id="createPanel">
@@ -52,6 +52,7 @@
     </section>
 
     <section class="panel scanner-panel hidden" id="scanPanel">
+      <section class="scan-sticky-result hidden" id="scanStickyResult"><b>✅ Mã vừa quét</b><span id="scanStickyCode">---</span><small id="scanStickyName"></small></section>
       <div class="camera-actions">
         <button class="btn primary" id="startBtn"><span>▶</span><b>Quét</b></button>
         <button class="btn danger" id="stopBtn"><span>■</span><b>Dừng</b></button>
@@ -93,7 +94,7 @@
     </section>
 
     <section class="panel inventory-panel hidden" id="inventoryPanel">
-      <h2>📦 Kiểm kê sản phẩm</h2>
+      <h2>📦 Kho sản phẩm</h2>
       <p class="hint">Dán dữ liệu theo mẫu: <b>Mã code + khoảng trắng + tên sản phẩm</b>.</p>
       <section class="inventory-import" id="inventoryImportBox">
         <textarea id="inventoryInput" placeholder="4844156000267 Nồi cơm điện nắp gài Delites NCG1805 (Imei)
@@ -107,6 +108,7 @@
         </div>
       </section>
 
+      <section class="scan-sticky-result hidden" id="inventoryStickyResult"><b>✅ Mã kiểm kê vừa quét</b><span id="inventoryStickyCode">---</span><small id="inventoryStickyName"></small></section>
       <div class="stats-grid">
         <span>Tổng mã <b id="invTotal">0</b></span>
         <span>Đã bắn <b id="invDone">0</b></span>
@@ -165,6 +167,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver7.5"></script>
+  <script src="app.js?v=TKver7.7"></script>
 </body>
 </html>

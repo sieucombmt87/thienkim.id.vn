@@ -1,4 +1,4 @@
-/* TKver7.5 QR Code Pro: 3 clean modes */
+/* TKver7.7 QR Code Pro: 3 clean modes */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false, currentCodeType="qr";
@@ -25,6 +25,8 @@ function switchMode(mode){
   document.querySelectorAll(".main-tab").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode));
   $("#exportToolsCard").classList.toggle("hidden",mode==="create");
   renderExportFilters();
+  if(mode==="scan"){ setTimeout(()=>startScan(),120); }
+  if(mode==="inventory"){ setTimeout(()=>showInventoryCamera(),80); setTimeout(()=>startInventoryScan(),180); }
 }
 document.querySelectorAll(".main-tab").forEach(b=>b.addEventListener("click",()=>switchMode(b.dataset.mode)));
 
@@ -160,7 +162,7 @@ $("#inventoryTableBody").addEventListener("dblclick",e=>{const row=e.target.clos
 switchMode("create"); renderInventory(); renderExportFilters();
 
 
-/* TKver7.5 embedded inventory camera */
+/* TKver7.7 embedded inventory camera */
 let invStream=null, invTimer=null, invZxingReader=null;
 const inventoryVideo = document.getElementById("inventoryVideo");
 const inventoryCanvas = document.getElementById("inventoryScanCanvas");
@@ -236,7 +238,7 @@ document.getElementById("exportSelectedTxtBtn")?.addEventListener("click",()=>{c
 document.getElementById("exportSelectedCsvBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportCsv().split("\n").slice(0,20).join("\n");}});
 
 
-/* TKver7.5 native barcode first + advanced QR runner */
+/* TKver7.7 native barcode first + advanced QR runner */
 let nativeDetector=null;
 async function getNativeDetector(){
   if(nativeDetector!==null)return nativeDetector;
@@ -276,3 +278,19 @@ function resetRunner(){pauseRunner(false);runIndex=0;runErrors.clear();runDone.c
 function markCurrentError(){const code=runCodes[runIndex];if(code){runErrors.add(code);updateRunStats();}}
 function downloadCurrentCode(){const c=document.querySelector("#codePreview canvas");if(c){const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download=(runCodes[runIndex]||"qr-code")+".png";a.click();return;}alert("Hiện chỉ tải nhanh PNG cho QR Code.");}
 document.getElementById("playRunnerBtn")?.addEventListener("click",playRunner);document.getElementById("pauseRunnerBtn")?.addEventListener("click",()=>pauseRunner(true));document.getElementById("resetRunnerBtn")?.addEventListener("click",resetRunner);document.getElementById("downloadCurrentBtn")?.addEventListener("click",downloadCurrentCode);document.getElementById("codePreview")?.addEventListener("click",markCurrentError);document.addEventListener("keydown",e=>{if(e.code==="Space"&&!document.getElementById("createPanel")?.classList.contains("hidden")){e.preventDefault();markCurrentError();}});document.getElementById("copyErrorBtn")?.addEventListener("click",()=>copyText([...runErrors].join("\n")));document.getElementById("copyRunDoneBtn")?.addEventListener("click",()=>copyText([...runDone].join("\n")));document.getElementById("exportRunTxtBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.txt",runCodes.map((c,i)=>`${i+1}. ${c}${runErrors.has(c)?" | LOI":runDone.has(c)?" | DA CHAY":""}`).join("\n"),"text/plain"));document.getElementById("exportRunCsvBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.csv","STT,Code,Trang thai\n"+runCodes.map((c,i)=>`${i+1},"${String(c).replace(/"/g,'""')}","${runErrors.has(c)?"LOI":runDone.has(c)?"DA CHAY":"CHO"}"`).join("\n"),"text/csv"));document.getElementById("clearRunStateBtn")?.addEventListener("click",()=>{if(confirm("Xóa phiên chạy hiện tại?")){runCodes=[];runIndex=0;runErrors.clear();runDone.clear();document.getElementById("createInput").value="";document.getElementById("codePreview").textContent="Mã sẽ hiện ở đây...";updateRunStats();}});
+
+
+/* TKver7.7 sticky result + no manual scan buttons */
+function setStickyResult77(code, name="", target="scan"){
+  const box=document.getElementById(target==="inventory"?"inventoryStickyResult":"scanStickyResult");
+  const c=document.getElementById(target==="inventory"?"inventoryStickyCode":"scanStickyCode");
+  const n=document.getElementById(target==="inventory"?"inventoryStickyName":"scanStickyName");
+  if(!box||!c)return;
+  c.textContent=code||"---"; if(n)n.textContent=name||""; box.classList.remove("hidden");
+}
+const oldShowSuccessLock77 = showSuccessLock;
+showSuccessLock = function(code){
+  oldShowSuccessLock77(code);
+  const name = findInventoryName(code) || (inventoryMode ? "Mã ngoài bảng / chưa nạp dữ liệu" : "");
+  setStickyResult77(code, name, inventoryMode ? "inventory" : "scan");
+};
