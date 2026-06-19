@@ -1,4 +1,4 @@
-/* TKver7.9 QR Code Pro: 3 clean modes */
+/* TKver8.0 QR Code Pro: 3 clean modes */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false, currentCodeType="qr";
@@ -153,7 +153,18 @@ document.querySelectorAll(".filter-btn").forEach(b=>b.onclick=()=>setExportFilte
 $("#copySelectedExportBtn").onclick=async()=>{await copyText(getExportText());alert("Đã copy dữ liệu đã chọn.")};
 $("#exportSelectedTxtBtn").onclick=()=>downloadText("kiem-ke-da-chon.txt",getExportText(),"text/plain");
 $("#exportSelectedCsvBtn").onclick=()=>downloadText("kiem-ke-da-chon.csv",getExportCsv(),"text/csv");
-document.querySelectorAll(".type-tab").forEach(b=>b.onclick=()=>{currentCodeType=b.dataset.codeType;document.querySelectorAll(".type-tab").forEach(x=>x.classList.toggle("active",x===b));generateCode()});
+document.querySelectorAll(".type-tab").forEach(b=>b.onclick=()=>{
+  currentCodeType=b.dataset.codeType;
+  document.querySelectorAll(".type-tab").forEach(x=>x.classList.toggle("active",x===b));
+  parseRunCodes();
+  if(!runCodes.length){
+    const raw=document.getElementById("createInput")?.value.trim();
+    if(raw) runCodes=raw.split(/\r?\n|[,;\t]+/).map(x=>x.trim()).filter(Boolean);
+  }
+  runIndex=0;
+  renderCurrentCode();
+  renderRunLists();
+});
 $("#generateBtn").onclick=generateCode; $("#clearCreateBtn").onclick=()=>{$("#createInput").value="";$("#codePreview").textContent="Mã sẽ hiện ở đây..."};
 $("#downloadCodeBtn").onclick=()=>{const c=$("#codePreview canvas");if(c){const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="qr-code.png";a.click()}else alert("Hãy tạo mã trước.")};
 $("#cameraWrap").addEventListener("pointerdown",e=>{const dot=$("#focusDot"),r=$("#cameraWrap").getBoundingClientRect();dot.style.left=(e.clientX-r.left)+"px";dot.style.top=(e.clientY-r.top)+"px";dot.classList.remove("hidden");setTimeout(()=>dot.classList.add("hidden"),700)});
@@ -162,7 +173,7 @@ $("#inventoryTableBody").addEventListener("dblclick",e=>{const row=e.target.clos
 switchMode("create"); renderInventory(); renderExportFilters();
 
 
-/* TKver7.9 embedded inventory camera */
+/* TKver8.0 embedded inventory camera */
 let invStream=null, invTimer=null, invZxingReader=null;
 const inventoryVideo = document.getElementById("inventoryVideo");
 const inventoryCanvas = document.getElementById("inventoryScanCanvas");
@@ -238,7 +249,7 @@ document.getElementById("exportSelectedTxtBtn")?.addEventListener("click",()=>{c
 document.getElementById("exportSelectedCsvBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportCsv().split("\n").slice(0,20).join("\n");}});
 
 
-/* TKver7.9 native barcode first + advanced QR runner */
+/* TKver8.0 native barcode first + advanced QR runner */
 let nativeDetector=null;
 async function getNativeDetector(){
   if(nativeDetector!==null)return nativeDetector;
@@ -280,13 +291,20 @@ function downloadCurrentCode(){const c=document.querySelector("#codePreview canv
 document.getElementById("playRunnerBtn")?.addEventListener("click",playRunner);document.getElementById("pauseRunnerBtn")?.addEventListener("click",()=>pauseRunner(true));document.getElementById("resetRunnerBtn")?.addEventListener("click",resetRunner);document.getElementById("downloadCurrentBtn")?.addEventListener("click",downloadCurrentCode);document.getElementById("codePreview")?.addEventListener("click",markCurrentError);document.addEventListener("keydown",e=>{if(e.code==="Space"&&!document.getElementById("createPanel")?.classList.contains("hidden")){e.preventDefault();markCurrentError();}});document.getElementById("copyErrorBtn")?.addEventListener("click",()=>copyText([...runErrors].join("\n")));document.getElementById("copyRunDoneBtn")?.addEventListener("click",()=>copyText([...runDone].join("\n")));document.getElementById("exportRunTxtBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.txt",runCodes.map((c,i)=>`${i+1}. ${c}${runErrors.has(c)?" | LOI":runDone.has(c)?" | DA CHAY":""}`).join("\n"),"text/plain"));document.getElementById("exportRunCsvBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.csv","STT,Code,Trang thai\n"+runCodes.map((c,i)=>`${i+1},"${String(c).replace(/"/g,'""')}","${runErrors.has(c)?"LOI":runDone.has(c)?"DA CHAY":"CHO"}"`).join("\n"),"text/csv"));document.getElementById("clearRunStateBtn")?.addEventListener("click",()=>{if(confirm("Xóa phiên chạy hiện tại?")){runCodes=[];runIndex=0;runErrors.clear();runDone.clear();document.getElementById("createInput").value="";document.getElementById("codePreview").textContent="Mã sẽ hiện ở đây...";updateRunStats();}});
 
 
-/* TKver7.9 sticky result + no manual scan buttons */
+/* TKver8.0 sticky result + no manual scan buttons */
 function setStickyResult77(code, name="", target="scan"){
-  const box=document.getElementById(target==="inventory"?"inventoryStickyResult":"scanStickyResult");
+  const box=document.getElementById(target==="inventory"?"inventoryStickyResult":"scanCompactResult");
   const c=document.getElementById(target==="inventory"?"inventoryStickyCode":"scanStickyCode");
   const n=document.getElementById(target==="inventory"?"inventoryStickyName":"scanStickyName");
+  const count=document.getElementById("inventoryStickyCount");
   if(!box||!c)return;
-  c.textContent=code||"---"; if(n)n.textContent=name||""; box.classList.remove("hidden");
+  c.textContent=code||"---";
+  if(n)n.textContent=name||"";
+  if(target==="inventory" && count){
+    const sl=findInventoryCount(code);
+    count.textContent = sl!=="" ? ("SL: "+sl) : "SL: ?";
+  }
+  box.classList.remove("hidden");
 }
 const oldShowSuccessLock77 = showSuccessLock;
 showSuccessLock = function(code){
@@ -296,7 +314,7 @@ showSuccessLock = function(code){
 };
 
 
-/* TKver7.9 inventory one-hand controls + mobile inline actions */
+/* TKver8.0 inventory one-hand controls + mobile inline actions */
 function initInvHand79(){
   const saved=localStorage.getItem("tk_inv_hand")||"right";
   document.body.classList.toggle("inv-hand-right",saved!=="left");
@@ -316,3 +334,14 @@ document.getElementById("invOverlayStopBtn")?.addEventListener("click",()=>stopI
   }
 })();
 initInvHand79();
+
+/* TKver8.0 live create refresh */
+let createRefreshTimer=null;
+document.getElementById("createInput")?.addEventListener("input",()=>{
+  clearTimeout(createRefreshTimer);
+  createRefreshTimer=setTimeout(()=>{
+    if(!document.getElementById("createPanel")?.classList.contains("hidden")){
+      parseRunCodes(); runIndex=0; renderCurrentCode(); renderRunLists();
+    }
+  },250);
+});
