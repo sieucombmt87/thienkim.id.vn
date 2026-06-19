@@ -2,94 +2,74 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>THIENKIM UNIVERSE</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=TKver8.2">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>App Manager - THIENKIM</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body class="home-page">
-  <div class="galaxy-bg">
-    <div class="starfield layer-1"></div>
-    <div class="starfield layer-2"></div>
-    <div class="sparkles"></div>
-    <div class="cloud cloud-left"></div>
-    <div class="cloud cloud-right"></div>
-    <div class="cloud cloud-bottom"></div>
-  </div>
-
-  <header class="topbar">
-    <button class="star-gateway" id="adminStar" type="button" title="Cổng Admin ẩn" aria-label="Cổng Admin">
-      <img src="assets/images/ui/admin-star.png" alt="">
-    </button>
-    <button class="login-pill hidden" id="logoutBtn" type="button">↪ Đăng xuất</button>
-  </header>
-
-  <main class="page">
-    <section class="hero">
-      <div class="hero-line">
-        <span class="welcome-inline">♥ Welcome to ♡</span>
-        <div class="title-stack">
-          <h1>THIENKIM UNIVERSE</h1>
-          <p>5 KHÔNG GIAN <span>•</span> 1 HÀNH TRÌNH <span>•</span> VÔ VÀN GIÁ TRỊ! ♡</p>
-        </div>
+<body class="admin-page app-manager-page">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">✦ <span>App<br>Manager</span></div>
+    <div id="adminUserBox" class="admin-user">Đang kiểm tra...</div>
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="../apps/index.html">Xem App Center</a>
+      <a href="../index.html">Trang chủ</a>
+    </nav>
+    <button id="adminLogout">Đăng xuất</button>
+  </aside>
+  <main class="admin-main">
+    <h1>App Manager</h1>
+<section class="app-manager-toolbar" id="appManagerToolbar">
+  <label for="appManagerRoleSelect">Quyền đang cấu hình</label>
+  <select id="appManagerRoleSelect">
+    <option>Admin Test Full</option><option>Admin</option><option>VIP</option><option>Family</option><option>Leader</option><option>Boss</option><option>Trưởng ca</option><option>TVBH</option>
+  </select>
+  <button id="appManagerSaveBtn" type="button">✅ Cập nhật cấu hình</button>
+  <span id="appManagerSaveStatus"></span>
+</section>
+    <p>Admin có thể set ứng dụng VIP hoặc ứng dụng thường. Cấu hình bản này lưu trong LocalStorage để test nhanh.</p>
+    <section class="manager-preview">
+      <h2>Danh sách ứng dụng</h2>
+      <div id="appManagerList" class="app-manager-list"></div>
+      <button id="resetAppConfig">Reset cấu hình mặc định</button>
+      <button id="exportAppConfig">Copy cấu hình JSON</button>
+      <textarea id="appConfigExport" rows="10" readonly></textarea>
+    </section>
+    <section class="manager-preview">
+      <h2>Gợi ý cột Google Sheet cho User</h2>
+      <div class="domain-table">
+        <div><b>Cột</b><b>Giá trị</b><b>Ý nghĩa</b></div>
+        <div><span>vip_access</span><span>Y/N</span><span>Cho phép dùng toàn bộ app VIP.</span></div>
+        <div><span>create_video</span><span>Y/N</span><span>Cho phép dùng app Create Video.</span></div>
+        <div><span>ai_prompt</span><span>Y/N</span><span>Cho phép dùng app AI Prompt.</span></div>
+        <div><span>app_order</span><span>["ai-prompt","create-video"]</span><span>Sắp xếp app ưu tiên theo user.</span></div>
+        <div><span>mood_tracking</span><span>Y/N</span><span>Bật/tắt trải nghiệm cảm xúc.</span></div>
       </div>
-      <div id="roleBadge" class="role-badge hidden"></div>
-    </section>
-
-    <section class="domain-panel hidden-domains" id="domainPanel" aria-label="Hệ sinh thái Thiên Kim">
-      <a href="me/index.html">me</a>
-      <a href="apps/edu-lab/">academy</a>
-      <a href="bi/index.html">bi</a>
-      <a href="store/index.html">store</a>
-      <a href="apps/index.html">app</a>
-      <a href="vault/index.html" class="domain-vault">vault</a>
-      <a href="admin/index.html" class="domain-admin">admin</a>
-      <a href="crm/index.html" class="admin-only">crm</a>
-      <a href="ai/index.html" class="admin-only">ai</a>
-      <a href="erp/index.html" class="admin-only">erp</a>
-      <a href="hr/index.html" class="admin-only">hr</a>
-      <a href="wiki/index.html" class="admin-only">wiki</a>
-    </section>
-
-    <section class="cards-stage" aria-label="Danh mục chính">
-      <article class="card-shell gold" data-open="profile">
-        <img src="assets/images/cards/card-1.png" alt="Flex Profile Chủ Tịch">
-        <button class="card-button orange">Khám phá ngay →</button>
-      </article>
-
-      <article class="card-shell blue" data-open="learning" data-url="apps/edu-lab/">
-        <img src="assets/images/cards/card-2.png" alt="Vũ Trụ Cày Cuốc">
-        <button class="card-button blue-btn">Khám phá ngay →</button>
-      </article>
-
-      <article class="card-shell vip" data-open="vip">
-        <a class="login-chip" href="login.html?mode=vip">🔒 Đăng nhập</a>
-        <img src="assets/images/cards/card-3.png" alt="Kho Báu VIP">
-        <button class="card-button gold-btn">Khám phá ngay →</button>
-      </article>
-
-      <article class="card-shell shop" data-open="sales">
-        <a class="login-chip" href="login.html?mode=sales">🔒 Đăng nhập</a>
-        <img src="assets/images/cards/card-4.png" alt="Tạp Hóa Chốt Đơn">
-        <button class="card-button pink-btn">Khám phá ngay →</button>
-      </article>
-
-      <article class="card-shell tools" data-open="tools">
-        <img src="assets/images/cards/card-5.png" alt="Bảo Bối Mì Ăn Liền">
-        <button class="card-button purple-btn">Khám phá ngay →</button>
-      </article>
-    </section>
-
-    <section class="value-bar">
-      <div class="value-item"><img src="assets/images/icons/icon-1.png" alt=""><b>Kết nối</b><em>Cộng đồng tích cực</em></div>
-      <div class="value-item"><img src="assets/images/icons/icon-2.png" alt=""><b>Học hỏi</b><em>Kiến thức mỗi ngày</em></div>
-      <div class="value-item"><img src="assets/images/icons/icon-3.png" alt=""><b>Phát triển</b><em>Không ngừng nâng cấp</em></div>
-      <div class="value-item"><img src="assets/images/icons/icon-4.png" alt=""><b>Bứt phá</b><em>Khẳng định giá trị</em></div>
-      <div class="value-item"><img src="assets/images/icons/icon-5.png" alt=""><b>Tỏa sáng</b><em>Là phiên bản tốt nhất</em></div>
     </section>
   </main>
+  <script src="../config/google-sheet.js"></script>
+  <script src="../config/modules.js"></script>
+  <script src="../assets/js/app-manager.js"></script>
+<div id="buildVersion" title="THIENKIM build version">TKver8.3</div>
 
-  <script src="config/google-sheet.js?v=TKver8.2"></script>
-  <script src="assets/js/app.js?v=TKver8.2"></script>
-<div id="buildVersion" title="THIENKIM build version">TKver8.2</div>
+<style id="app-manager-save-81">
+.app-manager-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0 18px;padding:12px;border:1px solid rgba(255,213,89,.35);border-radius:16px;background:rgba(0,0,0,.32)}
+.app-manager-toolbar label{font-weight:900;color:#ffe28a}.app-manager-toolbar select,.app-manager-toolbar button{height:38px;border-radius:10px;border:1px solid rgba(255,213,89,.45);padding:0 12px;font-weight:900}.app-manager-toolbar button{background:#16a34a;color:#fff;border:0}#appManagerSaveStatus{color:#73d7ff;font-weight:900}
+@media(max-width:768px){.app-manager-toolbar{display:grid;grid-template-columns:1fr;gap:8px}.app-manager-toolbar select,.app-manager-toolbar button{width:100%;height:42px}}
+</style>
+<script id="app-manager-save-81">
+document.addEventListener("DOMContentLoaded",function(){
+  const role=document.getElementById("appManagerRoleSelect"), save=document.getElementById("appManagerSaveBtn"), status=document.getElementById("appManagerSaveStatus");
+  const boxes=()=>Array.from(document.querySelectorAll('input[type="checkbox"]'));
+  function key(){return "tk_app_manager_config_"+(role?.value||"Admin Test Full");}
+  function load(){try{const data=JSON.parse(localStorage.getItem(key())||"{}");boxes().forEach((b,i)=>{if(Object.prototype.hasOwnProperty.call(data,i))b.checked=!!data[i];});}catch(e){}}
+  save?.addEventListener("click",function(){
+    const data={}; boxes().forEach((b,i)=>data[i]=!!b.checked); localStorage.setItem(key(),JSON.stringify(data));
+    if(status)status.textContent="Đã cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
+    const t=document.createElement("div"); t.textContent="Đã cập nhật cấu hình"; t.style.cssText="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99999;background:#16a34a;color:#fff;padding:12px 16px;border-radius:999px;font-weight:900;box-shadow:0 10px 25px rgba(0,0,0,.3)"; document.body.appendChild(t); setTimeout(()=>t.remove(),1600);
+  });
+  role?.addEventListener("change",load); load();
+});
+</script>
 </body>
 </html>
