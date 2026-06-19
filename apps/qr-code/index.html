@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver7.8</title>
-  <link rel="stylesheet" href="style.css?v=TKver7.8">
+  <title>QR CODE PRO • TKver7.9</title>
+  <link rel="stylesheet" href="style.css?v=TKver7.9">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -118,12 +118,14 @@
 
 
       <section class="inventory-camera-box hidden" id="inventoryCameraBox">
+        <div class="inv-hand-panel" id="invHandPanel"><span>Thuận tay:</span><button class="hand-btn active" id="invHandRight" type="button">Phải</button><button class="hand-btn" id="invHandLeft" type="button">Trái</button></div>
         <div class="camera-actions inventory-camera-actions">
           <button class="btn primary" id="invStartBtn"><span>▶</span><b>Quét</b></button>
           <button class="btn danger" id="invStopBtn"><span>■</span><b>Dừng</b></button>
           <button class="btn ghost" id="invImageBtn"><span>📷</span><b>Ảnh</b></button>
         </div>
         <div class="camera-wrap inventory-camera-wrap" id="inventoryCameraWrap">
+          <div class="inv-overlay-controls" id="invOverlayControls"><button class="round-scan-btn start" id="invOverlayStartBtn" type="button">▶</button><button class="round-scan-btn stop" id="invOverlayStopBtn" type="button">■</button></div>
           <video id="inventoryVideo" playsinline muted autoplay></video>
           <canvas id="inventoryScanCanvas" hidden></canvas>
           <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
@@ -138,7 +140,7 @@
 
       <div class="inventory-actions">
         <button class="btn success" id="finishInventoryBtn">Đã quét xong</button>
-        <button class="btn primary" id="openScanFromInventoryBtn">Hiện camera kiểm kê</button>
+        <button class="btn primary" id="openScanFromInventoryBtn" class="btn primary hidden-camera-toggle">Hiện camera kiểm kê</button>
       </div>
 
       <div class="table-wrap">
@@ -167,6 +169,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver7.8"></script>
+  <script src="app.js?v=TKver7.9"></script>
 </body>
 </html>
