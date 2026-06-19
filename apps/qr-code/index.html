@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver7.4</title>
-  <link rel="stylesheet" href="style.css?v=TKver7.4">
+  <title>QR CODE PRO • TKver7.5</title>
+  <link rel="stylesheet" href="style.css?v=TKver7.5">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -26,13 +26,29 @@
         <button class="type-tab active" data-code-type="qr">QR Code</button>
         <button class="type-tab" data-code-type="barcode">Barcode 128</button>
       </div>
-      <textarea id="createInput" placeholder="Nhập mỗi mã một dòng hoặc dán danh sách..."></textarea>
+      <textarea id="createInput" placeholder="Nhập mỗi mã một dòng hoặc dán danh sách...&#10;8984020001177245858&#10;8984020001177245862&#10;8984020001177248533"></textarea>
       <div class="create-actions">
         <button class="btn primary" id="generateBtn">Tạo mã</button>
         <button class="btn ghost" id="downloadCodeBtn">Tải ảnh</button>
         <button class="btn ghost" id="clearCreateBtn">Xóa</button>
       </div>
-      <div class="code-preview" id="codePreview">Mã sẽ hiện ở đây...</div>
+      <section class="qr-runner" id="qrRunner">
+        <div class="runner-stats">
+          <span>Tổng <b id="runTotal">0</b></span><span>Đã chạy <b id="runDone">0</b></span><span>Lỗi <b id="runError">0</b></span><span>Vị trí <b id="runIndex">0/0</b></span>
+        </div>
+        <div class="code-preview" id="codePreview">Mã sẽ hiện ở đây...</div>
+        <div class="runner-actions">
+          <button class="btn primary" id="playRunnerBtn">▶ Chạy</button><button class="btn danger" id="pauseRunnerBtn">⏸ Dừng</button><button class="btn ghost" id="resetRunnerBtn">↻ Bắt đầu lại</button><button class="btn ghost" id="downloadCurrentBtn">⇩ Tải ảnh</button>
+        </div>
+        <label class="runner-delay">Thời gian chuyển:<select id="runnerDelay"><option value="2000">2 giây</option><option value="3000">3 giây</option><option value="4000">4 giây</option><option value="5000">5 giây</option></select></label>
+        <p class="runner-help" id="runnerHelp">Máy tính: nhấn SPACE để đánh dấu mã lỗi. Điện thoại: chạm vào mã đang hiển thị để đánh dấu lỗi.</p>
+      </section>
+      <section class="runner-lists">
+        <div class="runner-list-card"><div class="section-head"><b>Danh sách QR</b><small id="runListStatus">Chưa chạy</small></div><div id="runList" class="run-list">Chưa có dữ liệu.</div></div>
+        <div class="runner-list-card"><div class="section-head"><b>Danh sách lỗi</b><button class="mini-btn" id="copyErrorBtn">Copy lỗi</button></div><div id="errorList" class="run-list">Chưa có lỗi.</div></div>
+        <div class="runner-list-card"><div class="section-head"><b>QR đã chạy</b><button class="mini-btn" id="copyRunDoneBtn">Copy đã chạy</button></div><div id="doneList" class="run-list">Chưa có.</div></div>
+      </section>
+      <div class="export-action-row create-export-row"><button class="btn ghost" id="exportRunTxtBtn">Xuất TXT</button><button class="btn ghost" id="exportRunCsvBtn">Xuất CSV</button><button class="btn danger" id="clearRunStateBtn">Xóa phiên</button></div>
     </section>
 
     <section class="panel scanner-panel hidden" id="scanPanel">
@@ -149,6 +165,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver7.4"></script>
+  <script src="app.js?v=TKver7.5"></script>
 </body>
 </html>

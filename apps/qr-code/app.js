@@ -1,4 +1,4 @@
-/* TKver7.4 QR Code Pro: 3 clean modes */
+/* TKver7.5 QR Code Pro: 3 clean modes */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false, currentCodeType="qr";
@@ -132,14 +132,10 @@ function renderExportFilters(){
 }
 
 function generateCode(){
-  const raw=$("#createInput").value.trim(); const preview=$("#codePreview"); preview.innerHTML="";
-  if(!raw){preview.textContent="Chưa có dữ liệu.";return}
-  const first=raw.split(/\r?\n/).find(Boolean)||raw;
-  if(currentCodeType==="qr" && window.QRCode){
-    const c=document.createElement("canvas"); preview.appendChild(c); QRCode.toCanvas(c,first,{width:260,margin:2},()=>{});
-  }else if(window.JsBarcode){
-    const svg=document.createElementNS("http://www.w3.org/2000/svg","svg"); preview.appendChild(svg); JsBarcode(svg,first,{format:"CODE128",displayValue:true});
-  }else preview.textContent=first;
+  parseRunCodes();
+  runIndex=0;
+  renderCurrentCode();
+  renderRunLists();
 }
 
 $("#startBtn").onclick=startScan; $("#stopBtn").onclick=()=>stopScan(true); $("#imageBtn").onclick=()=>$("#imageInput").click();
@@ -164,7 +160,7 @@ $("#inventoryTableBody").addEventListener("dblclick",e=>{const row=e.target.clos
 switchMode("create"); renderInventory(); renderExportFilters();
 
 
-/* TKver7.4 embedded inventory camera */
+/* TKver7.5 embedded inventory camera */
 let invStream=null, invTimer=null, invZxingReader=null;
 const inventoryVideo = document.getElementById("inventoryVideo");
 const inventoryCanvas = document.getElementById("inventoryScanCanvas");
@@ -238,3 +234,45 @@ const oldCopySelectedExport74 = document.getElementById("copySelectedExportBtn")
 document.getElementById("copySelectedExportBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportText()||"Chưa có dữ liệu.";}});
 document.getElementById("exportSelectedTxtBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportText()||"Chưa có dữ liệu.";}}); 
 document.getElementById("exportSelectedCsvBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportCsv().split("\n").slice(0,20).join("\n");}});
+
+
+/* TKver7.5 native barcode first + advanced QR runner */
+let nativeDetector=null;
+async function getNativeDetector(){
+  if(nativeDetector!==null)return nativeDetector;
+  nativeDetector=false;
+  if("BarcodeDetector" in window){try{let formats=["qr_code","code_128","code_39","ean_13","ean_8","upc_a","upc_e","itf"];if(BarcodeDetector.getSupportedFormats){const supported=await BarcodeDetector.getSupportedFormats();formats=formats.filter(f=>supported.includes(f));}if(formats.length)nativeDetector=new BarcodeDetector({formats});}catch(e){nativeDetector=false;}}
+  return nativeDetector;
+}
+async function detectValuesFromCanvas(cnv){
+  const values=[]; const det=await getNativeDetector();
+  if(det){try{const r=await det.detect(cnv);r.forEach(x=>x.rawValue&&values.push(x.rawValue));}catch(e){}}
+  if(window.jsQR){try{const c=cnv.getContext("2d",{willReadFrequently:true});const data=c.getImageData(0,0,cnv.width,cnv.height);const q=jsQR(data.data,data.width,data.height,{inversionAttempts:"attemptBoth"});if(q?.data)values.push(q.data);}catch(e){}}
+  return values;
+}
+async function scanFrame(){
+  if(!video.videoWidth)return;
+  canvas.width=video.videoWidth; canvas.height=video.videoHeight; ctx.drawImage(video,0,0,canvas.width,canvas.height);
+  const values=[]; values.push(...await detectValuesFromCanvas(canvas));
+  if(zxingReader){try{const r=await zxingReader.decodeFromCanvas(canvas);if(r?.text)values.push(r.text)}catch(e){}}
+  if(values.length)handleDetected(values);
+}
+async function scanInventoryFrame(){
+  if(!inventoryVideo||!inventoryVideo.videoWidth)return;
+  inventoryCanvas.width=inventoryVideo.videoWidth; inventoryCanvas.height=inventoryVideo.videoHeight; inventoryCtx.drawImage(inventoryVideo,0,0,inventoryCanvas.width,inventoryCanvas.height);
+  const values=[]; values.push(...await detectValuesFromCanvas(inventoryCanvas));
+  if(invZxingReader){try{const r=await invZxingReader.decodeFromCanvas(inventoryCanvas);if(r?.text)values.push(r.text)}catch(e){}}
+  if(values.length){const v=sortCodes(values)[0];inventoryRecordScan(v);lastValue=v;document.getElementById("lastScan").textContent=v;showSuccessLock(v);setInventoryCameraStatus("Đã quét: "+v);}
+}
+let runCodes=[],runIndex=0,runTimer=null,runErrors=new Set(),runDone=new Set();
+function parseRunCodes(){const raw=document.getElementById("createInput")?.value||"";runCodes=raw.split(/\r?\n|[,;\t]+/).map(x=>x.trim()).filter(Boolean);if(!runCodes.length){const p=document.getElementById("codePreview");if(p)p.textContent="Chưa có dữ liệu.";}}
+function renderCurrentCode(){const p=document.getElementById("codePreview");if(!p)return;p.innerHTML="";const code=runCodes[runIndex]||"";if(!code){p.textContent="Mã sẽ hiện ở đây...";updateRunStats();return;}if(currentCodeType==="qr"&&window.QRCode){const c=document.createElement("canvas");c.id="currentCodeCanvas";p.appendChild(c);QRCode.toCanvas(c,code,{width:280,margin:2},()=>{});}else if(window.JsBarcode){const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.id="currentBarcodeSvg";p.appendChild(svg);try{JsBarcode(svg,code,{format:"CODE128",displayValue:true})}catch(e){p.textContent=code;}}else p.textContent=code;runDone.add(code);updateRunStats();}
+function updateRunStats(){const total=runCodes.length;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set("runTotal",total);set("runDone",runDone.size);set("runError",runErrors.size);set("runIndex",total?`${Math.min(runIndex+1,total)}/${total}`:"0/0");renderRunLists();}
+function renderRunLists(){const list=document.getElementById("runList"),err=document.getElementById("errorList"),done=document.getElementById("doneList"),status=document.getElementById("runListStatus");if(status)status.textContent=runTimer?"Đang chạy":(runCodes.length?"Đã nạp":"Chưa chạy");if(list)list.innerHTML=runCodes.length?runCodes.map((c,i)=>`<div class="run-item ${i===runIndex?"active":""} ${runErrors.has(c)?"error":""}"><span>${i+1}</span><span>${escapeHtml(c)}</span><span>${runErrors.has(c)?"Lỗi":(runDone.has(c)?"Đã chạy":"Chờ")}</span></div>`).join(""):"Chưa có dữ liệu.";if(err)err.innerHTML=runErrors.size?[...runErrors].map((c,i)=>`<div class="run-item error"><span>${i+1}</span><span>${escapeHtml(c)}</span><span>Lỗi</span></div>`).join(""):"Chưa có lỗi.";if(done)done.innerHTML=runDone.size?[...runDone].map((c,i)=>`<div class="run-item"><span>${i+1}</span><span>${escapeHtml(c)}</span><span>OK</span></div>`).join(""):"Chưa có.";}
+function nextRunCode(){if(!runCodes.length)parseRunCodes();if(!runCodes.length)return;runIndex++;if(runIndex>=runCodes.length){if(runErrors.size){runCodes=[...runErrors];runErrors.clear();runIndex=0;}else{pauseRunner();runIndex=runCodes.length-1;updateRunStats();return;}}renderCurrentCode();}
+function playRunner(){if(!runCodes.length)parseRunCodes();if(!runCodes.length)return alert("Chưa có mã để chạy.");pauseRunner(false);renderCurrentCode();const delay=Number(document.getElementById("runnerDelay")?.value||2000);runTimer=setInterval(nextRunCode,delay);updateRunStats();}
+function pauseRunner(update=true){if(runTimer){clearInterval(runTimer);runTimer=null;}if(update)updateRunStats();}
+function resetRunner(){pauseRunner(false);runIndex=0;runErrors.clear();runDone.clear();parseRunCodes();renderCurrentCode();renderRunLists();}
+function markCurrentError(){const code=runCodes[runIndex];if(code){runErrors.add(code);updateRunStats();}}
+function downloadCurrentCode(){const c=document.querySelector("#codePreview canvas");if(c){const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download=(runCodes[runIndex]||"qr-code")+".png";a.click();return;}alert("Hiện chỉ tải nhanh PNG cho QR Code.");}
+document.getElementById("playRunnerBtn")?.addEventListener("click",playRunner);document.getElementById("pauseRunnerBtn")?.addEventListener("click",()=>pauseRunner(true));document.getElementById("resetRunnerBtn")?.addEventListener("click",resetRunner);document.getElementById("downloadCurrentBtn")?.addEventListener("click",downloadCurrentCode);document.getElementById("codePreview")?.addEventListener("click",markCurrentError);document.addEventListener("keydown",e=>{if(e.code==="Space"&&!document.getElementById("createPanel")?.classList.contains("hidden")){e.preventDefault();markCurrentError();}});document.getElementById("copyErrorBtn")?.addEventListener("click",()=>copyText([...runErrors].join("\n")));document.getElementById("copyRunDoneBtn")?.addEventListener("click",()=>copyText([...runDone].join("\n")));document.getElementById("exportRunTxtBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.txt",runCodes.map((c,i)=>`${i+1}. ${c}${runErrors.has(c)?" | LOI":runDone.has(c)?" | DA CHAY":""}`).join("\n"),"text/plain"));document.getElementById("exportRunCsvBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.csv","STT,Code,Trang thai\n"+runCodes.map((c,i)=>`${i+1},"${String(c).replace(/"/g,'""')}","${runErrors.has(c)?"LOI":runDone.has(c)?"DA CHAY":"CHO"}"`).join("\n"),"text/csv"));document.getElementById("clearRunStateBtn")?.addEventListener("click",()=>{if(confirm("Xóa phiên chạy hiện tại?")){runCodes=[];runIndex=0;runErrors.clear();runDone.clear();document.getElementById("createInput").value="";document.getElementById("codePreview").textContent="Mã sẽ hiện ở đây...";updateRunStats();}});
