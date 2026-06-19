@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver8.2</title>
-  <link rel="stylesheet" href="style.css?v=TKver8.2">
+  <title>QR CODE PRO • TKver8.3</title>
+  <link rel="stylesheet" href="style.css?v=TKver8.3">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -36,6 +36,7 @@
         <div class="runner-stats">
           <span>Tổng <b id="runTotal">0</b></span><span>Đã chạy <b id="runDone">0</b></span><span>Lỗi <b id="runError">0</b></span><span>Vị trí <b id="runIndex">0/0</b></span>
         </div>
+        <div class="create-type-status" id="createTypeStatus">Đang chọn: QR Code</div>
         <div class="code-preview" id="codePreview">Mã sẽ hiện ở đây...</div>
         <div class="runner-actions">
           <button class="btn primary" id="playRunnerBtn">▶ Chạy</button><button class="btn danger" id="pauseRunnerBtn">Ⅱ Tạm dừng</button><button class="btn ghost" id="resetRunnerBtn">↻ Bắt đầu lại</button><button class="btn ghost" id="downloadCurrentBtn">⇩ Tải ảnh</button>
@@ -176,6 +177,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver8.2"></script>
+  <script src="app.js?v=TKver8.3"></script>
 </body>
 </html>
