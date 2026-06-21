@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver8.3</title>
-  <link rel="stylesheet" href="style.css?v=TKver8.3">
+  <title>QR CODE PRO • TKver8.4</title>
+  <link rel="stylesheet" href="style.css?v=TKver8.4">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -144,11 +144,12 @@
       <div class="manual-row">
         <input id="manualScanInput" placeholder="Dán mã rồi Enter nếu muốn nhập tay...">
         <button class="btn primary" id="manualScanBtn">Ghi nhận</button>
+        <button class="btn success" id="finishInventoryInlineBtn" type="button">Đã quét xong</button>
       </div>
 
       <div class="inventory-actions">
         <button class="btn success" id="finishInventoryBtn">Đã quét xong</button>
-        <button class="btn primary" id="openScanFromInventoryBtn" class="btn primary hidden-camera-toggle">Hiện camera kiểm kê</button>
+        <button class="btn primary" id="openScanFromInventoryBtn" class="hard-hidden" class="btn primary hidden-camera-toggle">Hiện camera kiểm kê</button>
       </div>
 
       <div class="table-wrap">
@@ -177,6 +178,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver8.3"></script>
+  <script src="app.js?v=TKver8.4"></script>
 </body>
 </html>
