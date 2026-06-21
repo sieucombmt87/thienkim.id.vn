@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver8.4</title>
-  <link rel="stylesheet" href="style.css?v=TKver8.4">
+  <title>QR CODE PRO • TKver8.5</title>
+  <link rel="stylesheet" href="style.css?v=TKver8.5">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -67,6 +67,19 @@
         <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
         <div class="focus-dot hidden" id="focusDot">●</div>
       </div>
+
+      
+      <section class="normal-scan-result-box hidden" id="normalScanResultBox">
+        <div class="section-head"><b>Mã vừa quét</b><button class="mini-btn" id="copyNormalLatestBtn" type="button">Copy</button></div>
+        <div class="latest-normal-code" id="normalLatestCode">---</div>
+        <div class="normal-actions">
+          <button class="btn primary" id="addNormalLatestBtn" type="button">Ghi nhận</button>
+          <button class="btn ghost" id="copyNormalAllBtn" type="button">Copy toàn bộ</button>
+          <button class="btn ghost" id="exportNormalTxtBtn" type="button">Xuất TXT</button>
+          <button class="btn ghost" id="exportNormalCsvBtn" type="button">Xuất CSV</button>
+        </div>
+        <div class="normal-list" id="normalScannedList">Chưa có mã đã ghi nhận.</div>
+      </section>
 
       <div class="camera-status" id="cameraStatus">Bấm “Quét” để mở camera.</div>
 
@@ -148,8 +161,8 @@
       </div>
 
       <div class="inventory-actions">
-        <button class="btn success" id="finishInventoryBtn">Đã quét xong</button>
-        <button class="btn primary" id="openScanFromInventoryBtn" class="hard-hidden" class="btn primary hidden-camera-toggle">Hiện camera kiểm kê</button>
+        <button class="btn success" id="finishInventoryBtn" data-hide-old="1">Đã quét xong</button>
+        <button class="btn primary" id="openScanFromInventoryBtn" data-hide-old="1" class="hard-hidden" class="btn primary hidden-camera-toggle">Hiện camera kiểm kê</button>
       </div>
 
       <div class="table-wrap">
@@ -178,6 +191,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver8.4"></script>
+  <script src="app.js?v=TKver8.5"></script>
 </body>
 </html>
