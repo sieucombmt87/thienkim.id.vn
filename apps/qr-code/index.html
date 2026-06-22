@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver8.7</title>
-  <link rel="stylesheet" href="style.css?v=TKver8.7">
+  <title>QR CODE PRO • TKver8.8</title>
+  <link rel="stylesheet" href="style.css?v=TKver8.8">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -116,19 +116,11 @@
 4844156000287 Nồi cơm nắp gài Cuckoo CR-1122 (imei)
 4844156000288 Nồi cơm nắp gài Cuckoo CR-0671V (imei)"></textarea>
         <div class="inventory-actions">
-          <button class="btn ghost" id="loadInventoryBtn">Nạp dữ liệu</button>
-          <button class="btn ghost" id="clearInventoryBtn">Xóa bảng</button>
-          <button class="btn ghost" id="collapseInventoryBtn">Thu gọn</button>
+          <button class="btn ghost" id="loadInventoryBtn" type="button">Nạp dữ liệu</button>
+          <button class="btn ghost" id="clearInventoryBtn" type="button">Xóa bảng</button>
+          <button class="btn ghost" id="collapseInventoryBtn" type="button">Thu gọn</button>
         </div>
       </section>
-
-      
-      <div class="inventory-toolbar" id="inventoryToolbar">
-        <button class="btn ghost" id="loadInventoryBtn" type="button">Nạp dữ liệu</button>
-        <button class="btn ghost" id="clearInventoryBtn" type="button">Xóa bảng</button>
-        <button class="btn ghost" id="collapseInventoryBtn" type="button">Thu gọn</button>
-      </div>
-
       <section class="scan-compact-result hidden" id="inventoryStickyResult"><b>✓</b><div><span id="inventoryStickyCode">---</span><small id="inventoryStickyName"></small></div><em id="inventoryStickyCount">SL: 0</em></section>
       <div class="stats-grid">
         <span>Tổng mã <b id="invTotal">0</b></span>
@@ -198,6 +190,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver8.7"></script>
+  <script src="app.js?v=TKver8.8"></script>
 </body>
 </html>

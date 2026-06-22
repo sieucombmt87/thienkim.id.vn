@@ -1,4 +1,4 @@
-/* TKver8.6 QR Code Pro: 3 clean modes */
+/* TKver8.8 QR Code Pro: 3 clean modes */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false, currentCodeType="qr";
@@ -31,7 +31,7 @@ function switchMode(mode){
 document.querySelectorAll(".main-tab").forEach(b=>b.addEventListener("click",()=>switchMode(b.dataset.mode)));
 
 
-/* TKver8.6 safer camera constraints */
+/* TKver8.8 safer camera constraints */
 async function openCamera(){
   const constraintsList=[
     {video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false},
@@ -170,7 +170,7 @@ $("#inventoryTableBody").addEventListener("dblclick",e=>{const row=e.target.clos
 switchMode("create"); renderInventory(); renderExportFilters();
 
 
-/* TKver8.6 embedded inventory camera */
+/* TKver8.8 embedded inventory camera */
 let invStream=null, invTimer=null, invZxingReader=null;
 const inventoryVideo = document.getElementById("inventoryVideo");
 const inventoryCanvas = document.getElementById("inventoryScanCanvas");
@@ -248,7 +248,7 @@ document.getElementById("exportSelectedTxtBtn")?.addEventListener("click",()=>{c
 document.getElementById("exportSelectedCsvBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportCsv().split("\n").slice(0,20).join("\n");}});
 
 
-/* TKver8.6 native barcode first + advanced QR runner */
+/* TKver8.8 native barcode first + advanced QR runner */
 let nativeDetector=null;
 async function getNativeDetector(){
   if(nativeDetector!==null)return nativeDetector;
@@ -290,7 +290,7 @@ function downloadCurrentCode(){const c=document.querySelector("#codePreview canv
 document.getElementById("playRunnerBtn")?.addEventListener("click",playRunner);document.getElementById("pauseRunnerBtn")?.addEventListener("click",()=>pauseRunner(true));document.getElementById("resetRunnerBtn")?.addEventListener("click",resetRunner);document.getElementById("downloadCurrentBtn")?.addEventListener("click",downloadCurrentCode);document.getElementById("codePreview")?.addEventListener("click",markCurrentError);document.addEventListener("keydown",e=>{if(e.code==="Space"&&!document.getElementById("createPanel")?.classList.contains("hidden")){e.preventDefault();markCurrentError();}});document.getElementById("copyErrorBtn")?.addEventListener("click",()=>copyText([...runErrors].join("\n")));document.getElementById("copyRunDoneBtn")?.addEventListener("click",()=>copyText([...runDone].join("\n")));document.getElementById("exportRunTxtBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.txt",runCodes.map((c,i)=>`${i+1}. ${c}${runErrors.has(c)?" | LOI":runDone.has(c)?" | DA CHAY":""}`).join("\n"),"text/plain"));document.getElementById("exportRunCsvBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.csv","STT,Code,Trang thai\n"+runCodes.map((c,i)=>`${i+1},"${String(c).replace(/"/g,'""')}","${runErrors.has(c)?"LOI":runDone.has(c)?"DA CHAY":"CHO"}"`).join("\n"),"text/csv"));document.getElementById("clearRunStateBtn")?.addEventListener("click",()=>{if(confirm("Xóa phiên chạy hiện tại?")){runCodes=[];runIndex=0;runErrors.clear();runDone.clear();document.getElementById("createInput").value="";document.getElementById("codePreview").textContent="Mã sẽ hiện ở đây...";updateRunStats();}});
 
 
-/* TKver8.6 sticky result + no manual scan buttons */
+/* TKver8.8 sticky result + no manual scan buttons */
 function setStickyResult77(code, name="", target="scan"){
   const box=document.getElementById(target==="inventory"?"inventoryStickyResult":"scanCompactResult");
   const c=document.getElementById(target==="inventory"?"inventoryStickyCode":"scanStickyCode");
@@ -313,7 +313,7 @@ showSuccessLock = function(code){
 };
 
 
-/* TKver8.6 inventory one-hand controls + mobile inline actions */
+/* TKver8.8 inventory one-hand controls + mobile inline actions */
 function initInvHand79(){
   const saved=localStorage.getItem("tk_inv_hand")||"right";
   document.body.classList.toggle("inv-hand-right",saved!=="left");
@@ -334,7 +334,7 @@ document.getElementById("invOverlayStopBtn")?.addEventListener("click",()=>stopI
 })();
 initInvHand79();
 
-/* TKver8.6 live create refresh */
+/* TKver8.8 live create refresh */
 let createRefreshTimer=null;
 document.getElementById("createInput")?.addEventListener("input",()=>{
   clearTimeout(createRefreshTimer);
@@ -345,12 +345,12 @@ document.getElementById("createInput")?.addEventListener("input",()=>{
   },250);
 });
 
-/* TKver8.6 inventory scan throttle */
+/* TKver8.8 inventory scan throttle */
 let invLastAcceptedAt=0;
 let invLastAcceptedCode='';
 
 
-/* TKver8.6 scan cooldown modes */
+/* TKver8.8 scan cooldown modes */
 const TK_SCAN_SPEEDS = {fast:{any:500,same:3000,label:"Nhanh"},inventory:{any:1000,same:5000,label:"Kiểm kê"},safe:{any:2000,same:7000,label:"Chính xác"}};
 let tkScanSpeedMode = localStorage.getItem("tk_scan_speed_mode") || "inventory";
 function getScanCooldownConfig(){return TK_SCAN_SPEEDS[tkScanSpeedMode] || TK_SCAN_SPEEDS.inventory;}
@@ -360,7 +360,7 @@ setScanSpeedMode(tkScanSpeedMode);
 function tkScanSuccessFeedback(code){try{const box=document.getElementById("inventoryCameraWrap")||document.getElementById("cameraWrap");if(box){box.classList.remove("scan-cooldown-flash");void box.offsetWidth;box.classList.add("scan-cooldown-flash");}if(navigator.vibrate)navigator.vibrate(60);}catch(e){}}
 
 
-/* TKver8.6 FINAL OVERRIDES: QR/Barcode strict + real scan cooldown */
+/* TKver8.8 FINAL OVERRIDES: QR/Barcode strict + real scan cooldown */
 (function(){
   const TK83_SPEEDS = {
     fast: { any: 1000, same: 5000, label: "Nhanh" },
@@ -480,7 +480,7 @@ function tkScanSuccessFeedback(code){try{const box=document.getElementById("inve
 })();
 
 
-/* TKver8.6 hard QR/Barcode renderer + inventory UX */
+/* TKver8.8 hard QR/Barcode renderer + inventory UX */
 function tk84GetCreateCodes(){const raw=document.getElementById("createInput")?.value||"";return raw.split(/\r?\n|[,;\t]+/).map(x=>x.trim()).filter(Boolean);}
 function tk84RenderQR(preview, code){preview.innerHTML="";const c=document.createElement("canvas");c.id="currentCodeCanvas";preview.appendChild(c);if(window.QRCode&&QRCode.toCanvas){QRCode.toCanvas(c,code,{width:300,margin:2,errorCorrectionLevel:"M"},function(err){if(err)tk84RenderQRFallback(preview,code);});}else{tk84RenderQRFallback(preview,code);}}
 function tk84RenderQRFallback(preview, code){preview.innerHTML="";const img=document.createElement("img");img.className="qr-img-fallback";img.alt="QR Code";img.src="https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl="+encodeURIComponent(code);img.onerror=function(){preview.innerHTML='<div class="qr-fallback">Không tải được QR. Kiểm tra mạng hoặc thư viện QR.<br>'+escapeHtml(code)+'</div>';};preview.appendChild(img);}
@@ -494,7 +494,7 @@ let tk84LastScanAt=0;let tk84LastScanCode="";let tk84ScanLocked=false;
 async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo||!inventoryVideo.videoWidth)return;inventoryCanvas.width=inventoryVideo.videoWidth;inventoryCanvas.height=inventoryVideo.videoHeight;inventoryCtx.drawImage(inventoryVideo,0,0,inventoryCanvas.width,inventoryCanvas.height);const values=[];values.push(...await detectValuesFromCanvas(inventoryCanvas));if(invZxingReader){try{const r=await invZxingReader.decodeFromCanvas(inventoryCanvas);if(r?.text)values.push(r.text)}catch(e){}}if(!values.length)return;const v=sortCodes(values)[0];const code=normalizeCode(v);const now=Date.now();const same=code&&code===tk84LastScanCode;const minGap=same?7000:1200;if(now-tk84LastScanAt<minGap)return;tk84ScanLocked=true;tk84LastScanAt=now;tk84LastScanCode=code;inventoryRecordScan(v);lastValue=v;const last=document.getElementById("lastScan");if(last)last.textContent=v;showSuccessLock(v);setInventoryCameraStatus("Đã quét: "+v+" — khóa 1.2s để tránh cộng nhầm");try{if(navigator.vibrate)navigator.vibrate([160,80,160]);const box=document.getElementById("inventoryCameraWrap");if(box){box.classList.remove("scan-cooldown-flash");void box.offsetWidth;box.classList.add("scan-cooldown-flash");}}catch(e){}setTimeout(()=>{tk84ScanLocked=false;},1200);}
 
 
-/* TKver8.6 HARD OVERRIDE: QR/Barcode renderer + normal scan list + inventory cleanup */
+/* TKver8.8 HARD OVERRIDE: QR/Barcode renderer + normal scan list + inventory cleanup */
 (function(){
   const $=(id)=>document.getElementById(id);
   function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
@@ -520,7 +520,7 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
 })();
 
 
-/* TKver8.6 restore inventory toolbar wiring */
+/* TKver8.8 restore inventory toolbar wiring */
 (function(){
   const $=(id)=>document.getElementById(id);
   $("finishInventoryInlineBtn")?.addEventListener("click",()=>$("finishInventoryBtn")?.click());
@@ -547,8 +547,88 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
 })();
 
 
-/* TKver8.7 patch note:
-- Highlight current running QR item
-- Inventory load buttons restore target
-- Mobile scan compact
-*/
+/* TKver8.8 FIX inventory buttons real actions */
+(function(){
+  function $(s){return document.querySelector(s)}
+  function $all(s){return Array.from(document.querySelectorAll(s))}
+  function norm(v){return String(v||"").trim().replace(/\s+/g,"").toUpperCase()}
+  function getInput(){return document.getElementById("inventoryInput") || document.querySelector(".inventory-panel textarea")}
+  function parseLines(text){
+    return String(text||"").split(/\r?\n/).map((line,i)=>{
+      const raw=line.trim();
+      if(!raw)return null;
+      const parts=raw.split(/\s+/);
+      const code=norm(parts.shift());
+      const name=parts.join(" ").trim();
+      return code ? {code,name,count:0,order:i+1} : null;
+    }).filter(Boolean);
+  }
+  function renderRows(rows, active){
+    const body=document.getElementById("inventoryTableBody") || document.querySelector(".inventory-table tbody");
+    if(!body)return;
+    body.innerHTML = rows.length ? rows.map((r,i)=>{
+      const c=Number(r.count||0);
+      const cls=c>0?"inv-ok":"inv-missing";
+      const badge=`<span class="badge">${c===0?"0":c===1?"OK":c}</span>`;
+      return `<tr class="${cls}" data-code="${r.code}"><td>${i+1}</td><td>${r.code}</td><td>${(r.name||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}</td><td>${badge}</td></tr>`;
+    }).join("") : '<tr><td colspan="4">Chưa có dữ liệu kiểm kê.</td></tr>';
+    if(active){
+      const row=body.querySelector(`[data-code="${active}"]`);
+      if(row)row.scrollIntoView({block:"center",behavior:"smooth"});
+    }
+  }
+  function updateStats(rows){
+    const total=rows.length;
+    const done=rows.filter(x=>Number(x.count||0)>0).length;
+    const missing=rows.filter(x=>Number(x.count||0)===0).length;
+    const count=rows.reduce((s,x)=>s+Number(x.count||0),0);
+    const set=(id,val)=>{const el=document.getElementById(id); if(el)el.textContent=val};
+    set("invTotal",total); set("invDone",done); set("invMissing",missing); set("invTotalCount",count);
+  }
+  window.tk88SetInventoryRows=function(rows){
+    window.inventoryRows = rows;
+    window.inventoryMap = {};
+    rows.forEach((r,i)=>window.inventoryMap[norm(r.code)] = i);
+    updateStats(rows);
+    renderRows(rows);
+    if(typeof renderExportFilters==="function") renderExportFilters();
+  }
+  window.tk88LoadInventory=function(){
+    const input=getInput();
+    const rows=parseLines(input ? input.value : "");
+    if(!rows.length){ alert("Chưa có dữ liệu để nạp. Dán danh sách code + tên sản phẩm trước."); return; }
+    tk88SetInventoryRows(rows);
+    const panel=document.getElementById("inventoryPanel");
+    if(panel)panel.classList.add("collapsed");
+    document.querySelectorAll("#collapseInventoryBtn").forEach(b=>b.textContent="Mở rộng");
+    const st=document.getElementById("inventoryStickyResult");
+    if(st)st.classList.add("hidden");
+    alert("Đã nạp "+rows.length+" mã kiểm kê.");
+  }
+  window.tk88ClearInventory=function(){
+    if(!confirm("Xóa toàn bộ bảng kiểm kê?"))return;
+    tk88SetInventoryRows([]);
+    const input=getInput(); if(input)input.value="";
+  }
+  window.tk88ToggleInventory=function(){
+    const panel=document.getElementById("inventoryPanel");
+    if(!panel)return;
+    panel.classList.toggle("collapsed");
+    document.querySelectorAll("#collapseInventoryBtn").forEach(b=>b.textContent=panel.classList.contains("collapsed")?"Mở rộng":"Thu gọn");
+  }
+  // Override old buttons using event capture so duplicate/old handlers không phá
+  $all("#loadInventoryBtn").forEach(btn=>{btn.onclick=null;btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();tk88LoadInventory();},true)});
+  $all("#clearInventoryBtn").forEach(btn=>{btn.onclick=null;btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();tk88ClearInventory();},true)});
+  $all("#collapseInventoryBtn").forEach(btn=>{btn.onclick=null;btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();tk88ToggleInventory();},true)});
+  // Override scan record so it uses same global table
+  window.inventoryRecordScan = function(raw){
+    const code=norm(raw);
+    if(!code || !window.inventoryRows || !window.inventoryRows.length)return;
+    const idx=window.inventoryMap ? window.inventoryMap[code] : undefined;
+    if(idx!==undefined && window.inventoryRows[idx]){
+      window.inventoryRows[idx].count=Number(window.inventoryRows[idx].count||0)+1;
+      updateStats(window.inventoryRows);
+      renderRows(window.inventoryRows, code);
+    }
+  }
+})();

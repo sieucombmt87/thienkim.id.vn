@@ -1,5 +1,5 @@
 
-/* TKver8.6 guest usage sort */
+/* TKver8.8 guest usage sort */
 function tkGetCurrentUserForAppCenter(){try{return JSON.parse(localStorage.getItem("tk_current_user")||localStorage.getItem("currentUser")||localStorage.getItem("tk_user")||"null")}catch(e){return null}}
 function tkReadAppUsage(){try{return JSON.parse(localStorage.getItem("tk_app_usage")||"{}")}catch(e){return {}}}
 function tkTrackAppUsage(key){try{const u=tkReadAppUsage();u[key]=(u[key]||0)+1;localStorage.setItem("tk_app_usage",JSON.stringify(u))}catch(e){}}
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded",()=>setTimeout(tkApplyGuestUsageDom
   }
   document.addEventListener("DOMContentLoaded",()=>{
     const v=document.getElementById("buildVersion");
-    if(v) v.textContent="TKver8.6";
+    if(v) v.textContent="TKver8.8";
   });
 })();
 
