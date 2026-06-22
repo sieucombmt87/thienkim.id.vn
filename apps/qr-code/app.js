@@ -545,3 +545,10 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
   });
   ["openScanFromInventoryBtn","finishInventoryBtn"].forEach(id=>{const el=$(id); if(el) el.style.display="none";});
 })();
+
+
+/* TKver8.7 patch note:
+- Highlight current running QR item
+- Inventory load buttons restore target
+- Mobile scan compact
+*/
