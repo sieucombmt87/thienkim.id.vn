@@ -38,16 +38,10 @@
   </style>
 </head>
 <body>
-  <main class="shell">
-    <header class="topbar">
-      <a class="back" href="../index.html" title="Về App Center">← App Center</a>
-      <div class="brand"><b>TK RANDOM RACE</b><small>Nhúng app random hiện có • TKver1.0.race</small></div>
-      <a class="open-new" href="https://remix-app-random-468167887002.asia-southeast1.run.app/" target="_blank" rel="noopener">↗ <span>Mở riêng</span></a>
-    </header>
-    <section class="frame-wrap">
-      <div class="frame-card">
-        <div class="loading" id="loading"><div class="box"><div class="spinner"></div><b>Đang mở Random Race...</b><p>App tự co theo laptop, tablet và điện thoại.</p></div></div>
-        <iframe id="raceFrame" title="TK Random Race" src="https://remix-app-random-468167887002.asia-southeast1.run.app/" allow="fullscreen; autoplay; clipboard-read; clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<main class="shell">
+    <section class="frame-wrap" style="padding: 0; height: 100vh;">
+      <div class="frame-card" style="border: none; border-radius: 0;">
+        <div class="loading" id="loading">
         <div class="fail" id="fail"><div class="fail-card"><h1>Không nhúng được app</h1><p>Nếu server bên ngoài chặn iframe, bấm “Mở app riêng”.</p><div class="fail-actions"><a class="btn" target="_blank" rel="noopener" href="https://remix-app-random-468167887002.asia-southeast1.run.app/">Mở app riêng</a><a class="btn secondary" href="../index.html">Về App Center</a></div></div></div>
       </div>
     </section>
