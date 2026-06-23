@@ -1,4 +1,4 @@
-/* TKver8.8 QR Code Pro: 3 clean modes */
+/* TKver8.9 QR Code Pro: 3 clean modes */
 const $ = (s)=>document.querySelector(s);
 const video=$("#video"), canvas=$("#scanCanvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
 let stream=null, scanTimer=null, zxingReader=null, lastValue="", scanPool=[], scanned=[], inventoryMode=false, currentCodeType="qr";
@@ -31,7 +31,7 @@ function switchMode(mode){
 document.querySelectorAll(".main-tab").forEach(b=>b.addEventListener("click",()=>switchMode(b.dataset.mode)));
 
 
-/* TKver8.8 safer camera constraints */
+/* TKver8.9 safer camera constraints */
 async function openCamera(){
   const constraintsList=[
     {video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false},
@@ -170,7 +170,7 @@ $("#inventoryTableBody").addEventListener("dblclick",e=>{const row=e.target.clos
 switchMode("create"); renderInventory(); renderExportFilters();
 
 
-/* TKver8.8 embedded inventory camera */
+/* TKver8.9 embedded inventory camera */
 let invStream=null, invTimer=null, invZxingReader=null;
 const inventoryVideo = document.getElementById("inventoryVideo");
 const inventoryCanvas = document.getElementById("inventoryScanCanvas");
@@ -248,7 +248,7 @@ document.getElementById("exportSelectedTxtBtn")?.addEventListener("click",()=>{c
 document.getElementById("exportSelectedCsvBtn")?.addEventListener("click",()=>{const p=document.getElementById("exportPreview"); if(p){p.classList.remove("hidden");p.classList.add("show");p.textContent=getExportCsv().split("\n").slice(0,20).join("\n");}});
 
 
-/* TKver8.8 native barcode first + advanced QR runner */
+/* TKver8.9 native barcode first + advanced QR runner */
 let nativeDetector=null;
 async function getNativeDetector(){
   if(nativeDetector!==null)return nativeDetector;
@@ -290,7 +290,7 @@ function downloadCurrentCode(){const c=document.querySelector("#codePreview canv
 document.getElementById("playRunnerBtn")?.addEventListener("click",playRunner);document.getElementById("pauseRunnerBtn")?.addEventListener("click",()=>pauseRunner(true));document.getElementById("resetRunnerBtn")?.addEventListener("click",resetRunner);document.getElementById("downloadCurrentBtn")?.addEventListener("click",downloadCurrentCode);document.getElementById("codePreview")?.addEventListener("click",markCurrentError);document.addEventListener("keydown",e=>{if(e.code==="Space"&&!document.getElementById("createPanel")?.classList.contains("hidden")){e.preventDefault();markCurrentError();}});document.getElementById("copyErrorBtn")?.addEventListener("click",()=>copyText([...runErrors].join("\n")));document.getElementById("copyRunDoneBtn")?.addEventListener("click",()=>copyText([...runDone].join("\n")));document.getElementById("exportRunTxtBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.txt",runCodes.map((c,i)=>`${i+1}. ${c}${runErrors.has(c)?" | LOI":runDone.has(c)?" | DA CHAY":""}`).join("\n"),"text/plain"));document.getElementById("exportRunCsvBtn")?.addEventListener("click",()=>downloadText("qr-phien-chay.csv","STT,Code,Trang thai\n"+runCodes.map((c,i)=>`${i+1},"${String(c).replace(/"/g,'""')}","${runErrors.has(c)?"LOI":runDone.has(c)?"DA CHAY":"CHO"}"`).join("\n"),"text/csv"));document.getElementById("clearRunStateBtn")?.addEventListener("click",()=>{if(confirm("Xóa phiên chạy hiện tại?")){runCodes=[];runIndex=0;runErrors.clear();runDone.clear();document.getElementById("createInput").value="";document.getElementById("codePreview").textContent="Mã sẽ hiện ở đây...";updateRunStats();}});
 
 
-/* TKver8.8 sticky result + no manual scan buttons */
+/* TKver8.9 sticky result + no manual scan buttons */
 function setStickyResult77(code, name="", target="scan"){
   const box=document.getElementById(target==="inventory"?"inventoryStickyResult":"scanCompactResult");
   const c=document.getElementById(target==="inventory"?"inventoryStickyCode":"scanStickyCode");
@@ -313,7 +313,7 @@ showSuccessLock = function(code){
 };
 
 
-/* TKver8.8 inventory one-hand controls + mobile inline actions */
+/* TKver8.9 inventory one-hand controls + mobile inline actions */
 function initInvHand79(){
   const saved=localStorage.getItem("tk_inv_hand")||"right";
   document.body.classList.toggle("inv-hand-right",saved!=="left");
@@ -334,7 +334,7 @@ document.getElementById("invOverlayStopBtn")?.addEventListener("click",()=>stopI
 })();
 initInvHand79();
 
-/* TKver8.8 live create refresh */
+/* TKver8.9 live create refresh */
 let createRefreshTimer=null;
 document.getElementById("createInput")?.addEventListener("input",()=>{
   clearTimeout(createRefreshTimer);
@@ -345,12 +345,12 @@ document.getElementById("createInput")?.addEventListener("input",()=>{
   },250);
 });
 
-/* TKver8.8 inventory scan throttle */
+/* TKver8.9 inventory scan throttle */
 let invLastAcceptedAt=0;
 let invLastAcceptedCode='';
 
 
-/* TKver8.8 scan cooldown modes */
+/* TKver8.9 scan cooldown modes */
 const TK_SCAN_SPEEDS = {fast:{any:500,same:3000,label:"Nhanh"},inventory:{any:1000,same:5000,label:"Kiểm kê"},safe:{any:2000,same:7000,label:"Chính xác"}};
 let tkScanSpeedMode = localStorage.getItem("tk_scan_speed_mode") || "inventory";
 function getScanCooldownConfig(){return TK_SCAN_SPEEDS[tkScanSpeedMode] || TK_SCAN_SPEEDS.inventory;}
@@ -360,7 +360,7 @@ setScanSpeedMode(tkScanSpeedMode);
 function tkScanSuccessFeedback(code){try{const box=document.getElementById("inventoryCameraWrap")||document.getElementById("cameraWrap");if(box){box.classList.remove("scan-cooldown-flash");void box.offsetWidth;box.classList.add("scan-cooldown-flash");}if(navigator.vibrate)navigator.vibrate(60);}catch(e){}}
 
 
-/* TKver8.8 FINAL OVERRIDES: QR/Barcode strict + real scan cooldown */
+/* TKver8.9 FINAL OVERRIDES: QR/Barcode strict + real scan cooldown */
 (function(){
   const TK83_SPEEDS = {
     fast: { any: 1000, same: 5000, label: "Nhanh" },
@@ -480,7 +480,7 @@ function tkScanSuccessFeedback(code){try{const box=document.getElementById("inve
 })();
 
 
-/* TKver8.8 hard QR/Barcode renderer + inventory UX */
+/* TKver8.9 hard QR/Barcode renderer + inventory UX */
 function tk84GetCreateCodes(){const raw=document.getElementById("createInput")?.value||"";return raw.split(/\r?\n|[,;\t]+/).map(x=>x.trim()).filter(Boolean);}
 function tk84RenderQR(preview, code){preview.innerHTML="";const c=document.createElement("canvas");c.id="currentCodeCanvas";preview.appendChild(c);if(window.QRCode&&QRCode.toCanvas){QRCode.toCanvas(c,code,{width:300,margin:2,errorCorrectionLevel:"M"},function(err){if(err)tk84RenderQRFallback(preview,code);});}else{tk84RenderQRFallback(preview,code);}}
 function tk84RenderQRFallback(preview, code){preview.innerHTML="";const img=document.createElement("img");img.className="qr-img-fallback";img.alt="QR Code";img.src="https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl="+encodeURIComponent(code);img.onerror=function(){preview.innerHTML='<div class="qr-fallback">Không tải được QR. Kiểm tra mạng hoặc thư viện QR.<br>'+escapeHtml(code)+'</div>';};preview.appendChild(img);}
@@ -494,7 +494,7 @@ let tk84LastScanAt=0;let tk84LastScanCode="";let tk84ScanLocked=false;
 async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo||!inventoryVideo.videoWidth)return;inventoryCanvas.width=inventoryVideo.videoWidth;inventoryCanvas.height=inventoryVideo.videoHeight;inventoryCtx.drawImage(inventoryVideo,0,0,inventoryCanvas.width,inventoryCanvas.height);const values=[];values.push(...await detectValuesFromCanvas(inventoryCanvas));if(invZxingReader){try{const r=await invZxingReader.decodeFromCanvas(inventoryCanvas);if(r?.text)values.push(r.text)}catch(e){}}if(!values.length)return;const v=sortCodes(values)[0];const code=normalizeCode(v);const now=Date.now();const same=code&&code===tk84LastScanCode;const minGap=same?7000:1200;if(now-tk84LastScanAt<minGap)return;tk84ScanLocked=true;tk84LastScanAt=now;tk84LastScanCode=code;inventoryRecordScan(v);lastValue=v;const last=document.getElementById("lastScan");if(last)last.textContent=v;showSuccessLock(v);setInventoryCameraStatus("Đã quét: "+v+" — khóa 1.2s để tránh cộng nhầm");try{if(navigator.vibrate)navigator.vibrate([160,80,160]);const box=document.getElementById("inventoryCameraWrap");if(box){box.classList.remove("scan-cooldown-flash");void box.offsetWidth;box.classList.add("scan-cooldown-flash");}}catch(e){}setTimeout(()=>{tk84ScanLocked=false;},1200);}
 
 
-/* TKver8.8 HARD OVERRIDE: QR/Barcode renderer + normal scan list + inventory cleanup */
+/* TKver8.9 HARD OVERRIDE: QR/Barcode renderer + normal scan list + inventory cleanup */
 (function(){
   const $=(id)=>document.getElementById(id);
   function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
@@ -520,7 +520,7 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
 })();
 
 
-/* TKver8.8 restore inventory toolbar wiring */
+/* TKver8.9 restore inventory toolbar wiring */
 (function(){
   const $=(id)=>document.getElementById(id);
   $("finishInventoryInlineBtn")?.addEventListener("click",()=>$("finishInventoryBtn")?.click());
@@ -547,7 +547,7 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
 })();
 
 
-/* TKver8.8 FIX inventory buttons real actions */
+/* TKver8.9 FIX inventory buttons real actions */
 (function(){
   function $(s){return document.querySelector(s)}
   function $all(s){return Array.from(document.querySelectorAll(s))}
@@ -631,4 +631,139 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
       renderRows(window.inventoryRows, code);
     }
   }
+})();
+
+
+/* TKver8.9 FIX QR runner actual render + blue highlight */
+(function(){
+  const $=(id)=>document.getElementById(id);
+  const esc=(s)=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+  window.escapeHtml=window.escapeHtml||esc;
+
+  function getCodes(){
+    const raw=$("createInput")?.value||"";
+    return raw.split(/\r?\n|[,;\t]+/).map(x=>x.trim()).filter(Boolean);
+  }
+  function renderQR(preview,code){
+    preview.innerHTML="";
+    const canvas=document.createElement("canvas");
+    canvas.id="currentCodeCanvas";
+    preview.appendChild(canvas);
+    if(window.QRCode&&QRCode.toCanvas){
+      QRCode.toCanvas(canvas,code,{width:300,margin:2,errorCorrectionLevel:"M"},err=>{if(err)fallbackQR(preview,code);});
+    }else fallbackQR(preview,code);
+  }
+  function fallbackQR(preview,code){
+    preview.innerHTML="";
+    const img=document.createElement("img");
+    img.className="qr-img-fallback";
+    img.alt="QR Code";
+    img.src="https://quickchart.io/qr?size=300&text="+encodeURIComponent(code);
+    img.onerror=()=>preview.innerHTML='<div class="qr-fallback">Không tải được QR.<br>'+esc(code)+'</div>';
+    preview.appendChild(img);
+  }
+  function renderBarcode(preview,code){
+    preview.innerHTML="";
+    const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+    svg.id="currentBarcodeSvg";
+    preview.appendChild(svg);
+    if(window.JsBarcode){
+      try{JsBarcode(svg,code,{format:"CODE128",displayValue:true,lineColor:"#000",background:"#fff",height:92,margin:12});}
+      catch(e){preview.innerHTML='<div class="qr-fallback">Không tạo được Barcode 128.<br>'+esc(code)+'</div>';}
+    }else preview.innerHTML='<div class="qr-fallback">Thư viện Barcode chưa tải.<br>'+esc(code)+'</div>';
+  }
+  function ensure(){
+    window.runCodes=getCodes();
+    if(!window.runDone||typeof window.runDone.add!=="function")window.runDone=new Set();
+    if(!window.runErrors||typeof window.runErrors.add!=="function")window.runErrors=new Set();
+    if(typeof window.runIndex!=="number")window.runIndex=0;
+    if(window.runIndex>=window.runCodes.length)window.runIndex=0;
+    if(window.runIndex<0)window.runIndex=0;
+  }
+  window.renderCurrentCode=function(){
+    ensure();
+    const preview=$("codePreview");
+    if(!preview)return;
+    const code=window.runCodes[window.runIndex]||"";
+    if(!code){
+      preview.textContent="Mã sẽ hiện ở đây...";
+      if(typeof updateRunStats==="function")updateRunStats();
+      renderRunLists();
+      return;
+    }
+    if(window.currentCodeType==="barcode")renderBarcode(preview,code); else renderQR(preview,code);
+    window.runDone.add(code);
+    if(typeof updateRunStats==="function")updateRunStats();
+    renderRunLists();
+  };
+  window.generateCode=function(){
+    window.runCodes=getCodes();
+    window.runIndex=0;
+    window.runDone=new Set();
+    window.runErrors=new Set();
+    renderCurrentCode();
+  };
+  window.renderRunLists=function(){
+    ensure();
+    const list=$("qrList"), doneList=$("qrDoneList"), errList=$("qrErrorList");
+    if(list){
+      list.innerHTML=window.runCodes.length?window.runCodes.map((code,i)=>{
+        const active=i===window.runIndex?" active-running":"";
+        const status=i===window.runIndex?"Đang chạy":(window.runDone.has(code)?"Đã chạy":"");
+        return `<div class="qr-list-row${active}" data-index="${i}"><b>${i+1}</b><span>${esc(code)}</span><em>${status}</em></div>`;
+      }).join(""):'<div class="empty">Chưa có dữ liệu.</div>';
+      const row=list.querySelector(".active-running");
+      if(row)row.scrollIntoView({block:"nearest",behavior:"smooth"});
+    }
+    if(doneList){
+      const arr=Array.from(window.runDone);
+      doneList.innerHTML=arr.length?arr.map((x,i)=>`<div class="qr-mini-row"><b>${i+1}</b><span>${esc(x)}</span><em>OK</em></div>`).join(""):'<div class="empty">Chưa có.</div>';
+    }
+    if(errList){
+      const arr=Array.from(window.runErrors);
+      errList.innerHTML=arr.length?arr.map((x,i)=>`<div class="qr-mini-row error"><b>${i+1}</b><span>${esc(x)}</span><em>Lỗi</em></div>`).join(""):'<div class="empty">Chưa có lỗi.</div>';
+    }
+    const set=(id,val)=>{const el=$(id);if(el)el.textContent=val};
+    set("runTotal",window.runCodes.length);
+    set("runDone",window.runDone.size);
+    set("runError",window.runErrors.size);
+    set("runPosition",window.runCodes.length?((window.runIndex+1)+"/"+window.runCodes.length):"0/0");
+  };
+  function step(){
+    ensure();
+    if(!window.runCodes.length){renderCurrentCode();return;}
+    window.runIndex=(window.runIndex+1)%window.runCodes.length;
+    renderCurrentCode();
+  }
+  function delay(){
+    const sel=$("delaySelect")||$("runnerDelay")||document.querySelector(".runner-delay select");
+    const n=parseInt(sel?.value||"2",10);
+    return (Number.isFinite(n)?n:2)*1000;
+  }
+  window.startRunner=function(){
+    ensure();
+    if(window.runnerTimer)clearInterval(window.runnerTimer);
+    renderCurrentCode();
+    window.runnerTimer=setInterval(step,delay());
+  };
+  window.pauseRunner=function(){if(window.runnerTimer)clearInterval(window.runnerTimer);window.runnerTimer=null;};
+  window.resetRunner=function(){
+    if(window.runnerTimer)clearInterval(window.runnerTimer);
+    window.runnerTimer=null;window.runIndex=0;window.runDone=new Set();window.runErrors=new Set();renderCurrentCode();
+  };
+  $("startRunnerBtn")?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();startRunner();},true);
+  $("pauseRunnerBtn")?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();pauseRunner();},true);
+  $("resetRunnerBtn")?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();resetRunner();},true);
+  $("generateBtn")?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();generateCode();},true);
+  document.querySelectorAll(".type-tab").forEach(btn=>{
+    btn.addEventListener("click",function(e){
+      e.preventDefault();e.stopPropagation();
+      window.currentCodeType=this.dataset.codeType==="barcode"?"barcode":"qr";
+      document.querySelectorAll(".type-tab").forEach(x=>x.classList.toggle("active",x===this));
+      generateCode();
+    },true);
+  });
+  let t=null;
+  $("createInput")?.addEventListener("input",()=>{clearTimeout(t);t=setTimeout(generateCode,250);});
+  setTimeout(()=>{if($("createInput")?.value.trim())generateCode();},300);
 })();
