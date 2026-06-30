@@ -1,0 +1,20 @@
+{
+  "version": "TKver8.6",
+  "vipApps": [
+    "create-video",
+    "ai-prompt"
+  ],
+  "sessionHours": 24,
+  "smartRanking": true,
+  "googleSheetColumns": [
+    "vip_access",
+    "family_access",
+    "vault_access",
+    "create_video",
+    "ai_prompt",
+    "app_order",
+    "usage_count",
+    "last_used",
+    "mood_tracking"
+  ]
+}
