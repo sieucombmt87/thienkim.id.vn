@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1e88e5">
+    <meta name="description" content="Ứng dụng kiểm quỹ - Quản lý tiền mặt">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231e88e5' width='100' height='100' rx='20'/><text y='.9em' x='50%' text-anchor='middle' font-size='70'>💰</text></svg>">
+    <title>Kiểm Quỹ - ThienKim</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            color: #1565c0;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        .card-header h2 {
+            color: #1565c0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .toggle-btn {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .denomination-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .denomination-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .denomination-row:hover {
+            background: #e3f2fd;
+        }
+
+        .denomination-row .label {
+            flex: 1;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .denomination-row .value {
+            font-weight: 600;
+            color: #1565c0;
+            font-size: 13px;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .denomination-row input {
+            width: 70px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .denomination-row input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30,136,229,0.2);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .result-row:not(:last-child) {
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .result-row .label {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .result-row .value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .result-row.difference .value {
+            font-size: 24px;
+        }
+
+        .difference.positive {
+            color: #69f0ae;
+        }
+
+        .difference.negative {
+            color: #ff8a80;
+        }
+
+        .difference.zero {
+            color: #ffd54f;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1e88e5;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1976d2;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .btn-danger:hover {
+            background: #ffcdd2;
+        }
+
+        .btn-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .btn-success:hover {
+            background: #c8e6c9;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-header .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 14px;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #1e88e5;
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .history-item-header .time {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .history-item-header .diff {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .history-item-header .diff.positive {
+            color: #2e7d32;
+        }
+
+        .history-item-header .diff.negative {
+            color: #d32f2f;
+        }
+
+        .history-item-header .diff.zero {
+            color: #666;
+        }
+
+        .history-item-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .history-item-details span {
+            color: #666;
+        }
+
+        .history-item-details strong {
+            color: #333;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        .history-empty svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .install-banner {
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .install-banner.hidden {
+            display: none;
+        }
+
+        .install-banner p {
+            font-size: 14px;
+        }
+
+        .install-btn {
+            background: white;
+            color: #1e88e5;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .close-banner {
+            background: none;
+            border: none;
+            color: white;
+            opacity: 0.8;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 18px;
+        }
+
+        .expected-input {
+            margin-bottom: 16px;
+        }
+
+        .expected-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .expected-input input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .expected-input input:focus {
+            outline: none;
+            border-color: #1e88e5;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .btn-group, .install-banner, .history-header .actions, .toggle-btn, .btn-sm {
+                display: none !important;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .denomination-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+            .history-item-details {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>KIỂM QUỸ</h1>
+            <p>ThienKim.id.vn</p>
+        </header>
+
+        <div id="installBanner" class="install-banner">
+            <p>Cài đặt app để sử dụng offline</p>
+            <button class="install-btn" onclick="installApp()">Cài đặt</button>
+            <button class="close-banner" onclick="closeBanner()">×</button>
+        </div>
+
+        <div class="card">
+            <div class="expected-input">
+                <label>Số tiền kiểm quỹ (số dự kiến):</label>
+                <input type="text" id="expectedAmount" placeholder="0" oninput="formatExpectedInput(this)">
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>MỆNH GIÁ TIỀN MẶT</h2>
+                <button class="toggle-btn" onclick="toggleInputMode()">
+                    <span id="toggleText">Nhập số lượng</span>
+                </button>
+            </div>
+            <div class="denomination-grid" id="denominationGrid">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>KẾT QUẢ</h2>
+            </div>
+            <div class="result-box">
+                <div class="result-row">
+                    <span class="label">Tiền thực tế</span>
+                    <span class="value" id="actualAmount">0đ</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Tiền dự kiến</span>
+                    <span class="value" id="expectedDisplay">0đ</span>
+                </div>
+                <div class="result-row difference">
+                    <span class="label">Chênh lệch</span>
+                    <span class="value" id="differenceAmount">0đ</span>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="copyResult()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Sao chép
+                </button>
+                <button class="btn btn-primary" onclick="printResult()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    In / Xuất
+                </button>
+                <button class="btn btn-secondary" onclick="saveRecord()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+                    Lưu lịch sử
+                </button>
+                <button class="btn btn-danger" onclick="clearAll()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Xóa tất cả
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="history-header card-header">
+                <h2>LỊCH SỬ KIỂM QUỸ</h2>
+                <div class="actions">
+                    <button class="btn btn-sm btn-secondary" onclick="exportHistory()">Xuất Excel</button>
+                    <button class="btn btn-sm btn-danger" onclick="clearHistory()">Xóa lịch sử</button>
+                </div>
+            </div>
+            <div class="history-list" id="historyList">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const denominations = [
+            { value: 500000, label: '500.000đ', count: 0 },
+            { value: 200000, label: '200.000đ', count: 0 },
+            { value: 100000, label: '100.000đ', count: 0 },
+            { value: 50000, label: '50.000đ', count: 0 },
+            { value: 20000, label: '20.000đ', count: 0 },
+            { value: 10000, label: '10.000đ', count: 0 },
+            { value: 5000, label: '5.000đ', count: 0 },
+            { value: 2000, label: '2.000đ', count: 0 },
+            { value: 1000, label: '1.000đ', count: 0 },
+            { value: 500, label: '500đ', count: 0 },
+            { value: 200, label: '200đ', count: 0 },
+            { value: 100, label: '100đ', count: 0 }
+        ];
+
+        let inputMode = 'count'; // 'count' or 'amount'
+        let deferredPrompt = null;
+
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('vi-VN').format(num) + 'đ';
+        }
+
+        function formatExpectedInput(input) {
+            let value = input.value.replace(/[^\d]/g, '');
+            input.value = new Intl.NumberFormat('vi-VN').format(value);
+            calculate();
+        }
+
+        function toggleInputMode() {
+            inputMode = inputMode === 'count' ? 'amount' : 'count';
+            document.getElementById('toggleText').textContent = 
+                inputMode === 'count' ? 'Nhập số lượng' : 'Nhập thành tiền';
+            renderDenominations();
+        }
+
+        function renderDenominations() {
+            const grid = document.getElementById('denominationGrid');
+            grid.innerHTML = denominations.map((d, i) => `
+                <div class="denomination-row">
+                    <span class="label">${d.label}</span>
+                    <span class="value">${formatCurrency(d.value)}</span>
+                    <input type="text" 
+                           id="denom-${i}" 
+                           value="${d.count || ''}" 
+                           placeholder="${inputMode === 'count' ? '0' : '0đ'}"
+                           oninput="updateDenom(${i}, this.value)">
+                </div>
+            `).join('');
+        }
+
+        function updateDenom(index, value) {
+            if (inputMode === 'count') {
+                denominations[index].count = parseInt(value) || 0;
+            } else {
+                const amount = parseInt(value.replace(/[^\d]/g, '')) || 0;
+                denominations[index].count = Math.floor(amount / denominations[index].value);
+            }
+            calculate();
+        }
+
+        function calculate() {
+            const actual = denominations.reduce((sum, d) => sum + (d.count * d.value), 0);
+            const expectedInput = document.getElementById('expectedAmount').value.replace(/[^\d]/g, '');
+            const expected = parseInt(expectedInput) || 0;
+            const diff = actual - expected;
+
+            document.getElementById('actualAmount').textContent = formatCurrency(actual);
+            document.getElementById('expectedDisplay').textContent = formatCurrency(expected);
+            
+            const diffEl = document.getElementById('differenceAmount');
+            diffEl.textContent = (diff >= 0 ? '+' : '') + formatCurrency(diff);
+            diffEl.className = 'value ' + (diff > 0 ? 'positive' : diff < 0 ? 'negative' : 'zero');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function copyResult() {
+            const actual = document.getElementById('actualAmount').textContent;
+            const expected = document.getElementById('expectedDisplay').textContent;
+            const diff = document.getElementById('differenceAmount').textContent;
+            const now = new Date();
+            const time = now.toLocaleString('vi-VN');
+            
+            const text = `📋 BÁO CÁO KIỂM QUỸ - ${time}\n\n` +
+                        `💰 Tiền thực tế: ${actual}\n` +
+                        `📝 Tiền dự kiến: ${expected}\n` +
+                        `📊 Chênh lệch: ${diff}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Đã sao chép vào clipboard!');
+            });
+        }
+
+        function printResult() {
+            window.print();
+        }
+
+        function saveRecord() {
+            const records = JSON.parse(localStorage.getItem('kimquy_history') || '[]');
+            const now = new Date();
+            
+            const actual = denominations.reduce((sum, d) => sum + (d.count * d.value), 0);
+            const expectedInput = document.getElementById('expectedAmount').value.replace(/[^\d]/g, '');
+            const expected = parseInt(expectedInput) || 0;
+            
+            records.unshift({
+                id: Date.now(),
+                date: now.toISOString(),
+                time: now.toLocaleString('vi-VN'),
+                actual,
+                expected,
+                difference: actual - expected,
+                details: denominations.filter(d => d.count > 0).map(d => ({
+                    label: d.label,
+                    count: d.count,
+                    value: d.count * d.value
+                }))
+            });
+
+            localStorage.setItem('kimquy_history', JSON.stringify(records));
+            renderHistory();
+            showToast('Đã lưu vào lịch sử!');
+        }
+
+        function renderHistory() {
+            const records = JSON.parse(localStorage.getItem('kimquy_history') || '[]');
+            const list = document.getElementById('historyList');
+
+            if (records.length === 0) {
+                list.innerHTML = `
+                    <div class="history-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p>Chưa có lịch sử kiểm quỹ</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = records.map(r => `
+                <div class="history-item">
+                    <div class="history-item-header">
+                        <span class="time">${r.time}</span>
+                        <span class="diff ${r.difference > 0 ? 'positive' : r.difference < 0 ? 'negative' : 'zero'}">
+                            ${r.difference >= 0 ? '+' : ''}${formatCurrency(r.difference)}
+                        </span>
+                    </div>
+                    <div class="history-item-details">
+                        <span>Thực tế: <strong>${formatCurrency(r.actual)}</strong></span>
+                        <span>Dự kiến: <strong>${formatCurrency(r.expected)}</strong></span>
+                        <span>Chênh: <strong>${formatCurrency(Math.abs(r.difference))}</strong></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử?')) {
+                localStorage.removeItem('kimquy_history');
+                renderHistory();
+                showToast('Đã xóa lịch sử');
+            }
+        }
+
+        function clearAll() {
+            if (confirm('Bạn có chắc muốn xóa tất cả dữ liệu hiện tại?')) {
+                denominations.forEach(d => d.count = 0);
+                document.getElementById('expectedAmount').value = '';
+                renderDenominations();
+                calculate();
+                showToast('Đã xóa tất cả');
+            }
+        }
+
+        function exportHistory() {
+            const records = JSON.parse(localStorage.getItem('kimquy_history') || '[]');
+            if (records.length === 0) {
+                showToast('Không có dữ liệu để xuất');
+                return;
+            }
+
+            let csv = '\uFEFF'; // BOM for UTF-8
+            csv += 'Thời gian,Tiền thực tế,Tiền dự kiến,Chênh lệch\n';
+            records.forEach(r => {
+                csv += `"${r.time}",${r.actual},${r.expected},${r.difference}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `kim-quy-${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Đã tải file Excel!');
+        }
+
+        // PWA Install
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').classList.remove('hidden');
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast('Cài đặt thành công!');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installBanner').classList.add('hidden');
+                });
+            }
+        }
+
+        function closeBanner() {
+            document.getElementById('installBanner').classList.add('hidden');
+        }
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('SW registered'))
+                .catch(err => console.log('SW registration failed'));
+        }
+
+        // Init
+        renderDenominations();
+        renderHistory();
+    </script>
+</body>
+</html>
