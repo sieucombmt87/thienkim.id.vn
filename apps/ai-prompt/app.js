@@ -1,1 +1,0 @@
-makeBtn.onclick=()=>{prompt.value=`Vai trò: Chuyên gia sáng tạo Thiên Kim Universe.\nMục tiêu: ${goal.value}\nDữ liệu: ${data.value}\nPhong cách: ${style.value}\nYêu cầu: tạo kết quả chi tiết, có bố cục rõ, ưu tiên tính ứng dụng thực tế.`};copyBtn.onclick=()=>navigator.clipboard.writeText(prompt.value);clearBtn.onclick=()=>{goal.value=data.value=prompt.value=''};
