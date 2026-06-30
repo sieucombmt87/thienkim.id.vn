@@ -1,70 +1,51 @@
 # App Kiểm Quỹ - ThienKim.id.vn
 
-Ứng dụng web kiểm quỹ tiền mặt, có thể cài đặt ra màn hình và sử dụng offline.
+Ứng dụng web kiểm quỹ tiền mặt, tối ưu mobile, có thể cài đặt PWA và dùng offline.
 
 ## Tính năng
 
-- Đếm tiền theo 12 mệnh giá (500k → 100đ)
-- So sánh với số dự kiến, hiển thị chênh lệch
-- 2 chế độ nhập: số lượng tờ hoặc thành tiền
-- Lưu lịch sử kiểm quỹ (localStorage)
-- Xuất Excel
-- In/xuất kết quả
-- PWA: cài đặt ra màn hình điện thoại
-- Hoạt động offline
-- Responsive: điện thoại + máy tính
-
-## Upload lên thienkim.id.vn
-
-### Cách 1: FTP / File Manager (nhanh nhất)
-
-1. Upload toàn bộ file trong thư mục này lên thư mục gốc của domain `thienkim.id.vn`:
-   - `index.html`
-   - `manifest.json`
-   - `service-worker.js`
-
-2. Đảm bảo các file được upload đúng vị trí, không bỏ thư mục cha.
-
-### Cách 2: Hosting cPanel
-
-1. Đăng nhập cPanel của thienkim.id.vn
-2. Mở **File Manager**
-3. Navigate đến thư mục `public_html` hoặc thư mục root của domain
-4. Upload 3 file: `index.html`, `manifest.json`, `service-worker.js`
-5. Xác nhận ghi đè nếu có file trùng tên
-
-### Cách 3: GitHub Pages + Custom Domain
-
-1. Tạo repository mới trên GitHub
-2. Push các file lên repository
-3. Settings → Pages → Source: main branch
-4. Settings → Pages → Custom domain: thienkim.id.vn
-5. Cấu hình DNS trỏ về GitHub Pages
-
-## Kiểm tra
-
-Sau khi upload xong, truy cập `https://thienkim.id.vn`
-
-### Cài đặt app (PWA)
-
-1. Mở app trên trình duyệt Chrome/Safari (điện thoại)
-2. Nhấn **"Cài đặt"** (banner hiện ở đầu trang)
-3. Hoặc: Menu → "Cài đặt về màn hình chính"
-
-App sẽ xuất hiện như 1 ứng dụng riêng trên điện thoại.
+- Bảng mệnh giá dọc: **Mệnh giá | Số lượng | Thành tiền**
+- 9 mệnh giá từ **1.000đ → 500.000đ** (ẩn mệnh giá dưới 1.000đ)
+- Hiển thị rút gọn: 500.000 → **500**, 50.000 → **50**, ...
+- Nhập số lượng tờ → tự tính thành tiền từng dòng
+- Nhập số tiền dự kiến để so sánh chênh lệch
+- **Tiền thực tế** + đọc số **bằng chữ tiếng Việt**
+- Chênh lệch = 0: nền trắng chữ đậm | Chênh lệch ≠ 0: nền đỏ chữ đậm
+- Lưu lịch sử (localStorage), xuất CSV, in, sao chép báo cáo
+- PWA: cài app lên màn hình điện thoại, hỗ trợ offline
 
 ## Cấu trúc file
 
 ```
-thienkim.id.vn/
-├── index.html          # Giao diện chính
-├── manifest.json        # PWA manifest
-└── service-worker.js    # Offline support
+kiem-quy/
+├── index.html          # Giao diện & logic chính
+├── manifest.json       # Cấu hình PWA
+├── service-worker.js   # Cache & offline
+└── README.md           # Hướng dẫn
 ```
 
-## Thông tin thêm
+## Upload lên hosting
 
-- Font: Google Roboto (tự động tải)
-- Lưu trữ: localStorage (trong trình duyệt)
-- Không cần server backend
-- Chạy được trên mọi trình duyệt hiện đại
+Upload **cả 4 file** (hoặc tối thiểu 3 file: html, manifest, service-worker) vào thư mục trên server, ví dụ:
+
+`https://thienkim.id.vn/kiem-quy/`
+
+### Sau khi upload
+
+1. Mở trang bằng trình duyệt
+2. Nhấn **Ctrl + Shift + R** để tải bản mới (tránh cache cũ)
+3. Nếu đã cài PWA trước đó: gỡ app cũ → mở lại → cài lại
+
+## Kiểm tra nhanh
+
+- Bảng có 3 cột: Mệnh giá / Số lượng / Thành tiền
+- Không còn mệnh giá 500đ, 200đ, 100đ
+- Phần kết quả chỉ hiện **Tiền thực tế** và **Chênh lệch** (không có dòng tiền dự kiến)
+- Có dòng bằng chữ tiếng Việt dưới tiền thực tế
+
+## Thông tin kỹ thuật
+
+- Font: Google Roboto
+- Lưu trữ: localStorage (`kimquy_history`)
+- Không cần backend
+- Service Worker cache: `kim-quy-v4` (network-first cho HTML)

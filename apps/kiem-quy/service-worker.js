@@ -1,7 +1,7 @@
-const CACHE_NAME = 'kim-quy-v3';
+const CACHE_NAME = 'kim-quy-v4';
 const ASSETS = [
-  '/index.html',
-  '/manifest.json',
+  './index.html',
+  './manifest.json',
   'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap'
 ];
 
@@ -24,10 +24,16 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 function isHtmlRequest(request) {
   return request.mode === 'navigate' ||
     request.destination === 'document' ||
-    (request.url && request.url.includes('index.html'));
+    request.url.includes('index.html');
 }
 
 self.addEventListener('fetch', (event) => {
@@ -43,7 +49,7 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => caches.match('/index.html'))
+        .catch(() => caches.match('./index.html'))
     );
     return;
   }

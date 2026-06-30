@@ -2,15 +2,17 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1e88e5">
-    <meta name="description" content="Ứng dụng kiểm quỹ - Quản lý tiền mặt">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1565c0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="description" content="App kiểm quỹ - ThienKim">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231e88e5' width='100' height='100' rx='20'/><text y='.9em' x='50%' text-anchor='middle' font-size='70'>💰</text></svg>">
-    <title>Kiểm Quỹ - ThienKim</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231565c0' width='100' height='100' rx='20'/><text y='.9em' x='50%' text-anchor='middle' font-size='70'>💰</text></svg>">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <title>Kiểm Quỹ - ThienKim</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -19,82 +21,173 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            background: #f0f2f5;
             min-height: 100vh;
-            padding: 20px;
+            padding: 12px;
+            padding-bottom: 80px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 24px;
+            padding: 16px 0;
+            margin-bottom: 16px;
         }
 
         header h1 {
             color: #1565c0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 4px;
+            letter-spacing: 1px;
         }
 
         header p {
+            color: #888;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Expected Input */
+        .expected-input-wrapper {
+            padding: 8px 0;
+        }
+
+        .expected-input-wrapper label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .expected-input-wrapper input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: right;
+            font-family: 'Roboto', sans-serif;
+            color: #1565c0;
+        }
+
+        .expected-input-wrapper input:focus {
+            outline: none;
+            border-color: #1e88e5;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .result-main {
+            text-align: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .result-main .label {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-main .amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .result-main .currency-text {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-row .label {
             color: #666;
             font-size: 14px;
         }
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            padding: 20px;
-            margin-bottom: 20px;
+        .result-row .value {
+            font-weight: 600;
+            font-size: 15px;
         }
 
-        .card-header {
+        /* Denomination Table */
+        .denom-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .denom-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #e3f2fd;
         }
 
-        .card-header h2 {
+        .denom-header h2 {
             color: #1565c0;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
         }
 
-        .toggle-btn {
+        .total-badge {
             background: #e3f2fd;
             color: #1565c0;
-            border: none;
             padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 20px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .denomination-table-wrap {
+        .denom-table-wrap {
             overflow-x: auto;
         }
 
-        .denomination-table {
+        .denom-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
         }
 
-        .denomination-table thead th {
+        .denom-table thead th {
             background: #e3f2fd;
             color: #1565c0;
             font-weight: 600;
@@ -103,204 +196,145 @@
             border-bottom: 2px solid #bbdefb;
         }
 
-        .denomination-table thead th:first-child {
+        .denom-table thead th:first-child {
             text-align: left;
             padding-left: 12px;
         }
 
-        .denomination-table tbody tr {
+        .denom-table tbody tr {
             border-bottom: 1px solid #eee;
-            transition: background 0.2s;
         }
 
-        .denomination-table tbody tr:hover {
-            background: #f8fafc;
+        .denom-table tbody tr:focus-within {
+            background: #f0f7ff;
         }
 
-        .denomination-table tbody td {
+        .denom-table tbody td {
             padding: 8px;
             vertical-align: middle;
         }
 
-        .denomination-table .denom-label {
+        .denom-table .denom-value {
             font-weight: 700;
+            font-size: 18px;
             color: #1565c0;
-            font-size: 16px;
             padding-left: 12px;
             white-space: nowrap;
         }
 
-        .denomination-table .denom-label small {
+        .denom-table .denom-value small {
             display: block;
-            font-weight: 400;
             font-size: 11px;
+            font-weight: 400;
             color: #888;
         }
 
-        .denomination-table input {
+        .denom-table input {
             width: 100%;
-            max-width: 80px;
+            max-width: 72px;
             margin: 0 auto;
             display: block;
-            padding: 8px;
+            padding: 10px 6px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             text-align: center;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-size: 17px;
+            font-weight: 700;
+            font-family: 'Roboto', sans-serif;
         }
 
-        .denomination-table input:focus {
+        .denom-table input:focus {
             outline: none;
             border-color: #1e88e5;
-            box-shadow: 0 0 0 3px rgba(30,136,229,0.2);
+            background: white;
         }
 
-        .denomination-table .line-amount {
+        .denom-table .line-amount {
             font-weight: 600;
-            color: #333;
             text-align: right;
             padding-right: 12px;
+            color: #999;
             white-space: nowrap;
+            font-size: 13px;
         }
 
-        .denomination-table .line-amount.has-value {
+        .denom-table .line-amount.has-value {
             color: #1565c0;
+            font-size: 14px;
         }
 
-        .result-box {
-            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-            border-radius: 12px;
-            padding: 20px;
-            color: white;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-        }
-
-        .result-row:not(:last-child) {
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .result-row .label {
-            font-size: 15px;
-            opacity: 0.9;
-        }
-
-        .result-row .value {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .result-row.difference {
+        .diff-row {
             margin: 8px -20px 0;
             padding: 14px 20px !important;
             border-radius: 10px;
             border-bottom: none !important;
         }
 
-        .result-row.difference .label,
-        .result-row.difference .value {
-            font-weight: 700;
+        .diff-row .label,
+        .diff-row .value {
+            font-weight: 700 !important;
+            font-size: 16px !important;
         }
 
-        .result-row.difference .value {
-            font-size: 22px;
-        }
-
-        .result-row.difference.zero {
+        .diff-row.diff-zero {
             background: #ffffff;
-            color: #1a1a1a;
+            box-shadow: 0 0 0 2px #e0e0e0;
         }
 
-        .result-row.difference.zero .label,
-        .result-row.difference.zero .value {
-            color: #1a1a1a;
-            font-weight: 700;
+        .diff-row.diff-zero .label,
+        .diff-row.diff-zero .value {
+            color: #1a1a1a !important;
         }
 
-        .result-row.difference.nonzero {
+        .diff-row.diff-nonzero {
             background: #ffcdd2;
-            color: #b71c1c;
         }
 
-        .result-row.difference.nonzero .label,
-        .result-row.difference.nonzero .value {
-            color: #b71c1c;
-            font-weight: 700;
+        .diff-row.diff-nonzero .label,
+        .diff-row.diff-nonzero .value {
+            color: #b71c1c !important;
         }
 
-        .amount-words {
-            margin-top: 12px;
-            padding: 12px 14px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.5;
-            font-style: italic;
+        /* Action Buttons */
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
-        .amount-words strong {
-            font-style: normal;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 4px;
-            opacity: 0.85;
-            font-size: 12px;
-        }
-
-        .btn-group {
+        .btn-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 16px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .btn {
-            padding: 14px 20px;
+            padding: 14px 16px;
             border: none;
             border-radius: 10px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            transition: all 0.2s;
         }
 
         .btn-primary {
-            background: #1e88e5;
+            background: #1565c0;
             color: white;
         }
 
         .btn-primary:hover {
             background: #1976d2;
-            transform: translateY(-1px);
         }
 
-        .btn-secondary {
-            background: #f5f5f5;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-
-        .btn-danger {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-
-        .btn-danger:hover {
-            background: #ffcdd2;
+        .btn-primary:active {
+            transform: scale(0.98);
         }
 
         .btn-success {
@@ -312,13 +346,52 @@
             background: #c8e6c9;
         }
 
+        .btn-danger {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .btn-danger:hover {
+            background: #ffcdd2;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-full {
+            grid-column: span 2;
+        }
+
+        /* History */
+        .history-card {
+            background: white;
+            border-radius: 16px;
+            margin-top: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
         .history-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 16px;
+            border-bottom: 2px solid #e3f2fd;
         }
 
-        .history-header .actions {
+        .history-header h2 {
+            color: #1565c0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .history-actions {
             display: flex;
             gap: 8px;
         }
@@ -327,29 +400,40 @@
             padding: 6px 12px;
             font-size: 12px;
             border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-sm-export {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .btn-sm-clear {
+            background: #ffebee;
+            color: #d32f2f;
         }
 
         .history-list {
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
         .history-item {
-            padding: 14px;
-            background: #f8fafc;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 4px solid #1e88e5;
+            padding: 14px 16px;
+            border-bottom: 1px solid #eee;
         }
 
         .history-item:last-child {
-            margin-bottom: 0;
+            border-bottom: none;
         }
 
         .history-item-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            align-items: center;
+            margin-bottom: 6px;
         }
 
         .history-item-header .time {
@@ -362,55 +446,48 @@
             font-size: 15px;
         }
 
-        .history-item-header .diff.positive {
+        .history-item-header .diff.diff-equal {
             color: #2e7d32;
         }
 
-        .history-item-header .diff.negative {
+        .history-item-header .diff.diff-unequal {
             color: #d32f2f;
         }
 
-        .history-item-header .diff.zero {
-            color: #666;
-        }
-
         .history-item-details {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            display: flex;
+            gap: 16px;
             font-size: 13px;
-        }
-
-        .history-item-details span {
             color: #666;
-        }
-
-        .history-item-details strong {
-            color: #333;
         }
 
         .history-empty {
+            padding: 40px;
             text-align: center;
-            padding: 40px 20px;
-            color: #888;
+            color: #aaa;
         }
 
         .history-empty svg {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 12px;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 10px;
             opacity: 0.5;
         }
 
+        /* Install Banner */
         .install-banner {
-            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
             color: white;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+            z-index: 100;
         }
 
         .install-banner.hidden {
@@ -418,75 +495,25 @@
         }
 
         .install-banner p {
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .install-btn {
             background: white;
-            color: #1e88e5;
+            color: #1565c0;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
         }
 
-        .close-banner {
-            background: none;
-            border: none;
-            color: white;
-            opacity: 0.8;
-            cursor: pointer;
-            padding: 4px 8px;
-            font-size: 18px;
-        }
-
-        .expected-input {
-            margin-bottom: 16px;
-        }
-
-        .expected-input label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .expected-input input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .expected-input input:focus {
-            outline: none;
-            border-color: #1e88e5;
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .btn-group, .install-banner, .history-header .actions, .toggle-btn, .btn-sm {
-                display: none !important;
-            }
-            .card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-                break-inside: avoid;
-            }
-        }
-
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 80px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            transform: translateX(-50%) translateY(20px);
             background: #333;
             color: white;
             padding: 12px 24px;
@@ -494,7 +521,7 @@
             font-size: 14px;
             opacity: 0;
             transition: all 0.3s;
-            z-index: 1000;
+            z-index: 200;
         }
 
         .toast.show {
@@ -502,21 +529,31 @@
             opacity: 1;
         }
 
-        @media (max-width: 600px) {
+        /* Print Styles */
+        @media print {
             body {
-                padding: 12px;
+                background: white;
+                padding: 20px;
             }
-            .denomination-table input {
-                max-width: 64px;
+            .action-card, .denom-card, .install-banner, .history-card, .toast, header {
+                display: none !important;
             }
-            .btn-group {
+            .result-card {
+                box-shadow: none;
+                border: 2px solid #ddd;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .denom-table input {
+                max-width: 56px;
+                font-size: 15px;
+            }
+            .btn-row {
                 grid-template-columns: 1fr;
             }
-            .history-item-details {
-                grid-template-columns: 1fr;
-            }
-            header h1 {
-                font-size: 22px;
+            .btn-full {
+                grid-column: span 1;
             }
         }
     </style>
@@ -525,28 +562,39 @@
     <div class="container">
         <header>
             <h1>KIỂM QUỸ</h1>
-            <p>ThienKim.id.vn</p>
+            <p>thienkim.id.vn</p>
         </header>
 
-        <div id="installBanner" class="install-banner">
-            <p>Cài đặt app để sử dụng offline</p>
-            <button class="install-btn" onclick="installApp()">Cài đặt</button>
-            <button class="close-banner" onclick="closeBanner()">×</button>
-        </div>
-
-        <div class="card">
-            <div class="expected-input">
-                <label>Số tiền kiểm quỹ (số dự kiến):</label>
-                <input type="text" id="expectedAmount" placeholder="0" oninput="formatExpectedInput(this)">
+        <!-- Expected Input -->
+        <div class="result-card" style="margin-bottom: 12px;">
+            <div class="expected-input-wrapper">
+                <label>Nhập số tiền dự kiến để so sánh</label>
+                <input type="text" id="expectedInput" placeholder="0" oninput="onExpectedChange(this)">
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-header">
+        <!-- Result Card -->
+        <div class="result-card">
+            <div class="result-main">
+                <div class="label">Tiền thực tế</div>
+                <div class="amount" id="totalAmount">0đ</div>
+                <div class="currency-text" id="currencyText">Không đồng</div>
+            </div>
+
+            <div class="result-row diff-row diff-zero" id="diffRow">
+                <span class="label">Chênh lệch</span>
+                <span class="value" id="diffAmount">0đ</span>
+            </div>
+        </div>
+
+        <!-- Denomination Table -->
+        <div class="denom-card">
+            <div class="denom-header">
                 <h2>MỆNH GIÁ TIỀN MẶT</h2>
+                <span class="total-badge" id="denomCount">0 mục</span>
             </div>
-            <div class="denomination-table-wrap">
-                <table class="denomination-table" id="denominationTable">
+            <div class="denom-table-wrap">
+                <table class="denom-table">
                     <thead>
                         <tr>
                             <th>Mệnh giá</th>
@@ -554,39 +602,21 @@
                             <th>Thành tiền</th>
                         </tr>
                     </thead>
-                    <tbody id="denominationBody">
-                        <!-- Generated by JS -->
-                    </tbody>
+                    <tbody id="denomBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h2>KẾT QUẢ</h2>
-            </div>
-            <div class="result-box">
-                <div class="result-row">
-                    <span class="label">Tiền thực tế</span>
-                    <span class="value" id="actualAmount">0đ</span>
-                </div>
-                <div class="result-row difference zero" id="differenceRow">
-                    <span class="label">Chênh lệch</span>
-                    <span class="value" id="differenceAmount">0đ</span>
-                </div>
-                <div class="amount-words" id="amountWords">
-                    <strong>Bằng chữ:</strong>
-                    <span id="actualWords">Không đồng</span>
-                </div>
-            </div>
-            <div class="btn-group">
+        <!-- Actions -->
+        <div class="action-card">
+            <div class="btn-row">
                 <button class="btn btn-success" onclick="copyResult()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Sao chép
                 </button>
                 <button class="btn btn-primary" onclick="printResult()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    In / Xuất
+                    In
                 </button>
                 <button class="btn btn-secondary" onclick="saveRecord()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
@@ -594,133 +624,190 @@
                 </button>
                 <button class="btn btn-danger" onclick="clearAll()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Xóa tất cả
+                    Xóa
                 </button>
             </div>
         </div>
 
-        <div class="card">
-            <div class="history-header card-header">
-                <h2>LỊCH SỬ KIỂM QUỸ</h2>
-                <div class="actions">
-                    <button class="btn btn-sm btn-secondary" onclick="exportHistory()">Xuất Excel</button>
-                    <button class="btn btn-sm btn-danger" onclick="clearHistory()">Xóa lịch sử</button>
+        <!-- History -->
+        <div class="history-card">
+            <div class="history-header">
+                <h2>LỊCH SỬ</h2>
+                <div class="history-actions">
+                    <button class="btn-sm btn-sm-export" onclick="exportHistory()">Xuất Excel</button>
+                    <button class="btn-sm btn-sm-clear" onclick="clearHistory()">Xóa</button>
                 </div>
             </div>
-            <div class="history-list" id="historyList">
-                <!-- Generated by JS -->
-            </div>
+            <div class="history-list" id="historyList"></div>
         </div>
     </div>
 
+    <!-- Install Banner -->
+    <div id="installBanner" class="install-banner hidden">
+        <p>Cài app để dùng offline</p>
+        <button class="install-btn" onclick="installApp()">Cài đặt</button>
+    </div>
+
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
+        // Denominations data
         const denominations = [
-            { value: 500000, label: '500.000đ', count: 0 },
-            { value: 200000, label: '200.000đ', count: 0 },
-            { value: 100000, label: '100.000đ', count: 0 },
-            { value: 50000, label: '50.000đ', count: 0 },
-            { value: 20000, label: '20.000đ', count: 0 },
-            { value: 10000, label: '10.000đ', count: 0 },
-            { value: 5000, label: '5.000đ', count: 0 },
-            { value: 2000, label: '2.000đ', count: 0 },
-            { value: 1000, label: '1.000đ', count: 0 }
+            { value: 500000, label: '500.000đ' },
+            { value: 200000, label: '200.000đ' },
+            { value: 100000, label: '100.000đ' },
+            { value: 50000, label: '50.000đ' },
+            { value: 20000, label: '20.000đ' },
+            { value: 10000, label: '10.000đ' },
+            { value: 5000, label: '5.000đ' },
+            { value: 2000, label: '2.000đ' },
+            { value: 1000, label: '1.000đ' }
         ];
 
+        let counts = new Array(denominations.length).fill(0);
         let deferredPrompt = null;
-
-        function formatCurrency(num) {
-            return new Intl.NumberFormat('vi-VN').format(num) + 'đ';
-        }
+        let expectedValue = 0;
 
         function formatDenomShort(value) {
             return String(value / 1000);
         }
 
-        function numberToVietnamese(num) {
-            if (!num || num === 0) return 'Không đồng';
-            if (num < 0) return 'Âm ' + numberToVietnamese(-num).replace(/ đồng$/, '') + ' đồng';
-
-            const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
-            const scales = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ', 'triệu tỷ'];
-
-            function readThreeDigits(n, showZeroHundred) {
-                const hundred = Math.floor(n / 100);
-                const ten = Math.floor((n % 100) / 10);
-                const unit = n % 10;
-                let result = '';
-
-                if (hundred > 0) {
-                    result += units[hundred] + ' trăm';
-                } else if (showZeroHundred && (ten > 0 || unit > 0)) {
-                    result += 'không trăm';
-                }
-
-                if (ten > 1) {
-                    result += (result ? ' ' : '') + units[ten] + ' mươi';
-                    if (unit === 1) result += ' mốt';
-                    else if (unit === 5) result += ' lăm';
-                    else if (unit > 0) result += ' ' + units[unit];
-                } else if (ten === 1) {
-                    result += (result ? ' ' : '') + 'mười';
-                    if (unit === 5) result += ' lăm';
-                    else if (unit > 0) result += ' ' + units[unit];
-                } else if (ten === 0 && unit > 0) {
-                    result += (result ? ' linh ' : '') + units[unit];
-                }
-
-                return result.trim();
-            }
-
-            const groups = [];
-            let n = Math.floor(num);
-            while (n > 0) {
-                groups.push(n % 1000);
-                n = Math.floor(n / 1000);
-            }
-
-            let words = '';
-            for (let i = groups.length - 1; i >= 0; i--) {
-                const group = groups[i];
-                if (group === 0) continue;
-                const text = readThreeDigits(group, i < groups.length - 1);
-                if (!text) continue;
-                words += (words ? ' ' : '') + text;
-                if (scales[i]) words += ' ' + scales[i];
-            }
-
-            return words.charAt(0).toUpperCase() + words.slice(1) + ' đồng';
-        }
-
-        function formatExpectedInput(input) {
-            let value = input.value.replace(/[^\d]/g, '');
-            input.value = value ? new Intl.NumberFormat('vi-VN').format(value) : '';
+        // Format input as currency while typing
+        function onExpectedChange(input) {
+            const raw = input.value.replace(/[^\d]/g, '');
+            expectedValue = parseInt(raw) || 0;
+            input.value = new Intl.NumberFormat('vi-VN').format(raw);
             calculate();
         }
 
-        function getLineAmount(index) {
-            const d = denominations[index];
-            return d.count * d.value;
+        // Number to Vietnamese currency text
+        function numberToVietnameseText(num) {
+            if (num === 0) return 'Không đồng';
+            
+            const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ'];
+            const ones = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+            const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+
+            function readThreeDigits(n, isLast = true) {
+                if (n === 0) return '';
+                
+                let result = '';
+                const hundred = Math.floor(n / 100);
+                const remainder = n % 100;
+                
+                if (hundred > 0) {
+                    result += ones[hundred] + ' trăm';
+                }
+                
+                if (remainder > 0) {
+                    if (hundred > 0 && remainder < 10) {
+                        result += ' linh';
+                    }
+                    
+                    const ten = Math.floor(remainder / 10);
+                    const one = remainder % 10;
+                    
+                    if (ten === 0) {
+                        if (hundred > 0) {
+                            result += ' lẻ';
+                        }
+                        result += ' ' + ones[one];
+                    } else if (ten === 1) {
+                        if (hundred > 0) {
+                            result += ' ';
+                        }
+                        result += 'mười';
+                        if (one > 0) {
+                            result += ' ' + ones[one];
+                        }
+                    } else {
+                        result += ' ' + tens[ten];
+                        if (one > 0) {
+                            if (one === 1) {
+                                result += ' mốt';
+                            } else if (one === 5) {
+                                result += ' lăm';
+                            } else {
+                                result += ' ' + ones[one];
+                            }
+                        }
+                    }
+                } else if (hundred > 0) {
+                    result += ' đồng';
+                }
+                
+                return result.trim();
+            }
+
+            // Split into groups of 3 digits
+            const groups = [];
+            let temp = num;
+            while (temp > 0) {
+                groups.push(temp % 1000);
+                temp = Math.floor(temp / 1000);
+            }
+
+            if (groups.length === 0) return 'Không đồng';
+
+            let result = '';
+            for (let i = groups.length - 1; i >= 0; i--) {
+                const groupText = readThreeDigits(groups[i], i === groups.length - 1);
+                if (groupText) {
+                    if (result && groups[i] < 100 && groups[i] > 0) {
+                        // Add leading zero for middle groups like 050
+                        if (groups[i] < 10) {
+                            result += ' không trăm linh ' + ones[groups[i]];
+                        } else {
+                            result += ' không trăm ' + readThreeDigits(groups[i]).trim();
+                        }
+                    } else {
+                        result += (result ? ' ' : '') + groupText;
+                    }
+                    
+                    if (i > 0) {
+                        result += ' ' + units[i];
+                    }
+                }
+            }
+
+            // Clean up and format
+            result = result.replace(/\s+/g, ' ').trim();
+            result = result.charAt(0).toUpperCase() + result.slice(1);
+            
+            if (!result.endsWith('đồng') && !result.endsWith('chẵn')) {
+                result += ' đồng chẵn';
+            }
+            
+            return result;
         }
 
+        // Format currency
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('vi-VN').format(num) + 'đ';
+        }
+
+        // Render denomination table
         function renderDenominations() {
-            const tbody = document.getElementById('denominationBody');
+            const tbody = document.getElementById('denomBody');
             tbody.innerHTML = denominations.map((d, i) => {
-                const lineAmount = getLineAmount(i);
+                const lineAmount = counts[i] * d.value;
                 return `
                 <tr>
-                    <td class="denom-label">
-                        ${formatDenomShort(d.value)}
-                        <small>${d.label}</small>
+                    <td>
+                        <div class="denom-value">
+                            ${formatDenomShort(d.value)}
+                            <small>${d.label}</small>
+                        </div>
                     </td>
                     <td>
                         <input type="text"
-                               id="denom-${i}"
-                               value="${d.count || ''}"
+                               id="input-${i}"
+                               value="${counts[i] || ''}"
                                placeholder="0"
                                inputmode="numeric"
-                               oninput="updateDenom(${i}, this.value)">
+                               oninput="updateCount(${i}, this.value)"
+                               onfocus="this.select()">
                     </td>
                     <td class="line-amount ${lineAmount > 0 ? 'has-value' : ''}" id="line-${i}">
                         ${lineAmount > 0 ? formatCurrency(lineAmount) : '—'}
@@ -729,37 +816,59 @@
             `}).join('');
         }
 
-        function updateDenom(index, value) {
-            denominations[index].count = parseInt(value.replace(/[^\d]/g, '')) || 0;
-            const lineAmount = getLineAmount(index);
-            const lineEl = document.getElementById('line-' + index);
+        // Update count for a denomination
+        function updateCount(index, value) {
+            const num = parseInt(value.replace(/[^\d]/g, '')) || 0;
+            counts[index] = num;
+
+            const input = document.getElementById(`input-${index}`);
+            input.value = num || '';
+
+            const lineAmount = num * denominations[index].value;
+            const lineEl = document.getElementById(`line-${index}`);
             if (lineEl) {
                 lineEl.textContent = lineAmount > 0 ? formatCurrency(lineAmount) : '—';
                 lineEl.classList.toggle('has-value', lineAmount > 0);
             }
+
             calculate();
         }
 
+        // Calculate totals
         function calculate() {
-            const actual = denominations.reduce((sum, d) => sum + (d.count * d.value), 0);
-            const expectedInput = document.getElementById('expectedAmount').value.replace(/[^\d]/g, '');
-            const expected = parseInt(expectedInput) || 0;
-            const diff = actual - expected;
+            let total = 0;
+            let filledCount = 0;
+            
+            counts.forEach((count, i) => {
+                if (count > 0) {
+                    total += count * denominations[i].value;
+                    filledCount++;
+                }
+            });
 
-            document.getElementById('actualAmount').textContent = formatCurrency(actual);
-            document.getElementById('actualWords').textContent = numberToVietnamese(actual);
+            const diff = total - expectedValue;
+            
+            // Update total amount
+            document.getElementById('totalAmount').textContent = formatCurrency(total);
+            document.getElementById('currencyText').textContent = numberToVietnameseText(total);
 
-            const diffEl = document.getElementById('differenceAmount');
-            const diffRow = document.getElementById('differenceRow');
-            diffEl.textContent = (diff >= 0 ? '+' : '') + formatCurrency(diff);
+            const diffEl = document.getElementById('diffAmount');
+            const diffRow = document.getElementById('diffRow');
 
             if (diff === 0) {
-                diffRow.className = 'result-row difference zero';
+                diffEl.textContent = '0đ';
+                diffRow.className = 'result-row diff-row diff-zero';
             } else {
-                diffRow.className = 'result-row difference nonzero';
+                const sign = diff > 0 ? '+' : '';
+                diffEl.textContent = sign + formatCurrency(diff);
+                diffRow.className = 'result-row diff-row diff-nonzero';
             }
+            
+            // Update count badge
+            document.getElementById('denomCount').textContent = `${filledCount} mục`;
         }
 
+        // Show toast notification
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -767,54 +876,59 @@
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
+        // Copy result to clipboard
         function copyResult() {
-            const actual = document.getElementById('actualAmount').textContent;
-            const actualWords = document.getElementById('actualWords').textContent;
-            const diff = document.getElementById('differenceAmount').textContent;
-            const now = new Date();
-            const time = now.toLocaleString('vi-VN');
+            const total = document.getElementById('totalAmount').textContent;
+            const text = document.getElementById('currencyText').textContent;
+            const diff = document.getElementById('diffAmount').textContent;
+            const now = new Date().toLocaleString('vi-VN');
 
-            const text = `📋 BÁO CÁO KIỂM QUỸ - ${time}\n\n` +
-                        `💰 Tiền thực tế: ${actual}\n` +
-                        `📝 Bằng chữ: ${actualWords}\n` +
-                        `📊 Chênh lệch: ${diff}`;
+            const copyText = `📋 KIỂM QUỸ - ${now}\n\n💰 Tiền thực tế: ${total}\n📝 Bằng chữ: ${text}\n📊 Chênh lệch: ${diff}`;
             
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Đã sao chép vào clipboard!');
+            navigator.clipboard.writeText(copyText).then(() => {
+                showToast('Đã sao chép!');
             });
         }
 
+        // Print result
         function printResult() {
             window.print();
         }
 
+        // Save to history
         function saveRecord() {
+            const total = counts.reduce((sum, c, i) => sum + c * denominations[i].value, 0);
+            if (total === 0) {
+                showToast('Chưa có dữ liệu để lưu!');
+                return;
+            }
+
+            const diff = total - expectedValue;
             const records = JSON.parse(localStorage.getItem('kimquy_history') || '[]');
             const now = new Date();
-            
-            const actual = denominations.reduce((sum, d) => sum + (d.count * d.value), 0);
-            const expectedInput = document.getElementById('expectedAmount').value.replace(/[^\d]/g, '');
-            const expected = parseInt(expectedInput) || 0;
             
             records.unshift({
                 id: Date.now(),
                 date: now.toISOString(),
                 time: now.toLocaleString('vi-VN'),
-                actual,
-                expected,
-                difference: actual - expected,
-                details: denominations.filter(d => d.count > 0).map(d => ({
-                    label: d.label,
-                    count: d.count,
-                    value: d.count * d.value
-                }))
+                total,
+                expected: expectedValue,
+                diff,
+                currencyText: numberToVietnameseText(total),
+                diffText: diff === 0 ? 'Không đồng' : numberToVietnameseText(Math.abs(diff)),
+                details: denominations.map((d, i) => ({
+                    label: formatDenomShort(d.value),
+                    count: counts[i],
+                    subtotal: counts[i] * d.value
+                })).filter(d => d.count > 0)
             });
 
             localStorage.setItem('kimquy_history', JSON.stringify(records));
             renderHistory();
-            showToast('Đã lưu vào lịch sử!');
+            showToast('Đã lưu lịch sử!');
         }
 
+        // Render history
         function renderHistory() {
             const records = JSON.parse(localStorage.getItem('kimquy_history') || '[]');
             const list = document.getElementById('historyList');
@@ -825,58 +939,62 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <p>Chưa có lịch sử kiểm quỹ</p>
+                        <p>Chưa có lịch sử</p>
                     </div>
                 `;
                 return;
             }
 
-            list.innerHTML = records.map(r => `
+            list.innerHTML = records.slice(0, 20).map(r => {
+                const diffClass = r.diff === 0 ? 'diff-equal' : 'diff-unequal';
+                const diffText = r.diff === 0 ? 'Cân đối' : (r.diff > 0 ? '+' : '') + formatCurrency(r.diff);
+                return `
                 <div class="history-item">
                     <div class="history-item-header">
                         <span class="time">${r.time}</span>
-                        <span class="diff ${r.difference > 0 ? 'positive' : r.difference < 0 ? 'negative' : 'zero'}">
-                            ${r.difference >= 0 ? '+' : ''}${formatCurrency(r.difference)}
-                        </span>
+                        <span class="diff ${diffClass}">${diffText}</span>
                     </div>
                     <div class="history-item-details">
-                        <span>Thực tế: <strong>${formatCurrency(r.actual)}</strong></span>
-                        <span>Dự kiến: <strong>${formatCurrency(r.expected)}</strong></span>
-                        <span>Chênh: <strong>${formatCurrency(Math.abs(r.difference))}</strong></span>
+                        <span>Thực tế: ${formatCurrency(r.total)}</span>
+                        <span>Dự kiến: ${formatCurrency(r.expected)}</span>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
+        // Clear all inputs
+        function clearAll() {
+            if (confirm('Xóa tất cả dữ liệu hiện tại?')) {
+                counts = new Array(denominations.length).fill(0);
+                expectedValue = 0;
+                document.getElementById('expectedInput').value = '';
+                renderDenominations();
+                calculate();
+                showToast('Đã xóa');
+            }
+        }
+
+        // Clear history
         function clearHistory() {
-            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử?')) {
+            if (confirm('Xóa toàn bộ lịch sử?')) {
                 localStorage.removeItem('kimquy_history');
                 renderHistory();
                 showToast('Đã xóa lịch sử');
             }
         }
 
-        function clearAll() {
-            if (confirm('Bạn có chắc muốn xóa tất cả dữ liệu hiện tại?')) {
-                denominations.forEach(d => d.count = 0);
-                document.getElementById('expectedAmount').value = '';
-                renderDenominations();
-                calculate();
-                showToast('Đã xóa tất cả');
-            }
-        }
-
+        // Export history to CSV
         function exportHistory() {
             const records = JSON.parse(localStorage.getItem('kimquy_history') || '[]');
             if (records.length === 0) {
-                showToast('Không có dữ liệu để xuất');
+                showToast('Không có dữ liệu!');
                 return;
             }
 
-            let csv = '\uFEFF'; // BOM for UTF-8
-            csv += 'Thời gian,Tiền thực tế,Tiền dự kiến,Chênh lệch\n';
+            let csv = '\uFEFF'; // BOM
+            csv += 'Thời gian,Tổng tiền,Dự kiến,Chênh lệch,Bằng chữ\n';
             records.forEach(r => {
-                csv += `"${r.time}",${r.actual},${r.expected},${r.difference}\n`;
+                csv += `"${r.time}",${r.total},${r.expected},${r.diff},"${r.diff === 0 ? 'Cân đối' : r.diffText}"\n`;
             });
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -886,7 +1004,7 @@
             a.download = `kim-quy-${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast('Đã tải file Excel!');
+            showToast('Đã xuất Excel!');
         }
 
         // PWA Install
@@ -909,21 +1027,26 @@
             }
         }
 
-        function closeBanner() {
-            document.getElementById('installBanner').classList.add('hidden');
-        }
-
-        // Register Service Worker — luôn lấy bản mới từ server
+        // Register Service Worker — ưu tiên bản mới từ server
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js?v=3')
+            navigator.serviceWorker.register('service-worker.js?v=4')
                 .then((reg) => {
                     reg.update();
-                    if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    reg.addEventListener('updatefound', () => {
+                        const worker = reg.installing;
+                        if (worker) {
+                            worker.addEventListener('statechange', () => {
+                                if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    worker.postMessage({ type: 'SKIP_WAITING' });
+                                }
+                            });
+                        }
+                    });
                 })
                 .catch(() => {});
         }
 
-        // Init
+        // Initialize
         renderDenominations();
         renderHistory();
         calculate();
