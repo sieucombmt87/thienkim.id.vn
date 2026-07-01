@@ -1,24 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<<<<<<< HEAD
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Bầu Cua • TKver8.6</title>
-<link rel="stylesheet" href="../_shared/app-lite.css?v=TKver8.6">
-</head>
-<body>
-<main class="app-shell">
-  <a class="back" href="../index.html">← App Center</a>
-  <section class="hero">
-    <h1>Bầu Cua</h1>
-    <span class="ver">TKver8.6</span>
-  </section>
-  
-<section class="card"><h2>Quay Bầu Cua nhanh</h2><div class="result" id="result" style="font-size:54px;text-align:center">🎲 🎲 🎲</div><div class="btns"><button class="btn" id="rollBtn">Lắc</button><button class="btn alt" id="copyBtn">Copy</button><button class="btn red" id="clearBtn">Xóa lịch sử</button></div><div class="list" id="history"></div></section>
-</main>
-<script src="app.js?v=TKver8.6"></script>
-=======
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#c62828">
@@ -81,37 +63,52 @@
 
         .app {
             position: relative; z-index: 1;
-            max-width: 520px; margin: 0 auto;
+            width: 100%; max-width: 520px; margin: 0 auto;
             padding: 12px 12px 88px;
         }
 
+        @media (min-width: 1024px) {
+            .app { max-width: 720px; padding: 16px 20px 96px; }
+            .bet-board { gap: 14px; }
+            .bet-cell { padding: 16px 10px; }
+            .die { width: 88px; height: 88px; font-size: 46px; }
+            .chip { width: 56px; height: 56px; font-size: 12px; }
+        }
+
         header { text-align: center; padding: 16px 0 12px; }
-
         .logo { font-size: 40px; line-height: 1; margin-bottom: 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
-
         header h1 {
             font-size: 21px; font-weight: 800;
             background: linear-gradient(135deg, var(--gold) 0%, #fff 50%, var(--gold) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             letter-spacing: 1px;
         }
-
         .brand-link {
             display: inline-block; margin-top: 6px;
             color: rgba(255, 213, 79, 0.85); font-size: 13px; font-weight: 600;
             text-decoration: none; letter-spacing: 0.5px;
         }
         .brand-link:hover { color: var(--gold); }
-
         header .tagline { color: rgba(255, 213, 79, 0.55); font-size: 11px; margin-top: 3px; }
 
-        /* Chế độ chơi */
+        .header-toolbar {
+            display: flex; justify-content: flex-end; gap: 10px;
+            padding: 0 2px 8px;
+        }
+        .toolbar-btn {
+            border: 1px solid rgba(255,213,79,0.35); border-radius: 8px;
+            padding: 6px 14px; font-family: inherit; font-size: 12px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.06); color: var(--gold-light);
+        }
+        .toolbar-btn:hover { background: rgba(255,213,79,0.15); border-color: var(--gold); }
+        .toolbar-btn.danger { border-color: rgba(239,83,80,0.4); color: #ef9a9a; }
+        .toolbar-btn.danger:hover { background: rgba(198,40,40,0.25); border-color: var(--red-light); }
+
         .mode-bar {
             display: flex; gap: 8px; margin-bottom: 14px;
             background: rgba(0,0,0,0.35); border-radius: 12px; padding: 4px;
             border: 1px solid rgba(255,213,79,0.2);
         }
-
         .mode-btn {
             flex: 1; padding: 10px 8px; border: none; border-radius: 10px;
             font-family: inherit; font-size: 12px; font-weight: 700;
@@ -123,85 +120,83 @@
             color: var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
-        /* Người chơi */
         .players-section {
             background: var(--card); border-radius: var(--radius);
             padding: 12px; margin-bottom: 14px; box-shadow: var(--shadow);
             display: none;
         }
         .players-section.show { display: block; }
-
         .players-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 10px;
         }
         .players-header span { font-size: 12px; font-weight: 600; color: #888; }
-
-        .player-count-select {
-            display: flex; align-items: center; gap: 6px;
-        }
+        .player-count-select { display: flex; align-items: center; gap: 6px; }
         .player-count-select label { font-size: 11px; color: #888; }
         .player-count-select select {
             padding: 4px 8px; border-radius: 8px; border: 1px solid #ddd;
             font-family: inherit; font-size: 12px; font-weight: 600;
         }
-
         .players-strip {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
-            scrollbar-width: none;
+            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px;
+            margin-bottom: 10px; scrollbar-width: none;
         }
         .players-strip::-webkit-scrollbar { display: none; }
-
+        .players-strip.hidden-strip { display: none; }
         .player-tab {
-            flex-shrink: 0; min-width: 72px; padding: 8px 10px;
-            border-radius: 12px; border: 2px solid transparent;
+            flex-shrink: 0; min-width: 76px; padding: 10px 12px;
+            border-radius: 14px; border: 2px solid transparent;
             background: #f5f5f5; cursor: pointer; text-align: center;
-            transition: all 0.2s;
+            transition: transform 0.15s;
         }
         .player-tab.active {
             border-color: var(--gold-dark);
             background: linear-gradient(180deg, #fff8e1, #fff);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
         }
         .player-tab .avatar {
-            width: 28px; height: 28px; border-radius: 50%;
-            margin: 0 auto 4px; display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 800; color: white;
+            width: 30px; height: 30px; border-radius: 50%;
+            margin: 0 auto 5px; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 800; color: white;
         }
         .player-tab .pname {
-            font-size: 10px; font-weight: 700; color: #333;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 64px;
+            font-size: 11px; font-weight: 700; color: #333;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 68px;
         }
-        .player-tab .pbet {
-            font-size: 9px; color: #888; margin-top: 2px;
-        }
+        .player-tab .pbet { font-size: 10px; color: #888; margin-top: 3px; }
         .player-tab.has-bet .pbet { color: var(--red); font-weight: 600; }
+        .player-tab.hidden-player { display: none; }
 
         .player-names-edit {
-            margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr;
-            gap: 6px; max-height: 120px; overflow-y: auto;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; max-height: 240px; overflow-y: auto;
         }
         .name-input-wrap {
-            display: flex; align-items: center; gap: 4px;
+            display: flex; align-items: center; gap: 8px;
+            background: #fafafa; border: 1px solid #e5e5e5; border-radius: 12px;
+            padding: 6px 10px;
         }
-        .name-input-wrap .dot {
-            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-        }
+        .name-input-wrap .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
         .name-input-wrap input {
-            flex: 1; padding: 5px 8px; border: 1px solid #e0e0e0;
-            border-radius: 8px; font-size: 11px; font-family: inherit;
+            flex: 1; padding: 6px 8px; border: none; outline: none;
+            background: transparent; font-size: 13px; font-family: inherit;
         }
+        .player-name-actions { display: flex; gap: 6px; }
+        .player-action-btn {
+            border: none; border-radius: 8px; padding: 6px 8px;
+            font-family: inherit; font-size: 11px; font-weight: 700;
+            cursor: pointer; color: white;
+        }
+        .player-action-btn.choose { background: var(--green); }
+        .player-action-btn.hide { background: #78909c; }
 
-        /* Bảng xếp hạng */
         .scoreboard {
             background: var(--card); border-radius: var(--radius);
             padding: 12px; margin-bottom: 14px; box-shadow: var(--shadow);
             display: none;
         }
         .scoreboard.show { display: block; }
-
         .scoreboard-title { font-size: 12px; font-weight: 600; color: #888; margin-bottom: 8px; }
-
         .score-row {
             display: flex; align-items: center; justify-content: space-between;
             padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px;
@@ -211,7 +206,6 @@
         .score-row .sname .dot { width: 8px; height: 8px; border-radius: 50%; }
         .score-row .sbal { font-weight: 700; color: var(--red-dark); }
 
-        /* Số dư */
         .balance-bar {
             display: flex; align-items: center; justify-content: space-between;
             background: linear-gradient(135deg, var(--red-dark), var(--red));
@@ -220,17 +214,13 @@
             box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.15);
         }
         .balance-label { color: var(--gold-light); font-size: 12px; font-weight: 500; }
-        .balance-amount {
-            font-size: 24px; font-weight: 800; color: var(--gold);
-            display: flex; align-items: center; gap: 6px;
-        }
+        .balance-amount { font-size: 24px; font-weight: 800; color: var(--gold); display: flex; align-items: center; gap: 6px; }
         .reset-btn {
             background: rgba(255,255,255,0.15); border: 1px solid rgba(255,213,79,0.4);
             color: var(--gold-light); font-size: 11px; padding: 6px 10px;
             border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 600;
         }
 
-        /* Xúc xắc */
         .dice-area {
             background: var(--card); border-radius: var(--radius);
             padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow); text-align: center;
@@ -245,19 +235,13 @@
             font-size: 38px; box-shadow: 0 6px 16px rgba(0,0,0,0.2);
         }
         .die.rolling { animation: roll 0.15s linear infinite; }
-        @keyframes roll {
-            0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }
-        }
+        @keyframes roll { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .die.reveal { animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes pop {
-            0% { transform: scale(0.5); opacity: 0.5; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes pop { 0% { transform: scale(0.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
         .result-text { font-size: 13px; font-weight: 600; min-height: 20px; margin-top: 8px; }
         .result-text.win { color: var(--green); }
         .result-text.lose { color: var(--red); }
         .result-text.neutral { color: #888; }
-
         .round-summary {
             margin-top: 10px; padding: 10px; background: #f9f9f9;
             border-radius: 10px; display: none; text-align: left;
@@ -271,55 +255,23 @@
         .round-summary .rs-row.positive { color: var(--green); font-weight: 600; }
         .round-summary .rs-row.negative { color: var(--red); font-weight: 600; }
 
-        /* Bảng mệnh giá */
         .denom-section {
             background: var(--card); border-radius: var(--radius);
-            padding: 14px; margin-bottom: 14px; box-shadow: var(--shadow);
+            padding: 14px 12px; margin-bottom: 18px; box-shadow: var(--shadow);
+            position: sticky; top: 10px; z-index: 5;
         }
-        .denom-title {
-            font-size: 12px; font-weight: 600; color: #888;
-            margin-bottom: 10px; text-align: center;
-        }
-        .denom-table {
-            width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px;
-        }
-        .denom-table th {
-            background: linear-gradient(135deg, var(--red-dark), var(--red));
-            color: var(--gold-light); padding: 8px 4px; font-weight: 600;
-        }
-        .denom-table th:first-child { border-radius: 8px 0 0 0; }
-        .denom-table th:last-child { border-radius: 0 8px 0 0; }
-        .denom-table td {
-            padding: 8px 4px; text-align: center; border-bottom: 1px solid #f0f0f0;
-            font-weight: 600;
-        }
-        .denom-table tr:last-child td { border-bottom: none; }
-        .denom-table tr.selectable { cursor: pointer; transition: background 0.15s; }
-        .denom-table tr.selectable:hover { background: #fff8e1; }
-        .denom-table tr.selectable.active { background: #fff3e0; }
-        .denom-table tr.selectable.active td:first-child {
-            border-left: 3px solid var(--gold-dark);
-        }
-        .denom-chip {
-            display: inline-block; width: 22px; height: 22px; border-radius: 50%;
-            vertical-align: middle; margin-right: 4px; border: 2px dashed rgba(255,255,255,0.5);
-        }
-
-        .chips {
-            display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
-        }
+        .chips { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
         .chip {
-            width: 48px; height: 48px; border-radius: 50%;
+            width: 58px; height: 58px; border-radius: 50%;
             border: 3px dashed rgba(255,255,255,0.5);
-            font-size: 10px; font-weight: 800; cursor: pointer;
+            font-size: 12px; font-weight: 800; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             font-family: inherit; color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-            transition: all 0.2s;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+            transition: transform 0.2s;
         }
-        .chip:hover { transform: scale(1.08); }
-        .chip.active { transform: scale(1.12); box-shadow: 0 0 0 3px var(--gold); }
-
+        .chip:hover { transform: scale(1.12); }
+        .chip.active { transform: scale(1.18); box-shadow: 0 0 0 5px var(--gold); }
         .chip-v1 { background: linear-gradient(145deg, #90caf9, #1565c0); }
         .chip-v2 { background: linear-gradient(145deg, #80cbc4, #00695c); }
         .chip-v5 { background: linear-gradient(145deg, #a5d6a7, #2e7d32); }
@@ -328,52 +280,51 @@
         .chip-v50 { background: linear-gradient(145deg, #ce93d8, #6a1b9a); }
         .chip-v100 { background: linear-gradient(145deg, #fff176, #f57f17); color: #5d4037; }
         .chip-v200 { background: linear-gradient(145deg, #ff8a65, #bf360c); }
-        .chip-v500 { background: linear-gradient(145deg, #ffd54f, #ff6f00); color: #4e342e; font-size: 9px; }
+        .chip-v500 { background: linear-gradient(145deg, #ffd54f, #ff6f00); color: #4e342e; font-size: 10px; }
 
-        /* Bàn cược */
         .bet-board {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 10px; margin-bottom: 14px;
+            gap: 18px; margin-bottom: 18px;
         }
         .bet-cell {
             background: var(--card); border-radius: var(--radius);
-            padding: 12px 8px; text-align: center; cursor: pointer;
+            padding: 20px 12px; text-align: center; cursor: pointer;
             border: 3px solid transparent; box-shadow: var(--shadow);
-            transition: all 0.2s; position: relative; user-select: none;
+            transition: transform 0.2s; position: relative; user-select: none;
         }
-        .bet-cell:hover:not(.disabled) { transform: translateY(-2px); }
+        .bet-cell:hover:not(.disabled) { transform: translateY(-4px); }
         .bet-cell.selected { border-color: var(--gold-dark); background: linear-gradient(180deg, #fff8e1, #fff); }
         .bet-cell.has-bet { border-color: var(--red-light); }
         .bet-cell.disabled { opacity: 0.6; cursor: not-allowed; }
-        .bet-icon { font-size: 42px; line-height: 1; margin-bottom: 4px; }
-        .bet-name { font-size: 13px; font-weight: 700; color: var(--red-dark); }
+        .bet-icon { font-size: 52px; line-height: 1; margin-bottom: 8px; }
+        .bet-name { font-size: 15px; font-weight: 700; color: var(--red-dark); }
         .bet-amount {
-            position: absolute; top: -8px; right: -8px;
-            background: var(--red); color: white; font-size: 10px; font-weight: 700;
-            padding: 3px 7px; border-radius: 20px; border: 2px solid var(--gold);
+            position: absolute; top: -10px; right: -10px;
+            background: var(--red); color: white; font-size: 11px; font-weight: 700;
+            padding: 4px 8px; border-radius: 20px; border: 2px solid var(--gold);
             display: none;
         }
         .bet-cell.has-bet .bet-amount { display: block; }
         .bet-others {
-            position: absolute; top: -8px; left: -4px;
-            background: #1565c0; color: white; font-size: 9px; font-weight: 700;
-            padding: 2px 6px; border-radius: 10px; display: none;
+            position: absolute; top: -10px; left: -6px;
+            background: #1565c0; color: white; font-size: 10px; font-weight: 700;
+            padding: 3px 7px; border-radius: 10px; display: none;
         }
         .bet-cell.has-others .bet-others { display: block; }
 
-        /* Nút */
-        .action-bar { display: flex; gap: 10px; margin-bottom: 14px; }
+        .action-bar { display: flex; gap: 12px; margin-bottom: 16px; }
         .btn {
-            flex: 1; padding: 15px; border: none; border-radius: var(--radius);
-            font-family: inherit; font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
+            flex: 1; padding: 16px; border: none; border-radius: var(--radius);
+            font-family: inherit; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: transform 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
+        .btn:active:not(:disabled) { transform: translateY(1px); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-roll {
             background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-            color: #5d4037; flex: 2; font-size: 16px;
-            box-shadow: 0 6px 20px rgba(249, 168, 37, 0.5);
+            color: #5d4037; flex: 2; font-size: 17px;
+            box-shadow: 0 8px 24px rgba(249, 168, 37, 0.45);
         }
         .btn-clear {
             background: rgba(255,255,255,0.1); color: var(--gold-light);
@@ -428,10 +379,59 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
+        .settings-modal {
+            display: none; position: fixed; inset: 0; z-index: 300;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            align-items: flex-end; justify-content: center;
+        }
+        .settings-modal.open { display: flex; }
+        .settings-panel {
+            background: var(--card); border-radius: 20px 20px 0 0;
+            width: 100%; max-width: 520px; max-height: 85vh;
+            overflow-y: auto; box-shadow: 0 -8px 40px rgba(0,0,0,0.4);
+        }
+        @media (min-width: 520px) {
+            .settings-panel { border-radius: 20px; margin: 20px; align-self: center; }
+        }
+        .settings-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 20px 14px; border-bottom: 1px solid #f0f0f0;
+            font-size: 17px; font-weight: 800; color: var(--red-dark);
+        }
+        .settings-close {
+            border: none; background: #f5f5f5; border-radius: 50%;
+            width: 32px; height: 32px; font-size: 14px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .settings-body { padding: 16px 20px 24px; }
+        .settings-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; font-size: 14px;
+        }
+        .settings-row label { font-weight: 600; color: #333; }
+        .settings-row select {
+            padding: 6px 12px; border: 1px solid #e0e0e0; border-radius: 8px;
+            font-family: inherit; font-size: 13px; font-weight: 700; color: #333;
+            background: #fafafa; cursor: pointer;
+        }
+        .settings-divider { border-top: 1px solid #f0f0f0; margin: 4px 0; }
+        .settings-save-btn {
+            width: 100%; padding: 12px; margin-top: 10px;
+            background: linear-gradient(135deg, var(--green), #1b5e20);
+            color: white; border: none; border-radius: 12px;
+            font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+        }
+        .settings-install-btn {
+            width: 100%; padding: 12px; margin-top: 8px;
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            color: white; border: none; border-radius: 12px;
+            font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+        }
+
         @media (max-width: 380px) {
             .die { width: 58px; height: 58px; font-size: 30px; }
             .bet-icon { font-size: 34px; }
-            .chip { width: 42px; height: 42px; font-size: 9px; }
+            .chip { width: 44px; height: 44px; font-size: 10px; }
         }
     </style>
 </head>
@@ -442,7 +442,6 @@
     <div class="lantern">🏮</div>
     <div class="lantern">🏮</div>
     <canvas id="confetti"></canvas>
->>>>>>> b780363d2397dbda1fdc7760d2f2337c8d1294ef
 
     <div class="app">
         <header>
@@ -452,33 +451,96 @@
             <p class="tagline">Trò chơi dân gian · Giải trí sau giờ làm việc</p>
         </header>
 
+        <div class="header-toolbar">
+            <button class="toolbar-btn" id="settingsBtn">⚙️ Cài đặt</button>
+            <button class="toolbar-btn danger" id="newGameBtn">🔄 Game mới</button>
+        </div>
+
+        <div class="settings-modal" id="settingsModal">
+            <div class="settings-panel">
+                <div class="settings-header">
+                    <span>⚙️ Cài đặt</span>
+                    <button class="settings-close" id="closeSettings">✕</button>
+                </div>
+                <div class="settings-body">
+                    <div class="settings-row">
+                        <label>Tiền ban đầu mỗi người</label>
+                        <select id="settingBalance">
+                            <option value="1000000">1.000.000đ</option>
+                            <option value="2000000">2.000.000đ</option>
+                            <option value="3000000">3.000.000đ</option>
+                            <option value="5000000" selected>5.000.000đ</option>
+                            <option value="10000000">10.000.000đ</option>
+                            <option value="20000000">20.000.000đ</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label>Âm thanh</label>
+                        <select id="settingSound">
+                            <option value="on" selected>Bật</option>
+                            <option value="off">Tắt</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label>Hiệu ứng confetti</label>
+                        <select id="settingConfetti">
+                            <option value="on" selected>Bật</option>
+                            <option value="off">Tắt</option>
+                        </select>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <div class="settings-row">
+                        <label>Âm thanh lắc</label>
+                        <select id="settingShakeSound">
+                            <option value="on" selected>Bật</option>
+                            <option value="off">Tắt</option>
+                        </select>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <div class="settings-row">
+                        <label>Lịch sử lưu tối đa</label>
+                        <select id="settingHistory">
+                            <option value="10">10 vòng</option>
+                            <option value="20" selected>20 vòng</option>
+                            <option value="50">50 vòng</option>
+                            <option value="100">100 vòng</option>
+                        </select>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <button class="settings-save-btn" id="saveSettingsBtn">💾 Lưu cài đặt</button>
+                    <div class="settings-divider"></div>
+                    <button class="settings-install-btn" id="installAppBtn">📲 Cài đặt ứng dụng</button>
+                </div>
+            </div>
+        </div>
+
         <div class="mode-bar">
             <button class="mode-btn active" data-mode="single">👤 1 người</button>
-            <button class="mode-btn" data-mode="multi">👥 5–10 người</button>
+            <button class="mode-btn" data-mode="multi">👥 2–20 người</button>
         </div>
 
         <div class="players-section" id="playersSection">
             <div class="players-header">
-                <span>Chọn người đang đặt cược</span>
+                <span>Điền tên rồi bấm Chọn để chơi; bấm Ẩn để tạm ẩn khỏi bảng cược</span>
                 <div class="player-count-select">
-                    <label>Số người:</label>
+                    <label for="playerCount">Số người:</label>
                     <select id="playerCount">
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
                         <option value="5">5</option>
                         <option value="6">6</option>
                         <option value="7">7</option>
                         <option value="8">8</option>
                         <option value="9">9</option>
-                        <option value="10" selected>10</option>
+                        <option value="10">10</option>
                     </select>
                 </div>
             </div>
             <div class="players-strip" id="playersStrip"></div>
-            <div class="player-names-edit" id="playerNamesEdit"></div>
-        </div>
-
-        <div class="scoreboard" id="scoreboard">
-            <div class="scoreboard-title">🏆 Bảng điểm</div>
-            <div id="scoreList"></div>
+            <div class="player-names-edit" id="playerNamesEdit">
+                <span style="font-size:12px;color:#888;grid-column:1/-1">Điền tên, bấm <strong>Chọn</strong> để thêm vào vòng cược. Bấm <strong>Ẩn</strong> để tạm loại.</span>
+            </div>
         </div>
 
         <div class="balance-bar">
@@ -507,17 +569,6 @@
         </div>
 
         <div class="denom-section">
-            <div class="denom-title">💰 Bảng mệnh giá cược (VNĐ)</div>
-            <table class="denom-table" id="denomTable">
-                <thead>
-                    <tr>
-                        <th>Mệnh giá</th>
-                        <th>Hiển thị</th>
-                        <th>Loại chip</th>
-                    </tr>
-                </thead>
-                <tbody id="denomBody"></tbody>
-            </table>
             <div class="chips" id="chipsBar"></div>
         </div>
 
@@ -539,16 +590,22 @@
             <button id="rulesBtn">📖 Xem luật chơi</button>
             <div class="rules-panel" id="rulesPanel">
                 <strong>🎮 Cách chơi:</strong><br>
-                1. Chọn mệnh giá trong bảng hoặc chip, rồi chạm ô muốn đặt.<br>
+                1. Chọn mệnh giá bằng chip, rồi chạm ô muốn đặt.<br>
                 2. Nhấn <strong>LẮC!</strong> — 3 xúc xắc quay ngẫu nhiên.<br>
                 3. Mỗi mặt trùng: nhận lại cược + thưởng 1:1 (ra 2 Cua → nhận gấp 3 lần tiền cược Cua).<br><br>
-                <strong>👥 Chế độ 5–10 người:</strong><br>
+                <strong>👥 Chế độ 2–20 người:</strong><br>
+                • Chọn số người, điền tên, bấm <strong>Chọn</strong> để cho vào vòng cược.<br>
+                • Bấm <strong>Ẩn</strong> để tạm loại khỏi vòng cược này; bấm tab tên để chọn người đang cược.<br>
                 • Dùng chung 1 điện thoại/máy tính bảng (pass-and-play).<br>
-                • Mỗi người lần lượt chọn tên mình → đặt cược → chuyển sang người tiếp theo.<br>
                 • Khi mọi người đặt xong, bất kỳ ai cũng có thể nhấn <strong>LẮC!</strong><br>
-                • Một lần lắc tính kết quả cho tất cả người chơi.<br><br>
+                • Một lần lắc tính kết quả cho tất cả người đang chơi.<br><br>
                 <strong>💡 Lưu ý:</strong> Game giải trí, không dùng tiền thật. Tối đa mệnh giá <strong>500.000đ</strong>/lần bấm.
             </div>
+        </div>
+
+        <div class="scoreboard" id="scoreboard">
+            <div class="scoreboard-title">🏆 Bảng điểm</div>
+            <div id="scoreList"></div>
         </div>
 
         <footer class="site-footer">
@@ -559,652 +616,866 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        const SYMBOLS = [
-            { id: 'bau', name: 'Bầu', icon: '🍐' },
-            { id: 'cua', name: 'Cua', icon: '🦀' },
-            { id: 'tom', name: 'Tôm', icon: '🦐' },
-            { id: 'ca',  name: 'Cá',  icon: '🐟' },
-            { id: 'ga',  name: 'Gà',  icon: '🐓' },
-            { id: 'nai', name: 'Nai', icon: '🦌' }
-        ];
+        (function() {
+            'use strict';
 
-        const DENOMINATIONS = [
-            { value: 1000,   label: '1.000đ',   short: '1K',   chipClass: 'chip-v1' },
-            { value: 2000,   label: '2.000đ',   short: '2K',   chipClass: 'chip-v2' },
-            { value: 5000,   label: '5.000đ',   short: '5K',   chipClass: 'chip-v5' },
-            { value: 10000,  label: '10.000đ',  short: '10K',  chipClass: 'chip-v10' },
-            { value: 20000,  label: '20.000đ',  short: '20K',  chipClass: 'chip-v20' },
-            { value: 50000,  label: '50.000đ',  short: '50K',  chipClass: 'chip-v50' },
-            { value: 100000, label: '100.000đ', short: '100K', chipClass: 'chip-v100' },
-            { value: 200000, label: '200.000đ', short: '200K', chipClass: 'chip-v200' },
-            { value: 500000, label: '500.000đ', short: '500K', chipClass: 'chip-v500' }
-        ];
+            const SYMBOLS = [
+                { id: 'bau', name: 'Bầu', icon: '🍐' },
+                { id: 'cua', name: 'Cua', icon: '🦀' },
+                { id: 'tom', name: 'Tôm', icon: '🦐' },
+                { id: 'ca',  name: 'Cá',  icon: '🐟' },
+                { id: 'ga',  name: 'Gà',  icon: '🐓' },
+                { id: 'nai', name: 'Nai', icon: '🦌' }
+            ];
 
-        const PLAYER_COLORS = [
-            '#e53935', '#1e88e5', '#43a047', '#fb8c00', '#8e24aa',
-            '#00acc1', '#d81b60', '#6d4c41', '#546e7a', '#fdd835'
-        ];
+            const DENOMINATIONS = [
+                { value: 1000,   label: '1.000đ',   short: '1K',   chipClass: 'chip-v1' },
+                { value: 2000,   label: '2.000đ',   short: '2K',   chipClass: 'chip-v2' },
+                { value: 5000,   label: '5.000đ',   short: '5K',   chipClass: 'chip-v5' },
+                { value: 10000,  label: '10.000đ',  short: '10K',  chipClass: 'chip-v10' },
+                { value: 20000,  label: '20.000đ',  short: '20K',  chipClass: 'chip-v20' },
+                { value: 50000,  label: '50.000đ',  short: '50K',  chipClass: 'chip-v50' },
+                { value: 100000, label: '100.000đ', short: '100K', chipClass: 'chip-v100' },
+                { value: 200000, label: '200.000đ', short: '200K', chipClass: 'chip-v200' },
+                { value: 500000, label: '500.000đ', short: '500K', chipClass: 'chip-v500' }
+            ];
 
-        const INITIAL_BALANCE = 5000000;
-        const STORAGE_KEY = 'bauCuaGame_v2';
+            const PLAYER_COLORS = [
+                '#e53935', '#1e88e5', '#43a047', '#fb8c00', '#8e24aa',
+                '#00acc1', '#d81b60', '#6d4c41', '#546e7a', '#fdd835'
+            ];
 
-        let gameMode = 'single';
-        let balance = INITIAL_BALANCE;
-        let bets = {};
-        let selectedChip = 1000;
-        let isRolling = false;
-        let history = [];
-        let players = [];
-        let activePlayerId = 0;
+            const INITIAL_BALANCE = 5000000;
+            const STORAGE_KEY = 'bauCuaGame_v3';
+            const SETTINGS_KEY = 'bauCuaSettings';
 
-        const $ = id => document.getElementById(id);
+            let gameMode = 'single';
+            let balance = INITIAL_BALANCE;
+            let bets = {};
+            let selectedChip = 1000;
+            let isRolling = false;
+            let history = [];
+            let players = [];
+            let activePlayerId = 0;
 
-        function formatMoney(n) {
-            return n.toLocaleString('vi-VN') + 'đ';
-        }
+            function $(id) { return document.getElementById(id); }
 
-        function formatMoneyShort(n) {
-            return n.toLocaleString('vi-VN');
-        }
-
-        function getActivePlayer() {
-            return players.find(p => p.id === activePlayerId);
-        }
-
-        function getCurrentBets() {
-            if (gameMode === 'multi') {
-                const p = getActivePlayer();
-                return p ? p.bets : {};
+            function formatMoneyShort(n) {
+                return n.toLocaleString('vi-VN');
             }
-            return bets;
-        }
 
-        function getCurrentBalance() {
-            if (gameMode === 'multi') {
-                const p = getActivePlayer();
-                return p ? p.balance : 0;
+            function getActivePlayer() {
+                return players.find(p => p.id === activePlayerId);
             }
-            return balance;
-        }
 
-        function setCurrentBets(newBets) {
-            if (gameMode === 'multi') {
-                const p = getActivePlayer();
-                if (p) p.bets = newBets;
-            } else {
-                bets = newBets;
-            }
-        }
-
-        function getTotalBet(betObj) {
-            return Object.values(betObj || {}).reduce((s, v) => s + v, 0);
-        }
-
-        function getAllPlayersTotalBet() {
-            if (gameMode === 'single') return getTotalBet(bets);
-            return players.reduce((s, p) => s + getTotalBet(p.bets), 0);
-        }
-
-        function loadGame() {
-            try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    balance = data.balance ?? INITIAL_BALANCE;
-                    history = data.history ?? [];
-                    gameMode = data.gameMode ?? 'single';
-                    if (data.players?.length) players = data.players;
+            function getCurrentBets() {
+                if (gameMode === 'multi') {
+                    const p = getActivePlayer();
+                    return p ? p.bets : {};
                 }
-            } catch (e) { /* ignore */ }
-            if (!players.length) initPlayers(10);
-        }
+                return bets;
+            }
 
-        function saveGame() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                balance, history, gameMode, players, activePlayerId
-            }));
-        }
+            function getCurrentBalance() {
+                if (gameMode === 'multi') {
+                    const p = getActivePlayer();
+                    return p ? p.balance : 0;
+                }
+                return balance;
+            }
 
-        function initPlayers(count) {
-            players = Array.from({ length: count }, (_, i) => ({
-                id: i,
-                name: `Người ${i + 1}`,
-                balance: INITIAL_BALANCE,
-                bets: {},
-                color: PLAYER_COLORS[i]
-            }));
-            if (activePlayerId >= count) activePlayerId = 0;
-        }
+            function setCurrentBets(newBets) {
+                if (gameMode === 'multi') {
+                    const p = getActivePlayer();
+                    if (p) p.bets = newBets;
+                } else {
+                    bets = newBets;
+                }
+            }
 
-        function buildDenominations() {
-            const tbody = $('denomBody');
-            tbody.innerHTML = DENOMINATIONS.map((d, i) => `
-                <tr class="selectable${i === 0 ? ' active' : ''}" data-value="${d.value}">
-                    <td>${d.label}</td>
-                    <td>${d.short}</td>
-                    <td><span class="denom-chip ${d.chipClass}"></span>${d.short}</td>
-                </tr>
-            `).join('');
+            function getTotalBet(betObj) {
+                return Object.values(betObj || {}).reduce(function(s, v) { return s + v; }, 0);
+            }
 
-            tbody.querySelectorAll('tr').forEach(row => {
-                row.addEventListener('click', () => selectChip(parseInt(row.dataset.value)));
-            });
+            function getAllPlayersTotalBet() {
+                if (gameMode === 'single') return getTotalBet(bets);
+                return players.reduce(function(s, p) { return s + getTotalBet(p.bets); }, 0);
+            }
 
-            $('chipsBar').innerHTML = DENOMINATIONS.map((d, i) => `
-                <button class="chip ${d.chipClass}${i === 0 ? ' active' : ''}" data-value="${d.value}">${d.short}</button>
-            `).join('');
+            function isNamedPlayer(p) {
+                return p && typeof p.name === 'string' && p.name.trim().length > 0;
+            }
 
-            document.querySelectorAll('.chip').forEach(chip => {
-                chip.addEventListener('click', () => selectChip(parseInt(chip.dataset.value)));
-            });
-        }
+            function getChosenPlayers() {
+                return players.filter(function(p) { return isNamedPlayer(p) && p.chosen; });
+            }
 
-        function selectChip(value) {
-            selectedChip = value;
-            document.querySelectorAll('.chip').forEach(c => {
-                c.classList.toggle('active', parseInt(c.dataset.value) === value);
-            });
-            document.querySelectorAll('.denom-table tr.selectable').forEach(r => {
-                r.classList.toggle('active', parseInt(r.dataset.value) === value);
-            });
-            playSound('chip');
-        }
+            function loadGame() {
+                try {
+                    var saved = localStorage.getItem(STORAGE_KEY);
+                    if (saved) {
+                        var data = JSON.parse(saved);
+                        balance = data.balance !== undefined ? data.balance : INITIAL_BALANCE;
+                        history = data.history || [];
+                        gameMode = data.gameMode || 'single';
+                        if (data.players && data.players.length) {
+                            players = data.players;
+                        }
+                        if (data.activePlayerId !== undefined) {
+                            activePlayerId = data.activePlayerId;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Load game failed:', e);
+                }
+                if (!players.length) {
+                    initPlayers(10);
+                }
+            }
 
-        function renderPlayers() {
-            const strip = $('playersStrip');
-            const namesEdit = $('playerNamesEdit');
+            function saveGame() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                        balance: balance,
+                        history: history,
+                        gameMode: gameMode,
+                        players: players,
+                        activePlayerId: activePlayerId
+                    }));
+                } catch (e) {
+                    console.warn('Save game failed:', e);
+                }
+            }
 
-            strip.innerHTML = players.map(p => {
-                const total = getTotalBet(p.bets);
-                return `
-                    <div class="player-tab${p.id === activePlayerId ? ' active' : ''}${total > 0 ? ' has-bet' : ''}"
-                         data-id="${p.id}">
-                        <div class="avatar" style="background:${p.color}">${p.id + 1}</div>
-                        <div class="pname">${p.name}</div>
-                        <div class="pbet">${total > 0 ? formatMoneyShort(total) : 'Chưa cược'}</div>
-                    </div>
-                `;
-            }).join('');
-
-            strip.querySelectorAll('.player-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    if (isRolling) return;
-                    activePlayerId = parseInt(tab.dataset.id);
-                    renderPlayers();
-                    updateUI();
+            function initPlayers(count) {
+                var oldState = {};
+                players.forEach(function(p) {
+                    oldState[p.id] = { name: p.name, chosen: !!p.chosen };
                 });
-            });
 
-            namesEdit.innerHTML = players.map(p => `
-                <div class="name-input-wrap">
-                    <span class="dot" style="background:${p.color}"></span>
-                    <input type="text" value="${p.name}" data-id="${p.id}" maxlength="12"
-                           placeholder="Tên người ${p.id + 1}">
-                </div>
-            `).join('');
+                players = [];
+                for (var i = 0; i < count; i++) {
+                    var old = oldState[i] || {};
+                    players.push({
+                        id: i,
+                        name: old.name || ('Người ' + (i + 1)),
+                        balance: INITIAL_BALANCE,
+                        bets: {},
+                        color: PLAYER_COLORS[i % PLAYER_COLORS.length],
+                        chosen: old.chosen || false
+                    });
+                }
 
-            namesEdit.querySelectorAll('input').forEach(inp => {
-                inp.addEventListener('change', () => {
-                    const p = players.find(x => x.id === parseInt(inp.dataset.id));
-                    if (p) {
-                        p.name = inp.value.trim() || `Người ${p.id + 1}`;
+                var chosen = getChosenPlayers();
+                if (!chosen.length) {
+                    activePlayerId = players[0] ? players[0].id : 0;
+                } else if (!chosen.find(function(p) { return p.id === activePlayerId; })) {
+                    activePlayerId = chosen[0].id;
+                }
+            }
+
+            function buildDenominations() {
+                var html = '';
+                DENOMINATIONS.forEach(function(d, i) {
+                    html += '<button class="chip ' + d.chipClass + (i === 0 ? ' active' : '') + '" data-value="' + d.value + '" title="' + d.label + '">' + d.short + '</button>';
+                });
+                $('chipsBar').innerHTML = html;
+
+                var chipEls = document.querySelectorAll('.chip');
+                chipEls.forEach(function(chip) {
+                    chip.addEventListener('click', function() {
+                        selectChip(parseInt(chip.dataset.value, 10));
+                    });
+                });
+            }
+
+            function selectChip(value) {
+                selectedChip = value;
+                document.querySelectorAll('.chip').forEach(function(c) {
+                    c.classList.toggle('active', parseInt(c.dataset.value, 10) === value);
+                });
+                playSound('chip');
+            }
+
+            function renderPlayers() {
+                var strip = $('playersStrip');
+                var namesEdit = $('playerNamesEdit');
+                var chosen = getChosenPlayers();
+
+                strip.classList.toggle('hidden-strip', chosen.length === 0);
+
+                var stripHtml = '';
+                players.forEach(function(p) {
+                    var visibleClass = (isNamedPlayer(p) && p.chosen) ? '' : ' hidden-player';
+                    var total = getTotalBet(p.bets);
+                    stripHtml += '<div class="player-tab' + (p.id === activePlayerId ? ' active' : '') + (total > 0 ? ' has-bet' : '') + visibleClass + '" data-id="' + p.id + '">' +
+                        '<div class="avatar" style="background:' + p.color + '">' + (p.id + 1) + '</div>' +
+                        '<div class="pname">' + (p.name || '...') + '</div>' +
+                        '<div class="pbet">' + (total > 0 ? formatMoneyShort(total) : 'Chưa cược') + '</div>' +
+                        '</div>';
+                });
+                strip.innerHTML = stripHtml;
+
+                strip.querySelectorAll('.player-tab').forEach(function(tab) {
+                    tab.addEventListener('click', function() {
+                        if (isRolling) return;
+                        var id = parseInt(tab.dataset.id, 10);
+                        var p = players.find(function(x) { return x.id === id; });
+                        if (!isNamedPlayer(p) || !p.chosen) return;
+                        activePlayerId = id;
+                        renderPlayers();
+                        updateUI();
+                    });
+                });
+
+                var editHtml = '';
+                players.forEach(function(p) {
+                    var chooseLabel = p.chosen ? 'Đang chơi' : 'Chưa chọn';
+                    var actionBtn = p.chosen
+                        ? '<button class="player-action-btn hide" data-id="' + p.id + '" data-action="hide">Ẩn</button>'
+                        : '<button class="player-action-btn choose" data-id="' + p.id + '" data-action="choose">Chọn</button>';
+                    editHtml += '<div class="name-input-wrap">' +
+                        '<span class="dot" style="background:' + p.color + '"></span>' +
+                        '<input type="text" value="' + (p.name || '') + '" data-id="' + p.id + '" maxlength="12" placeholder="Tên người ' + (p.id + 1) + '">' +
+                        '<div class="player-name-actions"><span style="font-size:10px;color:#888">' + chooseLabel + '</span>' + actionBtn + '</div>' +
+                        '</div>';
+                });
+                namesEdit.innerHTML = editHtml;
+
+                namesEdit.querySelectorAll('input').forEach(function(inp) {
+                    inp.addEventListener('change', function() {
+                        var p = players.find(function(x) { return x.id === parseInt(inp.dataset.id, 10); });
+                        if (p) {
+                            p.name = inp.value.trim() || ('Người ' + (p.id + 1));
+                            renderPlayers();
+                            renderScoreboard();
+                            updateUI();
+                            saveGame();
+                        }
+                    });
+                });
+
+                namesEdit.querySelectorAll('.player-action-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var id = parseInt(btn.dataset.id, 10);
+                        var action = btn.dataset.action;
+                        var p = players.find(function(x) { return x.id === id; });
+                        if (!p) return;
+                        if (action === 'choose') {
+                            p.chosen = true;
+                        } else if (action === 'hide') {
+                            p.chosen = false;
+                        }
+                        if (!getChosenPlayers().find(function(x) { return x.id === activePlayerId; })) {
+                            var next = getChosenPlayers()[0];
+                            activePlayerId = next ? next.id : p.id;
+                        }
                         renderPlayers();
                         renderScoreboard();
+                        updateUI();
                         saveGame();
-                    }
+                    });
                 });
-            });
-        }
 
-        function renderScoreboard() {
-            if (gameMode !== 'multi') return;
-            const sorted = [...players].sort((a, b) => b.balance - a.balance);
-            $('scoreList').innerHTML = sorted.map((p, i) => `
-                <div class="score-row">
-                    <span class="sname">
-                        <span class="dot" style="background:${p.color}"></span>
-                        ${i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : ''}${p.name}
-                    </span>
-                    <span class="sbal">${formatMoneyShort(p.balance)}</span>
-                </div>
-            `).join('');
-        }
-
-        function updateUI() {
-            const currentBets = getCurrentBets();
-            const currentBalance = getCurrentBalance();
-            const myTotal = getTotalBet(currentBets);
-            const allTotal = getAllPlayersTotalBet();
-
-            if (gameMode === 'multi') {
-                const p = getActivePlayer();
-                $('balanceLabel').textContent = `Số dư · ${p?.name || ''}`;
-                $('balance').textContent = formatMoneyShort(currentBalance);
-            } else {
-                $('balanceLabel').textContent = 'Số dư của bạn';
-                $('balance').textContent = formatMoneyShort(balance);
+                if (!chosen.length && players.length) {
+                    activePlayerId = players[0].id;
+                }
             }
 
-            const canRoll = gameMode === 'single'
-                ? myTotal > 0 && myTotal <= balance
-                : allTotal > 0 && players.every(p => getTotalBet(p.bets) <= p.balance);
+            function renderScoreboard() {
+                if (gameMode !== 'multi') return;
+                var sorted = getChosenPlayers().slice().sort(function(a, b) { return b.balance - a.balance; });
+                var html = '';
+                sorted.forEach(function(p, i) {
+                    var medal = i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : '';
+                    html += '<div class="score-row">' +
+                        '<span class="sname"><span class="dot" style="background:' + p.color + '"></span>' + medal + p.name + '</span>' +
+                        '<span class="sbal">' + formatMoneyShort(p.balance) + '</span></div>';
+                });
+                $('scoreList').innerHTML = html;
+            }
 
-            $('rollBtn').disabled = isRolling || !canRoll;
-            $('clearBets').disabled = isRolling || myTotal === 0;
-
-            SYMBOLS.forEach(s => {
-                const cell = document.querySelector(`[data-id="${s.id}"]`);
-                if (!cell) return;
-                const amount = currentBets[s.id] || 0;
-                const badge = cell.querySelector('.bet-amount');
-                const others = cell.querySelector('.bet-others');
-
-                cell.classList.toggle('has-bet', amount > 0);
-                badge.textContent = amount > 0 ? formatMoneyShort(amount) : '0';
+            function updateUI() {
+                var currentBets = getCurrentBets();
+                var currentBalance = getCurrentBalance();
+                var myTotal = getTotalBet(currentBets);
+                var allTotal = getAllPlayersTotalBet();
 
                 if (gameMode === 'multi') {
-                    const otherCount = players.filter(p =>
-                        p.id !== activePlayerId && (p.bets[s.id] || 0) > 0
-                    ).length;
-                    cell.classList.toggle('has-others', otherCount > 0);
-                    others.textContent = otherCount > 0 ? `+${otherCount}` : '';
+                    var p = getActivePlayer();
+                    $('balanceLabel').textContent = 'Số dư · ' + (p ? p.name : '');
+                    $('balance').textContent = formatMoneyShort(currentBalance);
                 } else {
-                    cell.classList.remove('has-others');
+                    $('balanceLabel').textContent = 'Số dư của bạn';
+                    $('balance').textContent = formatMoneyShort(balance);
                 }
 
-                cell.classList.toggle('disabled', isRolling);
-            });
+                var chosenPlayers = getChosenPlayers();
+                var canRoll;
+                if (gameMode === 'single') {
+                    canRoll = myTotal > 0 && myTotal <= balance;
+                } else {
+                    canRoll = allTotal > 0 && chosenPlayers.length > 0 && chosenPlayers.every(function(cp) {
+                        return getTotalBet(cp.bets) <= cp.balance;
+                    });
+                }
 
-            if (gameMode === 'multi') {
-                renderPlayers();
-                renderScoreboard();
+                $('rollBtn').disabled = isRolling || !canRoll;
+                $('clearBets').disabled = isRolling || myTotal === 0;
+
+                SYMBOLS.forEach(function(s) {
+                    var cell = document.querySelector('[data-id="' + s.id + '"]');
+                    if (!cell) return;
+                    var amount = currentBets[s.id] || 0;
+                    var badge = cell.querySelector('.bet-amount');
+                    var others = cell.querySelector('.bet-others');
+
+                    cell.classList.toggle('has-bet', amount > 0);
+                    badge.textContent = amount > 0 ? formatMoneyShort(amount) : '0';
+
+                    if (gameMode === 'multi') {
+                        var otherCount = chosenPlayers.filter(function(cp) {
+                            return cp.id !== activePlayerId && (cp.bets[s.id] || 0) > 0;
+                        }).length;
+                        cell.classList.toggle('has-others', otherCount > 0);
+                        others.textContent = otherCount > 0 ? '+' + otherCount : '';
+                    } else {
+                        cell.classList.remove('has-others');
+                    }
+
+                    cell.classList.toggle('disabled', isRolling);
+                });
+
+                if (gameMode === 'multi') {
+                    renderPlayers();
+                    renderScoreboard();
+                }
+
+                renderHistory();
             }
 
-            renderHistory();
-        }
+            function buildBoard() {
+                var board = $('betBoard');
+                var html = '';
+                SYMBOLS.forEach(function(s) {
+                    html += '<div class="bet-cell" data-id="' + s.id + '">' +
+                        '<div class="bet-others">+0</div>' +
+                        '<div class="bet-amount">0</div>' +
+                        '<div class="bet-icon">' + s.icon + '</div>' +
+                        '<div class="bet-name">' + s.name + '</div></div>';
+                });
+                board.innerHTML = html;
 
-        function buildBoard() {
-            const board = $('betBoard');
-            board.innerHTML = SYMBOLS.map(s => `
-                <div class="bet-cell" data-id="${s.id}">
-                    <div class="bet-others">+0</div>
-                    <div class="bet-amount">0</div>
-                    <div class="bet-icon">${s.icon}</div>
-                    <div class="bet-name">${s.name}</div>
-                </div>
-            `).join('');
+                board.addEventListener('click', function(e) {
+                    var cell = e.target.closest('.bet-cell');
+                    if (!cell || isRolling) return;
 
-            board.addEventListener('click', e => {
-                const cell = e.target.closest('.bet-cell');
-                if (!cell || isRolling) return;
+                    var id = cell.dataset.id;
+                    var currentBets = Object.assign({}, getCurrentBets());
+                    var cost = selectedChip;
+                    var currentTotal = getTotalBet(currentBets);
 
-                const id = cell.dataset.id;
-                const currentBets = { ...getCurrentBets() };
-                const cost = selectedChip;
-                const currentTotal = getTotalBet(currentBets);
+                    if (getCurrentBalance() < currentTotal + cost) {
+                        showToast('Không đủ tiền!');
+                        playSound('error');
+                        return;
+                    }
 
-                if (getCurrentBalance() < currentTotal + cost) {
-                    showToast('Không đủ tiền! 💸');
-                    playSound('error');
+                    currentBets[id] = (currentBets[id] || 0) + cost;
+                    setCurrentBets(currentBets);
+
+                    cell.classList.add('selected');
+                    setTimeout(function() { cell.classList.remove('selected'); }, 200);
+                    playSound('chip');
+                    updateUI();
+                });
+            }
+
+            function clearBets() {
+                if (gameMode === 'multi') {
+                    var p = getActivePlayer();
+                    if (p) p.bets = {};
+                } else {
+                    bets = {};
+                }
+                updateUI();
+                playSound('chip');
+            }
+
+            function rollDice() {
+                var results = [];
+                for (var i = 0; i < 3; i++) {
+                    results.push(SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]);
+                }
+                return results;
+            }
+
+            function countMatches(results) {
+                var counts = {};
+                results.forEach(function(r) {
+                    counts[r.id] = (counts[r.id] || 0) + 1;
+                });
+                return counts;
+            }
+
+            function calcWinnings(playerBets, counts) {
+                var winnings = 0;
+                var details = [];
+                Object.keys(playerBets).forEach(function(id) {
+                    var amount = playerBets[id];
+                    var match = counts[id] || 0;
+                    if (match > 0) {
+                        winnings += amount * (match + 1);
+                        var sym = SYMBOLS.find(function(s) { return s.id === id; });
+                        if (sym) details.push(sym.icon + 'x' + match);
+                    }
+                });
+                return { winnings: winnings, details: details };
+            }
+
+            async function doRoll() {
+                var allTotal = getAllPlayersTotalBet();
+                if (allTotal === 0 || isRolling) return;
+
+                if (gameMode === 'single' && getTotalBet(bets) > balance) return;
+                if (gameMode === 'multi' && !getChosenPlayers().every(function(p) { return getTotalBet(p.bets) <= p.balance; })) return;
+
+                isRolling = true;
+                $('roundSummary').classList.remove('show');
+
+                if (gameMode === 'single') {
+                    balance -= getTotalBet(bets);
+                } else {
+                    players.forEach(function(p) { p.balance -= getTotalBet(p.bets); });
+                }
+                updateUI();
+
+                var diceEls = [$('die1'), $('die2'), $('die3')];
+                var resultText = $('resultText');
+                resultText.className = 'result-text neutral';
+                resultText.textContent = 'Đang lắc...';
+
+                diceEls.forEach(function(d) {
+                    d.classList.add('rolling');
+                    d.textContent = SYMBOLS[Math.floor(Math.random() * 6)].icon;
+                });
+
+                playSound('shake');
+                await new Promise(function(r) { setTimeout(r, 1800); });
+
+                var results = rollDice();
+                var counts = countMatches(results);
+
+                diceEls.forEach(function(d, i) {
+                    d.classList.remove('rolling');
+                    d.classList.add('reveal');
+                    d.textContent = results[i].icon;
+                    setTimeout(function() { d.classList.remove('reveal'); }, 400);
+                });
+
+                var summaryRows = [];
+
+                if (gameMode === 'single') {
+                    var totalBet = getTotalBet(bets);
+                    var result = calcWinnings(bets, counts);
+                    balance += result.winnings;
+                    var net = result.winnings - totalBet;
+
+                    if (net > 0) {
+                        resultText.className = 'result-text win';
+                        resultText.textContent = 'Thắng +' + formatMoneyShort(net) + '! (' + result.details.join(', ') + ')';
+                        playSound('win');
+                        fireConfetti();
+                    } else if (net === 0) {
+                        resultText.className = 'result-text neutral';
+                        resultText.textContent = 'Hòa — Hoàn tiền cược!';
+                        playSound('neutral');
+                    } else {
+                        resultText.className = 'result-text lose';
+                        resultText.textContent = 'Thua -' + formatMoneyShort(totalBet - result.winnings);
+                        playSound('lose');
+                    }
+
+                    history.unshift({ results: results.map(function(r) { return r.icon; }), net: net, totalBet: totalBet });
+                } else {
+                    var totalNet = 0;
+                    players.forEach(function(p) {
+                        var pTotalBet = getTotalBet(p.bets);
+                        if (pTotalBet === 0) return;
+                        var r = calcWinnings(p.bets, counts);
+                        p.balance += r.winnings;
+                        var pNet = r.winnings - pTotalBet;
+                        totalNet += pNet;
+                        summaryRows.push({ name: p.name, net: pNet, color: p.color });
+                    });
+
+                    summaryRows.sort(function(a, b) { return b.net - a.net; });
+                    var listHtml = '';
+                    summaryRows.forEach(function(r) {
+                        var cls = r.net > 0 ? 'positive' : r.net < 0 ? 'negative' : '';
+                        listHtml += '<div class="rs-row ' + cls + '"><span style="color:' + r.color + '">● ' + r.name + '</span><span>' + (r.net >= 0 ? '+' : '') + formatMoneyShort(r.net) + '</span></div>';
+                    });
+                    $('roundSummaryList').innerHTML = listHtml;
+                    $('roundSummary').classList.add('show');
+
+                    if (totalNet > 0) {
+                        resultText.className = 'result-text win';
+                        resultText.textContent = 'Vòng chơi: tổng thắng +' + formatMoneyShort(totalNet);
+                        fireConfetti();
+                        playSound('win');
+                    } else if (totalNet === 0) {
+                        resultText.className = 'result-text neutral';
+                        resultText.textContent = 'Vòng chơi hòa!';
+                        playSound('neutral');
+                    } else {
+                        resultText.className = 'result-text lose';
+                        resultText.textContent = 'Vòng chơi: tổng thua -' + formatMoneyShort(Math.abs(totalNet));
+                        playSound('lose');
+                    }
+
+                    history.unshift({
+                        results: results.map(function(r) { return r.icon; }),
+                        net: totalNet,
+                        totalBet: allTotal,
+                        multi: true
+                    });
+                }
+
+                var maxH = 20;
+                try {
+                    var settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+                    if (settings.history) maxH = parseInt(settings.history, 10);
+                } catch(e) {}
+                while (history.length > maxH) history.pop();
+
+                if (gameMode === 'single') bets = {};
+                else players.forEach(function(p) { p.bets = {}; });
+
+                isRolling = false;
+                saveGame();
+                updateUI();
+            }
+
+            function renderHistory() {
+                var list = $('historyList');
+                if (!history.length) {
+                    list.innerHTML = '<div class="history-empty">Chưa có lượt chơi nào</div>';
                     return;
                 }
+                var html = '';
+                history.forEach(function(h) {
+                    var cls = h.net > 0 ? 'win-item' : h.net < 0 ? 'lose-item' : '';
+                    var tag = h.multi ? '👥' : '';
+                    html += '<div class="history-item ' + cls + '" title="' + (h.net >= 0 ? '+' : '') + formatMoneyShort(h.net) + '">' + tag + h.results.join('') + '</div>';
+                });
+                list.innerHTML = html;
+            }
 
-                currentBets[id] = (currentBets[id] || 0) + cost;
-                setCurrentBets(currentBets);
+            function setMode(mode) {
+                gameMode = mode;
+                document.querySelectorAll('.mode-btn').forEach(function(b) {
+                    b.classList.toggle('active', b.dataset.mode === mode);
+                });
+                $('playersSection').classList.toggle('show', mode === 'multi');
+                $('scoreboard').classList.toggle('show', mode === 'multi');
 
-                cell.classList.add('selected');
-                setTimeout(() => cell.classList.remove('selected'), 200);
-                playSound('chip');
+                if (mode === 'multi') {
+                    var count = parseInt($('playerCount').value, 10);
+                    if (players.length !== count) initPlayers(count);
+                    renderPlayers();
+                    renderScoreboard();
+                }
+
+                $('roundSummary').classList.remove('show');
                 updateUI();
-            });
-        }
+                saveGame();
+            }
 
-        function clearBets() {
-            if (gameMode === 'multi') {
-                const p = getActivePlayer();
-                if (p) p.bets = {};
-            } else {
+            function showToast(msg) {
+                var t = $('toast');
+                t.textContent = msg;
+                t.classList.add('show');
+                setTimeout(function() { t.classList.remove('show'); }, 2500);
+            }
+
+            var audioCtx = null;
+            function getAudio() {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                return audioCtx;
+            }
+
+            function playSound(type) {
+                try {
+                    var settings = {};
+                    try { settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) {}
+                    if (settings.sound === 'off' && type !== 'shake') return;
+                    if (settings.shakeSound === 'off' && type === 'shake') return;
+
+                    var ctx = getAudio();
+                    var osc = ctx.createOscillator();
+                    var gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    var now = ctx.currentTime;
+                    gain.gain.setValueAtTime(0.15, now);
+
+                    switch (type) {
+                        case 'chip':
+                            osc.frequency.setValueAtTime(800, now);
+                            osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+                            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                            osc.start(now);
+                            osc.stop(now + 0.1);
+                            break;
+                        case 'shake':
+                            osc.type = 'square';
+                            osc.frequency.setValueAtTime(100, now);
+                            for (var i = 0; i < 8; i++) {
+                                osc.frequency.setValueAtTime(80 + Math.random() * 200, now + i * 0.1);
+                            }
+                            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+                            osc.start(now);
+                            osc.stop(now + 0.8);
+                            break;
+                        case 'win':
+                            [523, 659, 784, 1047].forEach(function(f, i) {
+                                var o = ctx.createOscillator();
+                                var g = ctx.createGain();
+                                o.connect(g);
+                                g.connect(ctx.destination);
+                                o.frequency.value = f;
+                                g.gain.setValueAtTime(0.12, now + i * 0.12);
+                                g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.3);
+                                o.start(now + i * 0.12);
+                                o.stop(now + i * 0.12 + 0.3);
+                            });
+                            break;
+                        case 'lose':
+                            osc.frequency.setValueAtTime(400, now);
+                            osc.frequency.exponentialRampToValueAtTime(150, now + 0.4);
+                            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                            osc.start(now);
+                            osc.stop(now + 0.4);
+                            break;
+                        case 'error':
+                            osc.type = 'sawtooth';
+                            osc.frequency.setValueAtTime(200, now);
+                            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                            osc.start(now);
+                            osc.stop(now + 0.2);
+                            break;
+                        default:
+                            osc.frequency.value = 440;
+                            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                            osc.start(now);
+                            osc.stop(now + 0.15);
+                    }
+                } catch (e) {}
+            }
+
+            function fireConfetti() {
+                try {
+                    var settings = {};
+                    try { settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) {}
+                    if (settings.confetti === 'off') return;
+                } catch(e) {}
+
+                var canvas = $('confetti');
+                var ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                var colors = ['#ffd54f', '#ef5350', '#42a5f5', '#66bb6a', '#ab47bc'];
+                var particles = [];
+                for (var i = 0; i < 80; i++) {
+                    particles.push({
+                        x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+                        y: canvas.height / 2,
+                        vx: (Math.random() - 0.5) * 12,
+                        vy: Math.random() * -14 - 4,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        size: Math.random() * 8 + 4,
+                        rotation: Math.random() * 360,
+                        rotSpeed: (Math.random() - 0.5) * 10,
+                        life: 1
+                    });
+                }
+
+                var frame;
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    var alive = false;
+                    particles.forEach(function(p) {
+                        if (p.life <= 0) return;
+                        alive = true;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.3;
+                        p.life -= 0.015;
+                        p.rotation += p.rotSpeed;
+                        ctx.save();
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rotation * Math.PI / 180);
+                        ctx.globalAlpha = p.life;
+                        ctx.fillStyle = p.color;
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                        ctx.restore();
+                    });
+                    if (alive) {
+                        frame = requestAnimationFrame(animate);
+                    } else {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    }
+                }
+                cancelAnimationFrame(frame);
+                animate();
+            }
+
+            function startNewGame() {
+                var savedSettings = {};
+                try { savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) {}
+                var defaultBalance = savedSettings.balance || INITIAL_BALANCE;
+                balance = defaultBalance;
                 bets = {};
-            }
-            updateUI();
-            playSound('chip');
-        }
-
-        function rollDice() {
-            return Array.from({ length: 3 }, () =>
-                SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]
-            );
-        }
-
-        function countMatches(results) {
-            const counts = {};
-            results.forEach(r => { counts[r.id] = (counts[r.id] || 0) + 1; });
-            return counts;
-        }
-
-        function calcWinnings(playerBets, counts) {
-            let winnings = 0;
-            const details = [];
-            Object.entries(playerBets).forEach(([id, amount]) => {
-                const match = counts[id] || 0;
-                if (match > 0) {
-                    winnings += amount * (match + 1);
-                    const sym = SYMBOLS.find(s => s.id === id);
-                    details.push(`${sym.icon}×${match}`);
+                history = [];
+                activePlayerId = 0;
+                var count = parseInt($('playerCount').value, 10);
+                players = [];
+                for (var i = 0; i < count; i++) {
+                    players.push({
+                        id: i,
+                        name: 'Người ' + (i + 1),
+                        balance: defaultBalance,
+                        bets: {},
+                        color: PLAYER_COLORS[i % PLAYER_COLORS.length],
+                        chosen: false
+                    });
                 }
-            });
-            return { winnings, details };
-        }
-
-        async function doRoll() {
-            const allTotal = getAllPlayersTotalBet();
-            if (allTotal === 0 || isRolling) return;
-
-            if (gameMode === 'single' && getTotalBet(bets) > balance) return;
-            if (gameMode === 'multi' && !players.every(p => getTotalBet(p.bets) <= p.balance)) return;
-
-            isRolling = true;
-            $('roundSummary').classList.remove('show');
-
-            if (gameMode === 'single') {
-                balance -= getTotalBet(bets);
-            } else {
-                players.forEach(p => { p.balance -= getTotalBet(p.bets); });
-            }
-            updateUI();
-
-            const diceEls = [$('die1'), $('die2'), $('die3')];
-            const resultText = $('resultText');
-            resultText.className = 'result-text neutral';
-            resultText.textContent = 'Đang lắc...';
-
-            diceEls.forEach(d => {
-                d.classList.add('rolling');
-                d.textContent = SYMBOLS[Math.floor(Math.random() * 6)].icon;
-            });
-
-            playSound('shake');
-            await sleep(1800);
-
-            const results = rollDice();
-            const counts = countMatches(results);
-
-            diceEls.forEach((d, i) => {
-                d.classList.remove('rolling');
-                d.classList.add('reveal');
-                d.textContent = results[i].icon;
-                setTimeout(() => d.classList.remove('reveal'), 400);
-            });
-
-            let anyWin = false;
-            const summaryRows = [];
-
-            if (gameMode === 'single') {
-                const totalBet = getTotalBet(bets);
-                const { winnings, details } = calcWinnings(bets, counts);
-                balance += winnings;
-                const net = winnings - totalBet;
-
-                if (net > 0) {
-                    resultText.className = 'result-text win';
-                    resultText.textContent = `🎉 Thắng +${formatMoneyShort(net)}! (${details.join(', ')})`;
-                    playSound('win');
-                    fireConfetti();
-                    anyWin = true;
-                } else if (net === 0) {
-                    resultText.className = 'result-text neutral';
-                    resultText.textContent = '😐 Hòa — Hoàn tiền cược!';
-                    playSound('neutral');
-                } else {
-                    resultText.className = 'result-text lose';
-                    resultText.textContent = `😢 Thua -${formatMoneyShort(totalBet - winnings)}`;
-                    playSound('lose');
-                }
-
-                history.unshift({ results: results.map(r => r.icon), net, totalBet });
-            } else {
-                let totalNet = 0;
-                players.forEach(p => {
-                    const totalBet = getTotalBet(p.bets);
-                    if (totalBet === 0) return;
-                    const { winnings } = calcWinnings(p.bets, counts);
-                    p.balance += winnings;
-                    const net = winnings - totalBet;
-                    totalNet += net;
-                    summaryRows.push({ name: p.name, net, color: p.color });
-                });
-
-                summaryRows.sort((a, b) => b.net - a.net);
-                const list = $('roundSummaryList');
-                list.innerHTML = summaryRows.map(r => `
-                    <div class="rs-row ${r.net > 0 ? 'positive' : r.net < 0 ? 'negative' : ''}">
-                        <span style="color:${r.color}">● ${r.name}</span>
-                        <span>${r.net >= 0 ? '+' : ''}${formatMoneyShort(r.net)}</span>
-                    </div>
-                `).join('');
-                $('roundSummary').classList.add('show');
-
-                if (totalNet > 0) {
-                    resultText.className = 'result-text win';
-                    resultText.textContent = `🎉 Vòng chơi: tổng thắng +${formatMoneyShort(totalNet)}`;
-                    fireConfetti();
-                    playSound('win');
-                    anyWin = true;
-                } else if (totalNet === 0) {
-                    resultText.className = 'result-text neutral';
-                    resultText.textContent = '😐 Vòng chơi hòa!';
-                    playSound('neutral');
-                } else {
-                    resultText.className = 'result-text lose';
-                    resultText.textContent = `Vòng chơi: tổng thua -${formatMoneyShort(Math.abs(totalNet))}`;
-                    playSound('lose');
-                }
-
-                history.unshift({
-                    results: results.map(r => r.icon),
-                    net: totalNet,
-                    totalBet: allTotal,
-                    multi: true
-                });
-            }
-
-            if (history.length > 20) history.pop();
-
-            if (gameMode === 'single') bets = {};
-            else players.forEach(p => { p.bets = {}; });
-
-            isRolling = false;
-            saveGame();
-            updateUI();
-        }
-
-        function renderHistory() {
-            const list = $('historyList');
-            if (!history.length) {
-                list.innerHTML = '<div class="history-empty">Chưa có lượt chơi nào</div>';
-                return;
-            }
-            list.innerHTML = history.map(h => {
-                const cls = h.net > 0 ? 'win-item' : h.net < 0 ? 'lose-item' : '';
-                const tag = h.multi ? '👥' : '';
-                return `<div class="history-item ${cls}" title="${h.net >= 0 ? '+' : ''}${formatMoneyShort(h.net)}">${tag}${h.results.join('')}</div>`;
-            }).join('');
-        }
-
-        function setMode(mode) {
-            gameMode = mode;
-            document.querySelectorAll('.mode-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.mode === mode);
-            });
-            $('playersSection').classList.toggle('show', mode === 'multi');
-            $('scoreboard').classList.toggle('show', mode === 'multi');
-
-            if (mode === 'multi') {
-                const count = parseInt($('playerCount').value);
-                if (players.length !== count) initPlayers(count);
                 renderPlayers();
                 renderScoreboard();
+                updateUI();
+                saveGame();
+                $('roundSummary').classList.remove('show');
+                $('historyList').innerHTML = '<div class="history-empty">Chưa có lượt chơi nào</div>';
+                showToast('Game mới đã sẵn sàng!');
             }
 
-            $('roundSummary').classList.remove('show');
-            updateUI();
-            saveGame();
-        }
-
-        function showToast(msg) {
-            const t = $('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2500);
-        }
-
-        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-        let audioCtx;
-        function getAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            return audioCtx;
-        }
-
-        function playSound(type) {
-            try {
-                const ctx = getAudio();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                const now = ctx.currentTime;
-                gain.gain.setValueAtTime(0.15, now);
-
-                switch (type) {
-                    case 'chip':
-                        osc.frequency.setValueAtTime(800, now);
-                        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                        osc.start(now); osc.stop(now + 0.1);
-                        break;
-                    case 'shake':
-                        osc.type = 'square';
-                        osc.frequency.setValueAtTime(100, now);
-                        for (let i = 0; i < 8; i++) {
-                            osc.frequency.setValueAtTime(80 + Math.random() * 200, now + i * 0.1);
-                        }
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
-                        osc.start(now); osc.stop(now + 0.8);
-                        break;
-                    case 'win':
-                        [523, 659, 784, 1047].forEach((f, i) => {
-                            const o = ctx.createOscillator();
-                            const g = ctx.createGain();
-                            o.connect(g); g.connect(ctx.destination);
-                            o.frequency.value = f;
-                            g.gain.setValueAtTime(0.12, now + i * 0.12);
-                            g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.3);
-                            o.start(now + i * 0.12); o.stop(now + i * 0.12 + 0.3);
-                        });
-                        break;
-                    case 'lose':
-                        osc.frequency.setValueAtTime(400, now);
-                        osc.frequency.exponentialRampToValueAtTime(150, now + 0.4);
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                        osc.start(now); osc.stop(now + 0.4);
-                        break;
-                    case 'error':
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(200, now);
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-                        osc.start(now); osc.stop(now + 0.2);
-                        break;
-                    default:
-                        osc.frequency.value = 440;
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                        osc.start(now); osc.stop(now + 0.15);
-                }
-            } catch (e) { /* silent */ }
-        }
-
-        function fireConfetti() {
-            const canvas = $('confetti');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            const colors = ['#ffd54f', '#ef5350', '#42a5f5', '#66bb6a', '#ab47bc'];
-            const particles = Array.from({ length: 80 }, () => ({
-                x: canvas.width / 2 + (Math.random() - 0.5) * 200,
-                y: canvas.height / 2,
-                vx: (Math.random() - 0.5) * 12,
-                vy: Math.random() * -14 - 4,
-                color: colors[Math.floor(Math.random() * colors.length)],
-                size: Math.random() * 8 + 4,
-                rotation: Math.random() * 360,
-                rotSpeed: (Math.random() - 0.5) * 10,
-                life: 1
-            }));
-            let frame;
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let alive = false;
-                particles.forEach(p => {
-                    if (p.life <= 0) return;
-                    alive = true;
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.life -= 0.015;
-                    p.rotation += p.rotSpeed;
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.rotation * Math.PI / 180);
-                    ctx.globalAlpha = p.life;
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-                    ctx.restore();
+            function initEventListeners() {
+                document.querySelectorAll('.mode-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        setMode(btn.dataset.mode);
+                    });
                 });
-                if (alive) frame = requestAnimationFrame(animate);
-                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                $('playerCount').addEventListener('change', function() {
+                    if (isRolling) return;
+                    initPlayers(parseInt($('playerCount').value, 10));
+                    renderPlayers();
+                    renderScoreboard();
+                    updateUI();
+                    saveGame();
+                    showToast('Da thiet lap ' + $('playerCount').value + ' nguoi choi');
+                });
+
+                $('rollBtn').addEventListener('click', doRoll);
+                $('clearBets').addEventListener('click', clearBets);
+
+                $('resetBalance').addEventListener('click', function() {
+                    if (gameMode === 'multi') {
+                        players.forEach(function(p) { p.balance += 5000000; });
+                    } else {
+                        balance += 5000000;
+                    }
+                    saveGame();
+                    updateUI();
+                    showToast('Da nap them 5.000.000');
+                    playSound('win');
+                });
+
+                $('rulesBtn').addEventListener('click', function() {
+                    $('rulesPanel').classList.toggle('show');
+                });
+
+                $('newGameBtn').addEventListener('click', function() {
+                    if (confirm('Bat dau game moi? Toan bo tien va lich su se duoc reset.')) {
+                        startNewGame();
+                    }
+                });
+
+                $('settingsBtn').addEventListener('click', function() {
+                    $('settingsModal').classList.add('open');
+                });
+
+                $('closeSettings').addEventListener('click', function() {
+                    $('settingsModal').classList.remove('open');
+                });
+
+                $('settingsModal').addEventListener('click', function(e) {
+                    if (e.target === $('settingsModal')) {
+                        $('settingsModal').classList.remove('open');
+                    }
+                });
+
+                try {
+                    var savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+                    if (savedSettings) {
+                        if (savedSettings.balance) $('settingBalance').value = savedSettings.balance;
+                        if (savedSettings.sound === 'off') $('settingSound').value = 'off';
+                        if (savedSettings.confetti === 'off') $('settingConfetti').value = 'off';
+                        if (savedSettings.shakeSound === 'off') $('settingShakeSound').value = 'off';
+                        if (savedSettings.history) $('settingHistory').value = savedSettings.history;
+                    }
+                } catch(e) {}
+
+                $('saveSettingsBtn').addEventListener('click', function() {
+                    var s = {
+                        balance: parseInt($('settingBalance').value, 10),
+                        sound: $('settingSound').value,
+                        confetti: $('settingConfetti').value,
+                        shakeSound: $('settingShakeSound').value,
+                        history: parseInt($('settingHistory').value, 10)
+                    };
+                    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+                    showToast('Da luu cai dat!');
+                    $('settingsModal').classList.remove('open');
+                });
+
+                $('installAppBtn').addEventListener('click', function() {
+                    showToast('Vao menu trinh duyet -> Cai dat ung dung');
+                });
+
+                var deferredPrompt = null;
+                window.addEventListener('beforeinstallprompt', function(e) {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    $('installAppBtn').addEventListener('click', function() {
+                        if (deferredPrompt) {
+                            deferredPrompt.prompt();
+                            deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+                        } else {
+                            showToast('Vao menu trinh duyet -> Cai dat ung dung');
+                        }
+                    });
+                });
             }
-            cancelAnimationFrame(frame);
-            animate();
-        }
 
-        document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', () => setMode(btn.dataset.mode));
-        });
+            function init() {
+                loadGame();
+                buildDenominations();
+                buildBoard();
+                initEventListeners();
+                setMode(gameMode);
 
-        $('playerCount').addEventListener('change', () => {
-            if (isRolling) return;
-            initPlayers(parseInt($('playerCount').value));
-            renderPlayers();
-            renderScoreboard();
-            updateUI();
-            saveGame();
-            showToast(`Đã thiết lập ${$('playerCount').value} người chơi`);
-        });
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('service-worker.js').catch(function() {});
+                }
+            }
 
-        $('rollBtn').addEventListener('click', doRoll);
-        $('clearBets').addEventListener('click', clearBets);
-
-        $('resetBalance').addEventListener('click', () => {
-            if (gameMode === 'multi') {
-                players.forEach(p => { p.balance += 5000000; });
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
             } else {
-                balance += 5000000;
+                init();
             }
-            saveGame();
-            updateUI();
-            showToast('Đã nạp thêm 5.000.000đ 🪙');
-            playSound('win');
-        });
-
-        $('rulesBtn').addEventListener('click', () => {
-            $('rulesPanel').classList.toggle('show');
-        });
-
-        loadGame();
-        buildDenominations();
-        buildBoard();
-        setMode(gameMode);
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js').catch(() => {});
-        }
+        })();
     </script>
 </body>
 </html>

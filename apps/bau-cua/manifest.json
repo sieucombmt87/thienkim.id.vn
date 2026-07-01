@@ -3,16 +3,24 @@
     "short_name": "Bầu Cua",
     "description": "Bầu Cua Tôm Cá Gà Nai - Trò chơi dân gian Việt Nam | thienkim.id.vn",
     "start_url": "./index.html",
+    "scope": "./",
     "display": "standalone",
+    "orientation": "any",
     "background_color": "#1a0a0a",
     "theme_color": "#c62828",
-    "orientation": "portrait",
     "icons": [
         {
-            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23c62828' width='192' height='192' rx='32'/><text y='.82em' x='50%25' text-anchor='middle' font-size='100'>🎲</text></svg>",
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23c62828' width='192' height='192' rx='40'/><text y='.82em' x='50%25' text-anchor='middle' font-size='100'>🎲</text></svg>",
             "sizes": "192x192",
             "type": "image/svg+xml",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23c62828' width='512' height='512' rx='110'/><text y='.82em' x='50%25' text-anchor='middle' font-size='280'>🎲</text></svg>",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any"
         }
-    ]
+    ],
+    "prefer_related_applications": false
 }
