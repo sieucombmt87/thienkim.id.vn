@@ -27,53 +27,92 @@
         body {
             font-family: 'Roboto', sans-serif;
             background: #f0f2f5;
-            min-height: 100vh;
-            padding: 12px;
-            padding-bottom: 80px;
+            height: 100dvh;
+            overflow: hidden;
+            padding: 8px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 1200px;
             margin: 0 auto;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         header {
             text-align: center;
-            padding: 16px 0;
-            margin-bottom: 16px;
+            padding: 2px 0 4px;
+            flex-shrink: 0;
         }
 
         header h1 {
             color: #1565c0;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 700;
             letter-spacing: 1px;
         }
 
         header p {
             color: #888;
-            font-size: 13px;
-            margin-top: 4px;
+            font-size: 11px;
+            margin-top: 1px;
+        }
+
+        .content {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 8px;
+        }
+
+        .top-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .expected-card,
+        .result-card,
+        .denom-card,
+        .action-card,
+        .history-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
         }
 
         /* Expected Input */
-        .expected-input-wrapper {
-            padding: 8px 0;
+        .expected-card {
+            padding: 10px 12px;
         }
 
         .expected-input-wrapper label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             color: #666;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .expected-input-wrapper input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 8px 10px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 20px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 700;
             text-align: right;
             font-family: 'Roboto', sans-serif;
@@ -87,46 +126,42 @@
 
         /* Result Card */
         .result-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 10px 12px;
         }
 
         .result-main {
             text-align: center;
-            padding: 16px;
+            padding: 8px;
             background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
-            border-radius: 12px;
+            border-radius: 10px;
             color: white;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
         }
 
         .result-main .label {
-            font-size: 12px;
-            opacity: 0.85;
-            margin-bottom: 4px;
+            font-size: 10px;
+            opacity: 0.9;
+            margin-bottom: 1px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .result-main .amount {
-            font-size: 32px;
+            font-size: 22px;
             font-weight: 700;
         }
 
         .result-main .currency-text {
-            font-size: 14px;
+            font-size: 12px;
             opacity: 0.9;
-            margin-top: 6px;
+            margin-top: 2px;
             font-style: italic;
         }
 
         .result-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 4px 0;
             border-bottom: 1px solid #eee;
         }
 
@@ -136,69 +171,73 @@
 
         .result-row .label {
             color: #666;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .result-row .value {
             font-weight: 600;
-            font-size: 15px;
+            font-size: 13px;
         }
 
         /* Denomination Table */
         .denom-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 10px 12px;
         }
 
         .denom-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
-            padding-bottom: 10px;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
             border-bottom: 2px solid #e3f2fd;
+            flex-shrink: 0;
         }
 
         .denom-header h2 {
             color: #1565c0;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .total-badge {
             background: #e3f2fd;
             color: #1565c0;
-            padding: 6px 12px;
+            padding: 3px 8px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
         }
 
         .denom-table-wrap {
-            overflow-x: auto;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
         }
 
         .denom-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
+            table-layout: fixed;
         }
 
         .denom-table thead th {
             background: #e3f2fd;
             color: #1565c0;
             font-weight: 600;
-            padding: 10px 8px;
+            padding: 4px 4px;
             text-align: center;
             border-bottom: 2px solid #bbdefb;
+            font-size: 11px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         .denom-table thead th:first-child {
             text-align: left;
-            padding-left: 12px;
+            padding-left: 6px;
         }
 
         .denom-table tbody tr {
@@ -210,35 +249,38 @@
         }
 
         .denom-table tbody td {
-            padding: 8px;
+            padding: 3px 4px;
             vertical-align: middle;
         }
 
         .denom-table .denom-value {
             font-weight: 700;
-            font-size: 18px;
+            font-size: 14px;
             color: #1565c0;
-            padding-left: 12px;
+            padding-left: 6px;
             white-space: nowrap;
+            line-height: 1.05;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .denom-table .denom-value small {
             display: block;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 400;
             color: #888;
         }
 
         .denom-table input {
             width: 100%;
-            max-width: 72px;
+            max-width: 60px;
             margin: 0 auto;
             display: block;
-            padding: 10px 6px;
+            padding: 4px 3px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 6px;
             text-align: center;
-            font-size: 17px;
+            font-size: 13px;
             font-weight: 700;
             font-family: 'Roboto', sans-serif;
         }
@@ -252,15 +294,17 @@
         .denom-table .line-amount {
             font-weight: 600;
             text-align: right;
-            padding-right: 12px;
+            padding-right: 6px;
             color: #999;
             white-space: nowrap;
-            font-size: 13px;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .denom-table .line-amount.has-value {
             color: #1565c0;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .diff-row {
@@ -297,30 +341,26 @@
 
         /* Action Buttons */
         .action-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 8px 10px;
         }
 
         .btn-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 6px;
         }
 
         .btn {
-            padding: 14px 16px;
+            padding: 6px 8px;
             border: none;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 4px;
             transition: all 0.2s;
         }
 
@@ -368,12 +408,15 @@
             grid-column: span 2;
         }
 
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+        }
+
         /* History */
         .history-card {
-            background: white;
-            border-radius: 16px;
-            margin-top: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             overflow: hidden;
         }
 
@@ -381,25 +424,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
+            padding: 10px 12px;
             border-bottom: 2px solid #e3f2fd;
         }
 
         .history-header h2 {
             color: #1565c0;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
         }
 
         .history-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            border-radius: 5px;
             border: none;
             cursor: pointer;
             font-weight: 500;
@@ -416,12 +459,12 @@
         }
 
         .history-list {
-            max-height: 300px;
+            max-height: 240px;
             overflow-y: auto;
         }
 
         .history-item {
-            padding: 14px 16px;
+            padding: 10px 12px;
             border-bottom: 1px solid #eee;
         }
 
@@ -433,17 +476,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .history-item-header .time {
-            font-size: 12px;
+            font-size: 11px;
             color: #888;
         }
 
         .history-item-header .diff {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 13px;
         }
 
         .history-item-header .diff.diff-equal {
@@ -456,21 +499,22 @@
 
         .history-item-details {
             display: flex;
-            gap: 16px;
-            font-size: 13px;
+            gap: 12px;
+            font-size: 12px;
             color: #666;
+            flex-wrap: wrap;
         }
 
         .history-empty {
-            padding: 40px;
+            padding: 30px 20px;
             text-align: center;
             color: #aaa;
         }
 
         .history-empty svg {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 10px;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 8px;
             opacity: 0.5;
         }
 
@@ -534,6 +578,15 @@
             body {
                 background: white;
                 padding: 20px;
+                height: auto;
+                overflow: visible;
+            }
+            .container {
+                height: auto;
+                display: block;
+            }
+            .content {
+                display: block;
             }
             .action-card, .denom-card, .install-banner, .history-card, .toast, header {
                 display: none !important;
@@ -544,16 +597,112 @@
             }
         }
 
-        @media (max-width: 400px) {
+        /* Mobile: 1 cột */
+        @media (max-width: 767px) {
             .denom-table input {
                 max-width: 56px;
-                font-size: 15px;
+                font-size: 13px;
+                padding: 4px 3px;
             }
-            .btn-row {
-                grid-template-columns: 1fr;
+            .denom-table .denom-value {
+                font-size: 14px;
             }
-            .btn-full {
-                grid-column: span 1;
+            .denom-table .line-amount {
+                font-size: 11px;
+                padding-right: 6px;
+            }
+            .denom-table tbody td {
+                padding: 3px 4px;
+            }
+            .result-main .amount {
+                font-size: 22px;
+            }
+            header h1 {
+                font-size: 18px;
+            }
+        }
+
+        /* Tablet: 2 cột top, 1 cột bottom */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .top-section {
+                grid-template-columns: 1fr 1.2fr;
+            }
+            .denom-table input {
+                max-width: 64px;
+            }
+        }
+
+        /* Desktop: 2x2 grid, fit trong viewport */
+        @media (min-width: 1024px) {
+            body {
+                padding: 10px 14px;
+            }
+            .container {
+                max-width: 1100px;
+            }
+            .content {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto 1fr;
+                gap: 10px;
+            }
+            .top-section {
+                grid-column: 1 / -1;
+                grid-template-columns: 1fr 1.1fr;
+                gap: 10px;
+            }
+            .bottom-section {
+                grid-column: 1 / -1;
+                grid-template-columns: 1.4fr 1fr;
+                gap: 10px;
+                min-height: 0;
+            }
+            .expected-card,
+            .result-card,
+            .denom-card,
+            .action-card,
+            .history-card {
+                margin-bottom: 0;
+                border-radius: 12px;
+            }
+            .denom-card {
+                padding: 10px 12px;
+            }
+            .denom-table input {
+                max-width: 62px;
+                font-size: 13px;
+                padding: 4px 3px;
+            }
+            .denom-table tbody td {
+                padding: 3px 5px;
+            }
+            .denom-table .denom-value {
+                font-size: 14px;
+            }
+            .denom-table .line-amount {
+                font-size: 12px;
+            }
+            .result-main .amount {
+                font-size: 22px;
+            }
+            .result-main {
+                padding: 6px;
+            }
+            .history-list {
+                max-height: none;
+            }
+            .btn {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+            header {
+                padding: 2px 0 4px;
+                margin-bottom: 4px;
+            }
+            header h1 {
+                font-size: 17px;
+            }
+            .install-banner p {
+                font-size: 12px;
             }
         }
     </style>
@@ -565,80 +714,91 @@
             <p>thienkim.id.vn</p>
         </header>
 
-        <!-- Expected Input -->
-        <div class="result-card" style="margin-bottom: 12px;">
-            <div class="expected-input-wrapper">
-                <label>Nhập số tiền dự kiến để so sánh</label>
-                <input type="text" id="expectedInput" placeholder="0" oninput="onExpectedChange(this)">
-            </div>
-        </div>
+        <div class="content">
+            <!-- Top: Nhập dự kiến + Kết quả -->
+            <div class="top-section">
+                <!-- Expected Input -->
+                <div class="expected-card">
+                    <div class="expected-input-wrapper">
+                        <label>Nhập số tiền dự kiến để so sánh</label>
+                        <input type="text" id="expectedInput" placeholder="0" oninput="onExpectedChange(this)">
+                    </div>
+                </div>
 
-        <!-- Result Card -->
-        <div class="result-card">
-            <div class="result-main">
-                <div class="label">Tiền thực tế</div>
-                <div class="amount" id="totalAmount">0đ</div>
-                <div class="currency-text" id="currencyText">Không đồng</div>
-            </div>
+                <!-- Result Card -->
+                <div class="result-card">
+                    <div class="result-main">
+                        <div class="label">Tiền thực tế</div>
+                        <div class="amount" id="totalAmount">0đ</div>
+                        <div class="currency-text" id="currencyText">Không đồng</div>
+                    </div>
 
-            <div class="result-row diff-row diff-zero" id="diffRow">
-                <span class="label">Chênh lệch</span>
-                <span class="value" id="diffAmount">0đ</span>
-            </div>
-        </div>
-
-        <!-- Denomination Table -->
-        <div class="denom-card">
-            <div class="denom-header">
-                <h2>MỆNH GIÁ TIỀN MẶT</h2>
-                <span class="total-badge" id="denomCount">0 mục</span>
-            </div>
-            <div class="denom-table-wrap">
-                <table class="denom-table">
-                    <thead>
-                        <tr>
-                            <th>Mệnh giá</th>
-                            <th>Số lượng</th>
-                            <th>Thành tiền</th>
-                        </tr>
-                    </thead>
-                    <tbody id="denomBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="action-card">
-            <div class="btn-row">
-                <button class="btn btn-success" onclick="copyResult()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    Sao chép
-                </button>
-                <button class="btn btn-primary" onclick="printResult()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    In
-                </button>
-                <button class="btn btn-secondary" onclick="saveRecord()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
-                    Lưu lịch sử
-                </button>
-                <button class="btn btn-danger" onclick="clearAll()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Xóa
-                </button>
-            </div>
-        </div>
-
-        <!-- History -->
-        <div class="history-card">
-            <div class="history-header">
-                <h2>LỊCH SỬ</h2>
-                <div class="history-actions">
-                    <button class="btn-sm btn-sm-export" onclick="exportHistory()">Xuất Excel</button>
-                    <button class="btn-sm btn-sm-clear" onclick="clearHistory()">Xóa</button>
+                    <div class="result-row diff-row diff-zero" id="diffRow">
+                        <span class="label">Chênh lệch</span>
+                        <span class="value" id="diffAmount">0đ</span>
+                    </div>
                 </div>
             </div>
-            <div class="history-list" id="historyList"></div>
+
+            <!-- Bottom: Denom + Actions/History -->
+            <div class="bottom-section">
+                <!-- Denomination Table -->
+                <div class="denom-card">
+                    <div class="denom-header">
+                        <h2>MỆNH GIÁ TIỀN MẶT</h2>
+                        <span class="total-badge" id="denomCount">0 mục</span>
+                    </div>
+                    <div class="denom-table-wrap">
+                        <table class="denom-table">
+                            <thead>
+                                <tr>
+                                    <th>Mệnh giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="denomBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Actions + History -->
+                <div class="right-col">
+                    <!-- Actions -->
+                    <div class="action-card">
+                        <div class="btn-row">
+                            <button class="btn btn-success" onclick="copyResult()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                Sao chép
+                            </button>
+                            <button class="btn btn-primary" onclick="printResult()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                                In
+                            </button>
+                            <button class="btn btn-secondary" onclick="saveRecord()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+                                Lưu lịch sử
+                            </button>
+                            <button class="btn btn-danger" onclick="clearAll()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                Xóa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- History -->
+                    <div class="history-card">
+                        <div class="history-header">
+                            <h2>LỊCH SỬ</h2>
+                            <div class="history-actions">
+                                <button class="btn-sm btn-sm-export" onclick="exportHistory()">Xuất Excel</button>
+                                <button class="btn-sm btn-sm-clear" onclick="clearHistory()">Xóa</button>
+                            </div>
+                        </div>
+                        <div class="history-list" id="historyList"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1029,7 +1189,7 @@
 
         // Register Service Worker — ưu tiên bản mới từ server
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js?v=4')
+            navigator.serviceWorker.register('service-worker.js?v=5')
                 .then((reg) => {
                     reg.update();
                     reg.addEventListener('updatefound', () => {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kim-quy-v4';
+const CACHE_NAME = 'kim-quy-v5';
 const ASSETS = [
   './index.html',
   './manifest.json',
