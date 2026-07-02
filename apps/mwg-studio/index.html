@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TK-MWG Studio Ultra • TKver1.0</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Thiên Kim Universe • Apps Mì Ăn Liền</p>
+        <h1>TK-MWG Studio Ultra</h1>
+        <p class="subtitle">AI Marketing riêng cho Điện Máy Xanh, Thế Giới Di Động và TopZone</p>
+      </div>
+      <div class="version">TKver1.0</div>
+    </header>
+
+    <main class="grid">
+      <section class="panel input-panel">
+        <h2>1. Nhập sản phẩm</h2>
+        <label>Link hoặc tên sản phẩm</label>
+        <textarea id="productInput" placeholder="Dán link sản phẩm DMX/TGDD/TopZone hoặc nhập tên sản phẩm..."></textarea>
+
+        <div class="brand-row">
+          <button class="brand-card active" data-brand="dmx">Điện Máy Xanh</button>
+          <button class="brand-card" data-brand="tgdd">Thế Giới Di Động</button>
+          <button class="brand-card" data-brand="topzone">TopZone</button>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <label>Giá bán</label>
+            <input id="priceInput" placeholder="VD: 16.590.000đ" />
+          </div>
+          <div>
+            <label>Khuyến mãi</label>
+            <input id="promoInput" placeholder="VD: Trả góp 0%, quà tặng..." />
+          </div>
+        </div>
+
+        <h3>Thông tin cửa hàng</h3>
+        <div class="two-col">
+          <input id="storeAddress" value="248 Nguyễn Tất Thành, Liên Sơn, Đắk Lắk" />
+          <input id="storePhone" placeholder="Hotline / SĐT" />
+        </div>
+
+        <div class="action-row">
+          <button id="generateBtn" class="primary">Generate All</button>
+          <button id="sampleBtn">Dùng dữ liệu mẫu</button>
+          <button id="clearBtn">Xóa</button>
+        </div>
+      </section>
+
+      <section class="panel output-panel">
+        <h2>2. Product Brain</h2>
+        <div id="productBrain" class="brain-card empty">Chưa có dữ liệu. Nhập sản phẩm rồi bấm Generate All.</div>
+      </section>
+
+      <section class="panel output-panel">
+        <h2>3. Caption Facebook</h2>
+        <textarea id="captionOutput" readonly></textarea>
+        <button class="copyBtn" data-target="captionOutput">Copy caption</button>
+      </section>
+
+      <section class="panel output-panel">
+        <h2>4. Prompt Gemini / Canva</h2>
+        <textarea id="promptOutput" readonly></textarea>
+        <div class="action-row">
+          <button class="copyBtn" data-target="promptOutput">Copy prompt</button>
+          <a class="canvaBtn" href="https://www.canva.com/" target="_blank" rel="noopener">Mở Canva</a>
+        </div>
+      </section>
+
+      <section class="panel output-panel wide">
+        <h2>5. AI Quality Check</h2>
+        <div id="qualityOutput" class="check-list"></div>
+      </section>
+
+      <section class="panel output-panel wide">
+        <h2>6. Gói xuất nhanh</h2>
+        <div class="export-grid">
+          <button data-format="Poster Facebook 1:1">Poster Facebook 1:1</button>
+          <button data-format="Story 9:16">Story 9:16</button>
+          <button data-format="Banner Website">Banner Website</button>
+          <button data-format="Thumbnail Video">Thumbnail Video</button>
+          <button data-format="Prompt KOC AI">Prompt KOC AI</button>
+          <button data-format="Prompt Video 15s">Prompt Video 15s</button>
+        </div>
+        <textarea id="exportOutput" readonly></textarea>
+        <button class="copyBtn" data-target="exportOutput">Copy gói xuất</button>
+      </section>
+    </main>
+
+    <footer>TK-MWG Studio Ultra • Ai.TKver1.0 • Static App Ready</footer>
+  </div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
