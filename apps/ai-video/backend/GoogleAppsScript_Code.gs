@@ -14,7 +14,8 @@ const TK_CONFIG = {
   SHEET_ID: '', // Nếu để trống, script sẽ tạo sheet mới tên TK_AI_VIDEO_DATA trong Drive của tài khoản chạy script.
   SHEET_NAME_FEEDBACK: 'feedback',
   SHEET_NAME_API_STATUS: 'api_status',
-  GEMINI_MODEL: 'gemini-1.5-flash'
+  GEMINI_MODEL: 'gemini-1.5-flash',
+  GROK_MODEL: 'grok-2-1212'
 };
 
 function doGet(e) {
@@ -26,6 +27,7 @@ function doPost(e) {
     const payload = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     const action = payload.action || '';
     if (action === 'checkGemini') return jsonOutput(checkGemini(payload.apiKey));
+    if (action === 'checkGrok') return jsonOutput(checkGrok(payload.apiKey));
     if (action === 'analyzeProduct') return jsonOutput(analyzeProduct(payload));
     if (action === 'generatePrompt') return jsonOutput(generatePrompt(payload));
     if (action === 'submitFeedback') return jsonOutput(submitFeedback(payload));
@@ -106,9 +108,11 @@ function generatePrompt(payload) {
   const apiKey = payload.apiKey || '';
   const basePrompt = payload.basePrompt || '';
   const assetMode = payload.assetMode || 'video';
+  const provider = payload.provider || 'gemini';
+
   if (!apiKey) return { ok: false, status: 'red', message: 'Chưa nhập API Key.' };
 
-  const prompt = `Hãy chuyển yêu cầu bên dưới thành một bản PROMPT VIP chuyên nghiệp, rõ mục, dễ copy sang công cụ AI. Giữ đầy đủ các phần: ${assetMode === 'image' ? 'prompt ảnh, bố cục ảnh, text trên ảnh, biến thể ảnh, caption, hashtag, CTA, checklist' : 'kịch bản video, prompt video, thumbnail, giọng đọc, caption, hashtag, CTA, checklist'}.
+  const systemPrompt = `Hãy chuyển yêu cầu bên dưới thành một bản PROMPT VIP chuyên nghiệp, rõ mục, dễ copy sang công cụ AI. Giữ đầy đủ các phần: ${assetMode === 'image' ? 'prompt ảnh, bố cục ảnh, text trên ảnh, biến thể ảnh, caption, hashtag, CTA, checklist' : 'kịch bản video, prompt video, thumbnail, giọng đọc, caption, hashtag, CTA, checklist'}.
 
 Yêu cầu:
 - Viết tiếng Việt dễ hiểu.
@@ -121,10 +125,19 @@ Dữ liệu nền:
 ${basePrompt}`;
 
   try {
-    const gemini = callGemini(apiKey, prompt);
-    return { ok: true, prompt: gemini.text, accountStatus: 'green' };
+    if (provider === 'grok') {
+      const grok = callGrok(apiKey, systemPrompt);
+      return { ok: true, prompt: grok.text, accountStatus: 'green', provider: 'grok' };
+    } else {
+      const gemini = callGemini(apiKey, systemPrompt);
+      return { ok: true, prompt: gemini.text, accountStatus: 'green', provider: 'gemini' };
+    }
   } catch (err) {
-    return parseGeminiError(err);
+    if (provider === 'grok') {
+      return parseGrokError(err);
+    } else {
+      return parseGeminiError(err);
+    }
   }
 }
 
@@ -401,4 +414,49 @@ function fallbackAnalyze(input, rawText) {
     customer: /tivi|tv|samsung/.test(s) ? 'Gia đình, chủ nhà, người mua sắm thiết bị điện máy, người cần nâng cấp trải nghiệm giải trí tại nhà.' : 'Khách hàng có nhu cầu thực tế với sản phẩm, quan tâm chất lượng, giá trị sử dụng và ưu đãi mua hàng.',
     storeName
   };
+}
+
+/***********************
+ * Grok (xAI) Support
+ ***********************/
+function checkGrok(apiKey) {
+  if (!apiKey) return { ok: false, status: 'gray', message: 'Chưa nhập API Key.' };
+  try {
+    const result = callGrok(apiKey, 'Trả lời duy nhất một chữ: OK');
+    const text = (result.text || '').toUpperCase();
+    if (text.indexOf('OK') >= 0) return { ok: true, status: 'green', message: 'Grok API hoạt động.' };
+    return { ok: true, status: 'green', message: 'Grok API hoạt động.' };
+  } catch (err) {
+    return parseGrokError(err);
+  }
+}
+
+function callGrok(apiKey, prompt) {
+  const url = `https://api.x.ai/v1/chat/completions`;
+  const payload = {
+    model: TK_CONFIG.GROK_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.55,
+    max_tokens: 8192
+  };
+  const res = UrlFetchApp.fetch(url, {
+    method: 'post',
+    contentType: 'application/json',
+    headers: { 'Authorization': `Bearer ${apiKey}` },
+    muteHttpExceptions: true,
+    payload: JSON.stringify(payload)
+  });
+  const code = res.getResponseCode();
+  const body = res.getContentText();
+  if (code < 200 || code >= 300) throw new Error(`Grok HTTP ${code}: ${body}`);
+  const data = JSON.parse(body);
+  const text = ((data.choices || [])[0] || {}).message || {};
+  return { text: (text.content || '').trim(), raw: data };
+}
+
+function parseGrokError(err) {
+  const msg = String(err && err.message ? err.message : err);
+  if (/quota|limit|429|RESOURCE_EXHAUSTED/i.test(msg)) return { ok: false, status: 'red', message: 'Grok hết quota, vui lòng thử lại sau.' };
+  if (/invalid|unauthorized|401|403/i.test(msg)) return { ok: false, status: 'red', message: 'Grok API Key không hợp lệ.' };
+  return { ok: false, status: 'red', message: msg.slice(0, 260) };
 }

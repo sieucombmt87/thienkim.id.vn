@@ -1,9 +1,36 @@
-const APP_VERSION = (window.TK_CONFIG && TK_CONFIG.VERSION) || "AI.TKver8.6";
+const APP_VERSION = (window.TK_CONFIG && TK_CONFIG.VERSION) || "AI.TKver9.0";
 let currentAssetMode = "video";
 let uploadConfirmed = false;
 let pendingCopyAfterConfirm = false;
 let selectedAccount = Number(localStorage.getItem(storageKey("selectedAccount")) || 1);
+let selectedProvider = localStorage.getItem(storageKey("selectedProvider")) || "gemini";
 const $ = (id) => document.getElementById(id);
+
+// AI Providers Configuration
+const AI_PROVIDERS = {
+  gemini: {
+    name: "Google Gemini",
+    icon: "✨",
+    color: "#4285f4",
+    apiUrl: "https://generativelanguage.googleapis.com/v1beta/models/",
+    models: {
+      video: "gemini-1.5-flash",
+      image: "gemini-1.5-flash"
+    },
+    defaultModel: "gemini-1.5-flash"
+  },
+  grok: {
+    name: "xAI Grok",
+    icon: "🤖",
+    color: "#8b5cf6",
+    apiUrl: "https://api.x.ai/v1/",
+    models: {
+      video: "grok-2-1212",
+      image: "grok-2-1212"
+    },
+    defaultModel: "grok-2-1212"
+  }
+};
 
 function storageKey(name) { return ((window.TK_CONFIG && TK_CONFIG.STORAGE_PREFIX) || "TK_AI_VIDEO_") + name; }
 
@@ -24,11 +51,132 @@ const TOOL_URLS = {
   ]
 };
 
+// Video Mode Specialized Config
+const VIDEO_CONFIG = {
+  contentStyles: [
+    { value: "Video bán hàng nhanh", desc: "15-30s, hook mạnh, CTA ngay" },
+    { value: "Video review sản phẩm", desc: "Unbox, đánh giá chi tiết" },
+    { value: "Video kể chuyện cảm xúc", desc: "Storytelling, cảm xúc" },
+    { value: "Video chuyên gia tư vấn", desc: "Authority, tin cậy" },
+    { value: "Video TVC ngắn", desc: "Quảng cáo chuyên nghiệp" },
+    { value: "Video TikTok/Reels", desc: "Xu hướng, viral" }
+  ],
+  formats: ["15 giây", "30 giây", "60 giây", "90 giây", "3 phút"],
+  aspectRatios: ["9:16 (Dọc)", "16:9 (Ngang)", "1:1 (Vuông)"],
+  durations: {
+    "15 giây": 15,
+    "30 giây": 30,
+    "60 giây": 60,
+    "90 giây": 90,
+    "3 phút": 180
+  },
+  characters: [
+    { value: "AI tự chọn", icon: "🎭" },
+    { value: "MC nữ chuyên nghiệp", icon: "👩‍💼" },
+    { value: "MC nam chuyên nghiệp", icon: "👨‍💼" },
+    { value: "Chuyên gia/lĩnh vực", icon: "🎓" },
+    { value: "KOL/Influencer", icon: "🌟" },
+    { value: "Người bán hàng thân thiện", icon: "😊" },
+    { value: "CEO/Business owner", icon: "👔" },
+    { value: "Upload nhân vật riêng", icon: "📤" }
+  ],
+  scenes: [
+    { value: "AI tự chọn theo sản phẩm", icon: "🎬" },
+    { value: "Studio sang trọng", icon: "✨" },
+    { value: "Cửa hàng/siêu thị", icon: "🏪" },
+    { value: "Văn phòng hiện đại", icon: "🏢" },
+    { value: "Ngoài trời/thiên nhiên", icon: "🌳" },
+    { value: "Showroom cao cấp", icon: "🏬" },
+    { value: "Home studio", icon: "🏠" },
+    { value: "Upload bối cảnh riêng", icon: "📤" }
+  ],
+  videoTypes: [
+    { value: "Talking head", icon: "🗣️", desc: "Người nói trước camera" },
+    { value: "Product showcase", icon: "📦", desc: "Giới thiệu sản phẩm" },
+    { value: "Lifestyle/UGC", icon: "🎥", desc: "Phong cách đời thường" },
+    { value: "Animation", icon: "🎨", desc: "Hoạt hình/mini movie" },
+    { value: "Cinematic", icon: "🎬", desc: "Điện ảnh chuyên nghiệp" }
+  ],
+  voiceOptions: [
+    { value: "Nữ trẻ trung", tone: "hào hứng, năng động" },
+    { value: "Nữ trầm ấm", tone: "tin cậy, chuyên nghiệp" },
+    { value: "Nam trẻ trung", tone: "năng động, thân thiện" },
+    { value: "Nam trầm ấm", tone: "authority, chuyên gia" },
+    { value: "Chuyên gia", tone: "đáng tin cậy, am hiểu" },
+    { value: "MC truyền hình", tone: "chuyên nghiệp, tin cậy" }
+  ],
+  musicStyles: [
+    { value: "Nhạc nền nhẹ nhàng", mood: "thư giãn, chuyên nghiệp" },
+    { value: "Nhạc bán hàng sôi động", mood: "năng động, kích thích" },
+    { value: "Cinematic/Hành động", mood: "hoành tráng, cảm xúc" },
+    { value: "Acoustic/ Acoustic", mood: "gần gũi, thật" },
+    { value: "EDM/Electronic", mood: "hiện đại, công nghệ" },
+    { value: "Không nhạc nền", mood: "chỉ giọng nói" }
+  ]
+};
+
+// Image Mode Specialized Config
+const IMAGE_CONFIG = {
+  contentStyles: [
+    { value: "Poster quảng cáo", desc: "1 hình, nhiều text" },
+    { value: "Banner Facebook", desc: "1200x628, nhiều space" },
+    { value: "Banner Shopee/Lazada", desc: "Tối ưu sàn TMĐT" },
+    { value: "Ảnh sản phẩm chuyên nghiệp", desc: "E-commerce ready" },
+    { value: "Ảnh Lifestyle", desc: "Đời thường, thực tế" },
+    { value: "Carousel/Gallery", desc: "Nhiều ảnh liên quan" }
+  ],
+  formats: ["1:1 (Vuông)", "4:5 (Instagram)", "9:16 (Story)", "16:9 (Banner)"],
+  aspectRatios: {
+    "1:1 (Vuông)": "1:1",
+    "4:5 (Instagram)": "4:5",
+    "9:16 (Story)": "9:16",
+    "16:9 (Banner)": "16:9"
+  },
+  designStyles: [
+    { value: "Minimalist", icon: "◻️", desc: "Tối giản, sang trọng" },
+    { value: "Bold/Modern", icon: "🟧", desc: "Nổi bật, mạnh mẽ" },
+    { value: "Luxury/Premium", icon: "✨", desc: "Cao cấp, đẳng cấp" },
+    { value: "Playful/Fun", icon: "🎨", desc: "Vui nhộn, trẻ trung" },
+    { value: "Professional", icon: "💼", desc: "Chỉnh chu, uy tín" },
+    { value: "Natural/Organic", icon: "🌿", desc: "Mộc mạc, thật" }
+  ],
+  imageTypes: [
+    { value: "Product only", icon: "📦", desc: "Chỉ sản phẩm" },
+    { value: "Product + Background", icon: "🖼️", desc: "Sản phẩm + nền" },
+    { value: "Mockup场景", icon: "📱", desc: "Sản phẩm đang dùng" },
+    { value: "Lifestyle", icon: "🌅", desc: "Sản phẩm trong đời thường" },
+    { value: "Comparison/Before-After", icon: "⚖️", desc: "So sánh trước/sau" },
+    { value: "Flat Lay", icon: "📋", desc: "Sắp xếp ngang" }
+  ],
+  colorSchemes: [
+    { value: "Tự động theo thương hiệu", icon: "🎨" },
+    { value: "Vibrant/Nổi bật", icon: "🔴" },
+    { value: "Pastel/Nhạt", icon: "🩵" },
+    { value: "Dark/Luxury", icon: "🖤" },
+    { value: "Neutral/Trui", icon: "⚪" },
+    { value: "Warm tones/Ấm", icon: "🟠" },
+    { value: "Cool tones/Lạnh", icon: "🔵" }
+  ]
+};
+
 const CONTENT_OPTIONS = {
   video: ["Video bán hàng nhanh", "Video review sản phẩm", "Video kể chuyện cảm xúc", "Video chuyên gia tư vấn", "Video TVC ngắn", "Video TikTok/Reels"],
   image: ["Poster quảng cáo", "Banner Facebook", "Banner Shopee/Lazada", "Ảnh sản phẩm", "Ảnh Lifestyle", "Ảnh AI Studio"]
 };
 const FORMAT_OPTIONS = { video: ["15 giây", "30 giây", "60 giây", "90 giây"], image: ["1:1", "4:5", "9:16", "16:9"] };
+
+// Helper functions for configs
+function getContentStyles(mode) {
+  if (mode === "video" && VIDEO_CONFIG) return VIDEO_CONFIG.contentStyles.map(s => s.value);
+  if (mode === "image" && IMAGE_CONFIG) return IMAGE_CONFIG.contentStyles.map(s => s.value);
+  return CONTENT_OPTIONS[mode] || [];
+}
+
+function getFormats(mode) {
+  if (mode === "video" && VIDEO_CONFIG) return VIDEO_CONFIG.formats;
+  if (mode === "image" && IMAGE_CONFIG) return IMAGE_CONFIG.formats;
+  return FORMAT_OPTIONS[mode] || [];
+}
 
 function detectStoreName(input) {
   const s = (input || "").toLowerCase();
@@ -161,9 +309,98 @@ window.addEventListener("DOMContentLoaded", () => { setAssetMode("video"); rende
  ***********************/
 let apiModalAccount = 1;
 
+// Provider Management Functions
+function getProviderKey() { return localStorage.getItem(storageKey("providerKey")) || ""; }
+function setProviderKey(key) { localStorage.setItem(storageKey("providerKey"), key); }
+function getCurrentProvider() { return AI_PROVIDERS[selectedProvider] || AI_PROVIDERS.gemini; }
+function getProviderApiKey(provider) {
+  provider = provider || selectedProvider;
+  if (provider === "grok") return localStorage.getItem(storageKey("grokApiKey")) || "";
+  return localStorage.getItem(storageKey(`geminiKey${selectedAccount}`)) || "";
+}
+
+function selectProvider(provider) {
+  selectedProvider = provider;
+  setProviderKey(provider);
+  localStorage.setItem(storageKey("selectedProvider"), provider);
+  renderProviderSelector();
+  renderApiPills();
+  updateModeUI();
+  updateToolLinks();
+  $("apiStatus").className = "status";
+  $("apiStatus").innerText = `Đang dùng ${getCurrentProvider().name}.`;
+}
+
+function renderProviderSelector() {
+  const wrap = $("providerSelector");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  Object.entries(AI_PROVIDERS).forEach(([key, p]) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `provider-btn ${selectedProvider === key ? "active" : ""}`;
+    btn.style.setProperty("--provider-color", p.color);
+    btn.innerHTML = `<span class="provider-icon">${p.icon}</span><span>${p.name}</span>`;
+    btn.onclick = () => selectProvider(key);
+    wrap.appendChild(btn);
+  });
+}
+
+function updateToolLinks() {
+  const wrap = $("toolLinks");
+  wrap.innerHTML = "";
+  const urls = currentAssetMode === "video" ? TOOL_URLS.video : TOOL_URLS.image;
+  urls.forEach(([label, url]) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = label;
+    btn.onclick = () => window.open(url, "_blank", "noopener,noreferrer");
+    wrap.appendChild(btn);
+  });
+}
+
+// Mode-specific UI Management
+function updateModeUI() {
+  const isVideo = currentAssetMode === "video";
+
+  // Toggle visibility of specialized sections
+  if ($("videoSpecificSection")) $("videoSpecificSection").style.display = isVideo ? "block" : "none";
+  if ($("imageSpecificSection")) $("imageSpecificSection").style.display = isVideo ? "none" : "block";
+
+  // Update card styling
+  $("modeVideoCard").classList.toggle("active", isVideo);
+  $("modeImageCard").classList.toggle("active", !isVideo);
+
+  // Update header title
+  if ($("modeTitle")) {
+    $("modeTitle").innerHTML = isVideo
+      ? "🎬 Chế độ Video - Tạo Clip bán hàng"
+      : "🖼️ Chế độ Hình ảnh - Tạo Ảnh quảng cáo";
+  }
+
+  // Fill selects with mode-specific options
+  fillSelectOptions("contentStyle", getContentStyles(currentAssetMode));
+  fillSelectOptions("formatOption", getFormats(currentAssetMode));
+
+  // Update helper notes
+  updateHelperNotes();
+  updateToolLinks();
+
+  // Save preference
+  localStorage.setItem(storageKey("lastMode"), currentAssetMode);
+}
+
+function setAssetMode(mode) {
+  currentAssetMode = mode;
+  uploadConfirmed = false;
+  updateModeUI();
+}
+
+// Extended API Functions with Provider Support
 function getApiKey(i = selectedAccount) {
   return localStorage.getItem(storageKey(`geminiKey${i}`)) || "";
 }
+
 function setAccountStatus(i, status, note = "") {
   localStorage.setItem(storageKey(`accountStatus${i}`), status);
   localStorage.setItem(storageKey(`accountNote${i}`), note);
@@ -428,6 +665,18 @@ function buildPrompt() {
   return currentAssetMode === "video" ? buildVideoPrompt(data) : buildImagePrompt(data);
 }
 
+// Main function to generate prompt with current provider
+async function generatePromptWithAI() {
+  const provider = getCurrentProvider();
+
+  if (provider === "grok") {
+    await generatePromptWithGrok();
+  } else {
+    await generatePromptWithGemini();
+  }
+}
+
+// Gemini-specific function
 async function generatePromptWithGemini() {
   if (!getApiKey()) {
     $("apiStatus").className = "status error";
@@ -440,7 +689,7 @@ async function generatePromptWithGemini() {
   $("apiStatus").className = "status";
   $("apiStatus").innerText = `Đang tạo prompt bằng Gemini tài khoản ${selectedAccount}...`;
   try {
-    const data = await tkApi("generatePrompt", { apiKey: getApiKey(), basePrompt: buildPrompt(), assetMode: currentAssetMode });
+    const data = await tkApi("generatePrompt", { apiKey: getApiKey(), basePrompt: buildPrompt(), assetMode: currentAssetMode, provider: "gemini" });
     if (data.ok && data.prompt) {
       $("promptOutput").value = data.prompt;
       setAccountStatus(selectedAccount, "green", "Còn credit / tạo prompt thành công");
@@ -461,9 +710,144 @@ async function generatePromptWithGemini() {
   setBusy(false);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  loadContactInfo();
+// Grok-specific function
+async function generatePromptWithGrok() {
+  const apiKey = getProviderApiKey("grok");
+  if (!apiKey) {
+    $("apiStatus").className = "status error";
+    $("apiStatus").innerText = "Bạn chưa nhập Grok API Key. Vui lòng nhập key.";
+    openGrokApiModal();
+    return;
+  }
+  if (!$("shortDesc").value.trim()) await analyzeProduct(true);
+  setBusy(true);
+  $("apiStatus").className = "status";
+  $("apiStatus").innerText = "Đang tạo prompt bằng Grok...";
+  try {
+    const data = await tkApi("generatePrompt", { apiKey: apiKey, basePrompt: buildPrompt(), assetMode: currentAssetMode, provider: "grok" });
+    if (data.ok && data.prompt) {
+      $("promptOutput").value = data.prompt;
+      setGrokStatus("green", "Grok hoạt động tốt");
+      $("apiStatus").className = "status success";
+      $("apiStatus").innerText = "Grok đã tạo Prompt VIP. Bạn có thể sửa rồi copy.";
+    } else {
+      setGrokStatus("red", data.message || "Grok lỗi");
+      $("apiStatus").className = "status error";
+      $("apiStatus").innerText = data.message || "Grok lỗi. Vui lòng thử lại.";
+      generatePrompt(false);
+    }
+  } catch (e) {
+    setGrokStatus("red", e.message || "Lỗi kết nối");
+    $("apiStatus").className = "status error";
+    $("apiStatus").innerText = "Không gọi được Grok. Đã tạo prompt tại máy để dùng tạm.";
+    generatePrompt(false);
+  }
+  setBusy(false);
+}
+
+// Grok API management
+function setGrokStatus(status, note = "") {
+  localStorage.setItem(storageKey("grokStatus"), status);
+  localStorage.setItem(storageKey("grokNote"), note);
+  if (status === "red") localStorage.setItem(storageKey("grokNextCheck"), String(Date.now() + 5 * 60 * 60 * 1000));
+  updateGrokStatusIndicator();
+}
+
+function getGrokStatus() {
+  return localStorage.getItem(storageKey("grokStatus")) || "gray";
+}
+
+function updateGrokStatusIndicator() {
+  const el = $("grokStatusIndicator");
+  if (!el) return;
+  const status = getGrokStatus();
+  el.className = `status-indicator ${status}`;
+  el.title = `Grok: ${status === "green" ? "hoạt động" : status === "red" ? "lỗi" : "chưa kiểm tra"}`;
+}
+
+function openGrokApiModal() {
+  $("grokApiModalTitle").innerText = "Grok API Key";
+  $("grokApiModalInput").value = getProviderApiKey("grok");
+  const note = localStorage.getItem(storageKey("grokNote")) || "Dán Grok API Key rồi bấm Hoàn tất.";
+  $("grokApiModalStatus").className = "status";
+  $("grokApiModalStatus").innerText = note;
+  $("grokApiModal").classList.add("show");
+  $("grokApiModal").setAttribute("aria-hidden", "false");
+}
+
+function closeGrokApiModal() {
+  $("grokApiModal").classList.remove("show");
+  $("grokApiModal").setAttribute("aria-hidden", "true");
+}
+
+function saveGrokApiFromModal() {
+  const key = $("grokApiModalInput").value.trim();
+  localStorage.setItem(storageKey("grokApiKey"), key);
+  if (key) setGrokStatus("gray", "Đã lưu key. Bấm kiểm tra để xác nhận.");
+  $("grokApiModalStatus").className = "status success";
+  $("grokApiModalStatus").innerText = "Đã lưu Grok API Key.";
+  $("apiStatus").className = "status success";
+  $("apiStatus").innerText = "Đã lưu Grok API.";
+  updateGrokStatusIndicator();
+}
+
+async function checkGrokApiFromModal() {
+  saveGrokApiFromModal();
+  $("grokApiModalStatus").className = "status";
+  $("grokApiModalStatus").innerText = "Đang kiểm tra Grok API...";
+  const ok = await checkGrokApi();
+  $("grokApiModalStatus").className = ok ? "status success" : "status error";
+  $("grokApiModalStatus").innerText = localStorage.getItem(storageKey("grokNote")) || (ok ? "Grok hoạt động." : "Grok lỗi hoặc hết quota.");
+}
+
+async function checkGrokApi() {
+  const apiKey = getProviderApiKey("grok");
+  if (!apiKey) {
+    setGrokStatus("gray", "Chưa nhập API Key");
+    return false;
+  }
+  try {
+    const data = await tkApi("checkGrok", { apiKey: apiKey });
+    if (data.ok) {
+      setGrokStatus("green", "Còn credit / API hoạt động");
+      return true;
+    }
+    setGrokStatus("red", data.message || "Grok lỗi");
+    return false;
+  } catch (e) {
+    setGrokStatus("red", e.message || "Không kiểm tra được");
+    return false;
+  }
+}
+
+// Render API pills with provider support
+function renderApiPills() {
+  // For Gemini, show account pills
+  if (selectedProvider === "gemini") {
+    if ($("geminiAccountsSection")) $("geminiAccountsSection").style.display = "flex";
+    if ($("grokApiSection")) $("grokApiSection").style.display = "none";
+  } else {
+    if ($("geminiAccountsSection")) $("geminiAccountsSection").style.display = "none";
+    if ($("grokApiSection")) $("grokApiSection").style.display = "block";
+  }
   updateApiPills();
+  updateGrokStatusIndicator();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  // Load saved preferences
+  const savedProvider = localStorage.getItem(storageKey("selectedProvider")) || "gemini";
+  const savedMode = localStorage.getItem(storageKey("lastMode")) || "video";
+  selectedProvider = savedProvider;
+
+  // Initialize UI
+  loadContactInfo();
+  renderProviderSelector();
+  renderApiPills();
+  updateModeUI();
+  updateHelperNotes();
+  autoRecheckDueAccounts();
+
   const note = "API Key lưu trên trình duyệt. Bấm từng tài khoản để nhập/kiểm tra.";
   if ($("apiStatus")) $("apiStatus").innerText = note;
 });

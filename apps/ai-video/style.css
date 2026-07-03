@@ -113,5 +113,26 @@ footer { display: flex; justify-content: space-between; gap: 12px; align-items: 
 .compact-actions { grid-template-columns:1fr 1fr; }
 .modal-card.large { width:min(680px, 100%); }
 .help-list { color:#fff2c3; line-height:1.7; padding-left:20px; }
+
+/* Provider Selector */
+.provider-panel { background: linear-gradient(135deg, rgba(255,213,106,.08), rgba(139,92,246,.05)); }
+.provider-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:14px; }
+.provider-btn { display:flex; align-items:center; gap:10px; padding:14px 18px; border-radius:16px; border:2px solid var(--border); background:rgba(0,0,0,.35); color:var(--gold); font-weight:800; font-size:15px; cursor:pointer; transition: all 0.2s ease; }
+.provider-btn:hover { border-color: var(--provider-color, var(--gold)); background:rgba(255,213,106,.08); transform: translateY(-2px); }
+.provider-btn.active { border-color: var(--provider-color, var(--gold)); background: rgba(255,213,106,.12); box-shadow: 0 0 20px rgba(255,213,106,.15), inset 0 0 0 1px rgba(255,213,106,.2); }
+.provider-icon { font-size:24px; }
+
+/* Status Indicator */
+.status-indicator { width:14px; height:14px; border-radius:50%; display:inline-block; box-shadow:0 0 10px currentColor; }
+.status-indicator.green { background:#24d36b; color:rgba(36,211,107,.75); box-shadow:0 0 12px rgba(36,211,107,.75); }
+.status-indicator.red { background:#ff4040; color:rgba(255,64,64,.75); box-shadow:0 0 12px rgba(255,64,64,.75); }
+.status-indicator.gray { background:#777; color:#777; box-shadow:none; }
+
+/* Mode Selector Panel */
+.mode-selector-panel { background: linear-gradient(135deg, rgba(255,213,106,.06), rgba(255,45,111,.04)); }
+
+/* Mode-specific sections */
+#videoSpecificSection, #imageSpecificSection { margin-top: 18px; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: rgba(0,0,0,.25); }
+#videoSpecificSection h2, #imageSpecificSection h2 { margin-bottom: 12px; }
 @media (max-width: 900px) { .api-pill-grid { grid-template-columns: 1fr 1fr; } .section-title-row { display:block; } }
 @media (max-width: 560px) { .api-pill-grid { grid-template-columns:1fr; } .mode-switch.pro .mode-card { min-height:76px; } }

@@ -103,7 +103,7 @@ const TK_APP_TOOLS = [  { key:"random-race", title:"Random Race", desc:"Game đu
   { key:"kho-phan-mem", title:"Kho Phần Mềm", desc:"Lưu link công cụ, phần mềm và tài nguyên tải nhanh.", icon:"assets/images/app-icons/kho-phan-mem.jpg", vip:false },
   { key:"kiem-quy", title:"Kiểm Quỹ", desc:"Kiểm quỹ nhanh, mobile mode, voice count và lịch sử.", icon:"assets/images/app-icons/kiem-quy.jpg", vip:true, feature_column:"kiem_quy" },
   { key:"tinh-tra-gop", title:"Tính Trả Góp", desc:"Tính khoản trả góp, lãi suất và kế hoạch thanh toán.", icon:"assets/images/app-icons/tinh-tra-gop.jpg", vip:true, feature_column:"tinh_tra_gop" },
-  { key:"create-video", title:"Create Video", desc:"Tạo video nhanh từ ý tưởng, ảnh hoặc prompt.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"create_video" },
+  { key:"ai-video", title:"AI Video", desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok, AI.TKver9.2.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"ai_video" },
   { key:"ai-prompt", title:"AI Prompt", desc:"Kho prompt AI, ý tưởng nội dung và trợ lý viết nhanh.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"ai_prompt" }
 ];
 
@@ -150,7 +150,7 @@ function tkCanAccess(module, user){
   return false;
 }
 
-// TKver9.1 App helpers
+// TKver9.2 App helpers
 function tkGetAppConfig(){
   let overrides = {};
   try{ overrides = JSON.parse(localStorage.getItem("tk_app_config") || "{}"); }catch(e){}
@@ -221,7 +221,7 @@ function tkGetSortedApps(user){
 }
 
 
-// TKver9.1: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
+// TKver9.2: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
 function tkIsAppManager(user){
   const username = String(user?.username || "").toLowerCase();
   const role = String(user?.role || "").toLowerCase();

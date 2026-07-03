@@ -1,12 +1,15 @@
 {
   "app": "TK-AI-VIDEO",
-  "version": "AI.TKver8.6",
+  "version": "AI.TKver9.0",
   "folder": "/apps/ai-video/",
   "release_notes": [
-    "Đưa API Gemini lên đầu trang bằng popup 3 tài khoản + hướng dẫn lấy API.",
-    "Lưu API Key trên localStorage trình duyệt, không ghi lên Google Sheet.",
-    "Thêm giá web, giá hiển thị mong muốn, địa chỉ siêu thị, số điện thoại lưu theo người dùng.",
-    "Nâng cấp prompt ảnh/video theo mẫu chất lượng cao.",
-    "TKver8.6 FINAL spec approved"
+    "Kết nối chính thức vào App Center tại /apps/ai-video/.",
+    "Thêm Grok (xAI) vào danh sách AI Provider.",
+    "Chế độ chuyên biệt Video/Hình ảnh - UI thay đổi theo mode được chọn.",
+    "Provider selector cho phép chọn giữa Gemini và Grok.",
+    "Tùy chọn chuyên biệt cho Video: loại video, tỷ lệ khung hình, giọng đọc, nhạc nền.",
+    "Tùy chọn chuyên biệt cho Hình ảnh: loại ảnh, phong cách, màu sắc, kích thước.",
+    "Lưu trữ preference theo provider và mode vào localStorage.",
+    "TKver9.0 - Multi-Provider & Specialized Modes"
   ]
 }

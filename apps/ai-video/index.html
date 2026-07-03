@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>App VIP AI Video Bán Hàng</title>
   <meta name="description" content="App VIP tạo prompt hình ảnh/video bán hàng thông minh cho Thiên Kim Universe." />
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style.css?v=AI.TKver9.0" />
 </head>
 <body>
   <main class="tk-shell">
@@ -17,7 +17,21 @@
       </div>
     </header>
 
-    <section class="api-top panel slim-panel">
+    <!-- Provider Selector -->
+    <section class="panel slim-panel provider-panel">
+      <div class="section-title-row">
+        <div>
+          <h2>Chọn AI Provider</h2>
+          <p class="muted">Chọn AI để tạo prompt. API Key được lưu trên trình duyệt của bạn.</p>
+        </div>
+      </div>
+      <div id="providerSelector" class="provider-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Gemini Accounts Section -->
+    <section id="geminiAccountsSection" class="panel slim-panel">
       <div class="section-title-row">
         <div>
           <h2>Gemini API cá nhân</h2>
@@ -33,8 +47,46 @@
       <div id="apiStatus" class="status"></div>
     </section>
 
+    <!-- Grok API Section -->
+    <section id="grokApiSection" class="panel slim-panel" style="display:none;">
+      <div class="section-title-row">
+        <div>
+          <h2>xAI Grok</h2>
+          <p class="muted">API Key Grok được lưu trên trình duyệt. Lấy key tại <a href="https://console.x.ai" target="_blank" style="color:var(--gold)">console.x.ai</a></p>
+        </div>
+        <span id="grokStatusIndicator" class="status-indicator gray" title="Grok status"></span>
+      </div>
+      <div class="api-pill-grid">
+        <button type="button" class="api-pill" onclick="openGrokApiModal()">🔑 Grok API Key</button>
+        <button type="button" class="api-pill help" onclick="window.open('https://console.x.ai','_blank')">❓ Lấy API Key</button>
+      </div>
+      <div id="grokApiStatus" class="status"></div>
+    </section>
+
     <section class="notice-card">
       <b>Lưu ý:</b> Thiên Kim chỉ hỗ trợ tạo prompt thông minh. Người dùng tự mở công cụ AI bằng tài khoản của mình và tự dùng credit của mình.
+    </section>
+
+    <!-- Mode Selector - Video/Image -->
+    <section class="panel mode-selector-panel">
+      <div class="section-title-row">
+        <div>
+          <h2 id="modeTitle">🎬 Chế độ Video - Tạo Clip bán hàng</h2>
+          <p class="muted">Chọn chế độ phù hợp để hiển thị các tùy chọn chuyên biệt cho Video hoặc Hình ảnh.</p>
+        </div>
+      </div>
+      <div class="mode-switch pro" role="group" aria-label="Chọn tạo ảnh hoặc video">
+        <label class="mode-card active" id="modeVideoCard">
+          <input type="radio" name="assetMode" value="video" checked onchange="setAssetMode('video')" />
+          <span class="mode-icon">🎬</span>
+          <span class="mode-copy"><b>Tạo clip</b><small>Kịch bản video 15-90 giây</small></span>
+        </label>
+        <label class="mode-card" id="modeImageCard">
+          <input type="radio" name="assetMode" value="image" onchange="setAssetMode('image')" />
+          <span class="mode-icon">🖼️</span>
+          <span class="mode-copy"><b>Tạo hình ảnh</b><small>Poster/banner quảng cáo</small></span>
+        </label>
+      </div>
     </section>
 
     <section class="grid-layout">
@@ -47,20 +99,6 @@
           <button class="mini-btn" type="button" onclick="analyzeProduct(true)">🔍 Phân tích sản phẩm</button>
         </div>
         <small id="sourceHint">Nếu có link, hệ thống ưu tiên lấy mô tả, giá đang hiển thị, khuyến mãi/voucher/flash sale từ trang sản phẩm hoặc web hãng.</small>
-
-        <label>Mục cần tạo</label>
-        <div class="mode-switch pro" role="group" aria-label="Chọn tạo ảnh hoặc video">
-          <label class="mode-card active" id="modeVideoCard">
-            <input type="radio" name="assetMode" value="video" checked onchange="setAssetMode('video')" />
-            <span class="mode-icon">🎬</span>
-            <span class="mode-copy"><b>Tạo clip</b><small>Kịch bản video 15-30 giây</small></span>
-          </label>
-          <label class="mode-card" id="modeImageCard">
-            <input type="radio" name="assetMode" value="image" onchange="setAssetMode('image')" />
-            <span class="mode-icon">🖼️</span>
-            <span class="mode-copy"><b>Tạo hình ảnh</b><small>Poster/banner quảng cáo</small></span>
-          </label>
-        </div>
 
         <label for="shortDesc">Mô tả ngắn</label>
         <textarea id="shortDesc" placeholder="3-5 điểm nhấn tính năng/lợi ích sản phẩm lấy từ website gốc hoặc trang bán hàng."></textarea>
@@ -84,7 +122,7 @@
           <textarea id="promotion" placeholder="Top 3 khuyến mãi tốt nhất trên web nếu có"></textarea>
           <button class="mini-btn ghost" type="button" onclick="clearPromotion()">Thay đổi</button>
         </div>
-        <small>Bấm “Thay đổi” để xóa trắng và nhập khuyến mãi theo ý bạn.</small>
+        <small>Bấm "Thay đổi" để xóa trắng và nhập khuyến mãi theo ý bạn.</small>
 
         <label for="customer">Đối tượng khách hàng</label>
         <input id="customer" placeholder="AI gợi ý theo sản phẩm: ai nên mua, nhu cầu chính, hành vi mua hàng..." />
@@ -149,6 +187,107 @@
           </div>
         </div>
 
+        <!-- ============== VIDEO SPECIFIC SECTION ============== -->
+        <div id="videoSpecificSection" style="display:block;">
+          <h2>⚙️ Tùy chỉnh Video</h2>
+          <div class="two-cols">
+            <div>
+              <label for="videoType">Loại video</label>
+              <select id="videoType">
+                <option value="Talking head">🗣️ Talking head - Người nói trước camera</option>
+                <option value="Product showcase">📦 Product showcase - Giới thiệu sản phẩm</option>
+                <option value="Lifestyle/UGC">🎥 Lifestyle/UGC - Phong cách đời thường</option>
+                <option value="Animation">🎨 Animation - Hoạt hình</option>
+                <option value="Cinematic">🎬 Cinematic - Điện ảnh</option>
+              </select>
+              <small>Chọn loại video phù hợp với sản phẩm và đối tượng.</small>
+            </div>
+            <div>
+              <label for="aspectRatio">Tỷ lệ khung hình</label>
+              <select id="aspectRatio">
+                <option value="9:16">9:16 - Dọc (TikTok/Reels/Story)</option>
+                <option value="16:9">16:9 - Ngang (YouTube)</option>
+                <option value="1:1">1:1 - Vuông (Facebook)</option>
+              </select>
+              <small>Chọn tỷ lệ phù hợp với nền tảng đăng tải.</small>
+            </div>
+          </div>
+          <div class="two-cols">
+            <div>
+              <label for="voiceStyle">Phong cách giọng đọc</label>
+              <select id="voiceStyle">
+                <option value="Nữ trẻ trung">👩 Nữ trẻ trung - hào hứng, năng động</option>
+                <option value="Nữ trầm ấm">👩‍💼 Nữ trầm ấm - tin cậy, chuyên nghiệp</option>
+                <option value="Nam trẻ trung">👨 Nam trẻ trung - năng động, thân thiện</option>
+                <option value="Nam trầm ấm">👨‍💼 Nam trầm ấm - authority, chuyên gia</option>
+                <option value="MC truyền hình">📺 MC truyền hình - chuyên nghiệp</option>
+              </select>
+            </div>
+            <div>
+              <label for="musicStyle">Nhạc nền</label>
+              <select id="musicStyle">
+                <option value="Nhạc nền nhẹ nhàng">🎵 Nhạc nền nhẹ nhàng - thư giãn</option>
+                <option value="Nhạc bán hàng sôi động">🔥 Nhạc bán hàng sôi động - kích thích</option>
+                <option value="Cinematic/Hành động">🎬 Cinematic/Hành động - hoành tráng</option>
+                <option value="Acoustic">🎸 Acoustic - gần gũi, thật</option>
+                <option value="Không nhạc nền">🔇 Không nhạc nền - chỉ giọng nói</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============== IMAGE SPECIFIC SECTION ============== -->
+        <div id="imageSpecificSection" style="display:none;">
+          <h2>⚙️ Tùy chỉnh Hình ảnh</h2>
+          <div class="two-cols">
+            <div>
+              <label for="imageType">Loại hình ảnh</label>
+              <select id="imageType">
+                <option value="Product only">📦 Product only - Chỉ sản phẩm</option>
+                <option value="Product + Background">🖼️ Product + Background - Sản phẩm + nền</option>
+                <option value="Mockup">📱 Mockup - Sản phẩm đang dùng</option>
+                <option value="Lifestyle">🌅 Lifestyle - Sản phẩm trong đời thường</option>
+                <option value="Comparison">⚖️ Comparison - So sánh trước/sau</option>
+                <option value="Flat Lay">📋 Flat Lay - Sắp xếp ngang</option>
+              </select>
+              <small>Chọn loại hình ảnh phù hợp với chiến dịch.</small>
+            </div>
+            <div>
+              <label for="designStyle">Phong cách thiết kế</label>
+              <select id="designStyle">
+                <option value="Minimalist">◻️ Minimalist - Tối giản, sang trọng</option>
+                <option value="Bold/Modern">🟧 Bold/Modern - Nổi bật, mạnh mẽ</option>
+                <option value="Luxury/Premium">✨ Luxury/Premium - Cao cấp</option>
+                <option value="Playful/Fun">🎨 Playful/Fun - Vui nhộn, trẻ trung</option>
+                <option value="Professional">💼 Professional - Chỉnh chu, uy tín</option>
+                <option value="Natural/Organic">🌿 Natural/Organic - Mộc mạc</option>
+              </select>
+            </div>
+          </div>
+          <div class="two-cols">
+            <div>
+              <label for="colorScheme">Bảng màu</label>
+              <select id="colorScheme">
+                <option value="Tự động theo thương hiệu">🎨 Tự động theo thương hiệu</option>
+                <option value="Vibrant/Nổi bật">🔴 Vibrant - Nổi bật</option>
+                <option value="Pastel/Nhạt">🩵 Pastel - Nhạt, dịu</option>
+                <option value="Dark/Luxury">🖤 Dark/Luxury - Tối, sang trọng</option>
+                <option value="Warm tones">🟠 Warm tones - Ấm</option>
+                <option value="Cool tones">🔵 Cool tones - Lạnh</option>
+              </select>
+            </div>
+            <div>
+              <label for="imageFormat">Kích thước ảnh</label>
+              <select id="imageFormat">
+                <option value="1:1">1:1 - Vuông (Facebook post, Avatar)</option>
+                <option value="4:5">4:5 - Instagram Post</option>
+                <option value="9:16">9:16 - Story/Reels</option>
+                <option value="16:9">16:9 - Banner/YouTube</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div class="action-row">
           <button type="button" class="primary-btn" onclick="generatePrompt()">✨ Tạo prompt cho người dùng sửa</button>
           <button type="button" class="heart-btn" onclick="copyVipPrompt()">❤️ Copy Prompt VIP</button>
@@ -158,10 +297,10 @@
       <aside class="panel preview-panel">
         <h2>3. Bản PROMPT VIP có quyền chỉnh sửa</h2>
         <div class="api-actions compact-actions">
-          <button class="mini-btn" type="button" onclick="generatePromptWithGemini()">⚡ Tạo bằng Gemini</button>
+          <button class="mini-btn" type="button" onclick="generatePromptWithAI()">⚡ Tạo bằng AI</button>
           <button class="mini-btn ghost" type="button" onclick="checkSelectedAccount()">🔄 Kiểm tra API đang chọn</button>
         </div>
-        <p class="muted">Prompt được ẩn cho đến khi bạn bấm “Tạo prompt” hoặc “Tạo bằng Gemini”. Bạn có thể sửa trực tiếp rồi bấm ❤️ để copy.</p>
+        <p class="muted">Prompt được ẩn cho đến khi bạn bấm "Tạo prompt" hoặc "Tạo bằng AI". Bạn có thể sửa trực tiếp rồi bấm ❤️ để copy.</p>
         <textarea id="promptOutput" class="prompt-output" placeholder="Prompt VIP sẽ hiện ở đây sau khi tạo..."></textarea>
         <div id="copyStatus" class="status"></div>
 
@@ -201,10 +340,11 @@
 
     <footer>
       <a class="back-link" href="/apps/">← Quay về Apps Mì Ăn Liền</a>
-      <span>AI.TKver8.6</span>
+      <span>AI.TKver9.0</span>
     </footer>
   </main>
 
+  <!-- Upload Modal -->
   <div class="modal-backdrop" id="uploadModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
       <h2 id="uploadModalTitle">Xác nhận file upload</h2>
@@ -216,6 +356,7 @@
     </div>
   </div>
 
+  <!-- API Modal (Gemini) -->
   <div class="modal-backdrop" id="apiModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="apiModalTitle">
       <h2 id="apiModalTitle">API tài khoản</h2>
@@ -230,6 +371,7 @@
     </div>
   </div>
 
+  <!-- API Help Modal -->
   <div class="modal-backdrop" id="apiHelpModal" aria-hidden="true">
     <div class="modal-card large" role="dialog" aria-modal="true" aria-labelledby="apiHelpTitle">
       <h2 id="apiHelpTitle">Hướng dẫn lấy Gemini API Key</h2>
@@ -248,7 +390,22 @@
     </div>
   </div>
 
-  <script src="./config.js"></script>
-  <script src="./app.js"></script>
+  <!-- Grok API Modal -->
+  <div class="modal-backdrop" id="grokApiModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="grokApiModalTitle">
+      <h2 id="grokApiModalTitle">Grok API Key</h2>
+      <p class="muted">Dán Grok API Key của bạn. Key chỉ lưu trong trình duyệt đang dùng.</p>
+      <input id="grokApiModalInput" type="password" placeholder="Dán Grok API Key tại đây" />
+      <div id="grokApiModalStatus" class="status"></div>
+      <div class="modal-actions">
+        <button class="mini-btn ghost" type="button" onclick="closeGrokApiModal()">Đóng</button>
+        <button class="mini-btn" type="button" onclick="saveGrokApiFromModal()">Hoàn tất</button>
+        <button class="mini-btn" type="button" onclick="checkGrokApiFromModal()">Kiểm tra API</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js?v=AI.TKver9.0"></script>
+  <script src="./app.js?v=AI.TKver9.0"></script>
 </body>
 </html>
