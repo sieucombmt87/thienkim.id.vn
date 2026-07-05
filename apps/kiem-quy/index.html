@@ -97,6 +97,17 @@
             min-height: 0;
         }
 
+        .denom-card,
+        .history-card {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .action-card {
+            flex-shrink: 0;
+        }
+
         /* Expected Input */
         .expected-card {
             padding: 14px 16px;
@@ -185,13 +196,16 @@
         /* Denomination Table */
         .denom-card {
             padding: 14px 16px;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .denom-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             padding-bottom: 6px;
             border-bottom: 2px solid #e3f2fd;
             flex-shrink: 0;
@@ -346,6 +360,7 @@
         /* Action Buttons */
         .action-card {
             padding: 12px 14px;
+            flex-shrink: 0;
         }
 
         .btn-row {
@@ -423,6 +438,8 @@
             flex-direction: column;
             gap: 8px;
             min-height: 0;
+            overflow: hidden;
+        }
         }
 
         /* History */
@@ -609,38 +626,179 @@
             }
         }
 
-        /* Mobile: 1 cột */
+        /* Mobile: 1 cột, touch-friendly */
         @media (max-width: 767px) {
-            .denom-table input {
-                max-width: 56px;
-                font-size: 13px;
-                padding: 4px 3px;
+            .container {
+                gap: 6px;
             }
-            .denom-table .denom-value {
-                font-size: 14px;
+            header {
+                padding: 4px 0 2px;
             }
-            .denom-table .line-amount {
+            header h1 {
+                font-size: 17px;
+            }
+            .content {
+                gap: 6px;
+            }
+            .expected-card,
+            .result-card {
+                padding: 10px 12px;
+            }
+            .expected-input-wrapper input {
+                font-size: 16px;
+                padding: 8px 10px;
+            }
+            .expected-input-wrapper label {
                 font-size: 11px;
-                padding-right: 6px;
+                margin-bottom: 4px;
             }
-            .denom-table tbody td {
-                padding: 3px 4px;
+            .result-main {
+                padding: 10px;
+                margin-bottom: 8px;
             }
             .result-main .amount {
                 font-size: 22px;
             }
-            header h1 {
-                font-size: 18px;
+            .result-main .currency-text {
+                font-size: 12px;
+            }
+            .diff-row {
+                margin: 6px -12px 0;
+                padding: 10px 12px !important;
+            }
+            .denom-card {
+                padding: 10px 12px;
+            }
+            .denom-header {
+                margin-bottom: 6px;
+                padding-bottom: 4px;
+            .denom-header {
+                margin-bottom: 8px;
+                padding-bottom: 6px;
+            }
+            .denom-header h2 {
+                font-size: 13px;
+            }
+            .total-badge {
+                font-size: 11px;
+                padding: 3px 8px;
+            }
+            .denom-table {
+                font-size: 13px;
+            }
+            .denom-table thead th {
+                padding: 5px 4px;
+                font-size: 11px;
+            }
+            .denom-table .denom-value {
+                font-size: 13px;
+            }
+            .denom-table .denom-value small {
+                font-size: 10px;
+            }
+            .denom-table input {
+                max-width: 52px;
+                font-size: 13px;
+                padding: 5px 3px;
+            }
+            .denom-table .line-amount {
+                font-size: 11px;
+                padding-right: 4px;
+            }
+            .denom-table tbody td {
+                padding: 4px 3px;
+            }
+            .diff-row {
+                font-size: 13px;
+            }
+            .diff-row .label,
+            .diff-row .value {
+                font-size: 14px !important;
+            }
+            .action-card {
+                padding: 10px 12px;
+            }
+            .btn {
+                padding: 12px 8px;
+                font-size: 13px;
+                border-radius: 8px;
+                gap: 4px;
+            }
+            .btn svg {
+                width: 13px;
+                height: 13px;
+            }
+            .btn-sm {
+                padding: 8px 8px;
+                font-size: 12px;
+            }
+            .btn-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .history-card {
+                padding: 10px 12px;
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+            }
+            .history-header {
+                padding: 8px 0;
+                margin-bottom: 6px;
+            }
+            .history-header h2 {
+                font-size: 13px;
+            }
+            .history-actions {
+                gap: 6px;
+            }
+            .btn-sm {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            .history-list {
+                max-height: none;
+            }
+            .history-item {
+                padding: 8px 10px;
+            }
+            .history-item-header {
+                margin-bottom: 3px;
+            }
+            .history-item-header .time {
+                font-size: 11px;
+            }
+            .history-item-header .diff {
+                font-size: 12px;
+            }
+            .history-item-details {
+                font-size: 11px;
+                gap: 8px;
+            }
+            .toast {
+                font-size: 13px;
+                bottom: 16px;
             }
         }
 
-        /* Tablet: 2 cột top, 1 cột bottom */
+        /* Tablet: 2 cột top, 2 cột bottom */
         @media (min-width: 768px) and (max-width: 1023px) {
+            .container {
+                max-width: 100%;
+                margin: 8px auto;
+            }
             .top-section {
-                grid-template-columns: 1fr 1.2fr;
+                grid-template-columns: 1fr 1.15fr;
+            }
+            .bottom-section {
+                grid-template-columns: 1.3fr 1fr;
             }
             .denom-table input {
-                max-width: 64px;
+                max-width: 70px;
+            }
+            .btn {
+                font-size: 13px;
+                padding: 9px 10px;
             }
         }
 
@@ -670,16 +828,25 @@
                 min-height: 0;
             }
             .expected-card,
-            .result-card,
+            .result-card {
+                flex: 1;
+                min-height: 0;
+                height: 100%;
+                margin-bottom: 0;
+                border-radius: 14px;
+                padding: 14px 16px;
+            }
             .denom-card,
             .action-card,
             .history-card {
+                flex: 1;
+                min-height: 0;
                 margin-bottom: 0;
                 border-radius: 14px;
                 padding: 14px 16px;
             }
             .denom-header {
-                margin-bottom: 10px;
+                margin-bottom: 8px;
                 padding-bottom: 6px;
             }
             .denom-header h2 {
