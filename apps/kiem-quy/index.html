@@ -28,24 +28,24 @@
         body {
             font-family: 'Roboto', sans-serif;
             background: #f0f2f5;
-            height: 100dvh;
-            overflow: hidden;
+            min-height: 100vh;
             padding: 0;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1400px;
-            margin: 8px auto;
-            height: 100dvh;
+            margin: 0 auto;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding: 0;
+            gap: 8px;
+            min-height: 100vh;
         }
 
         header {
             text-align: center;
-            padding: 4px 0 6px;
+            padding: 4px 0 2px;
             flex-shrink: 0;
         }
 
@@ -64,23 +64,23 @@
 
         .content {
             flex: 1;
-            min-height: 0;
             display: grid;
             grid-template-columns: 1fr;
             grid-template-rows: auto 1fr;
-            gap: 10px;
+            gap: 8px;
+            min-height: 0;
         }
 
         .top-section {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px;
+            gap: 8px;
         }
 
         .bottom-section {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px;
+            gap: 8px;
             min-height: 0;
         }
 
@@ -626,158 +626,224 @@
             }
         }
 
-        /* Mobile: 1 cột, touch-friendly */
+        /* Mobile: 1 trang, ko cuộn */
         @media (max-width: 767px) {
+            body {
+                min-height: 100dvh;
+                overflow: hidden;
+            }
             .container {
-                gap: 6px;
-            }
-            header {
-                padding: 4px 0 2px;
-            }
-            header h1 {
-                font-size: 17px;
-            }
-            .content {
-                gap: 6px;
-            }
-            .expected-card,
-            .result-card {
-                padding: 10px 12px;
-            }
-            .expected-input-wrapper input {
-                font-size: 16px;
-                padding: 8px 10px;
-            }
-            .expected-input-wrapper label {
-                font-size: 11px;
-                margin-bottom: 4px;
-            }
-            .result-main {
-                padding: 10px;
-                margin-bottom: 8px;
-            }
-            .result-main .amount {
-                font-size: 22px;
-            }
-            .result-main .currency-text {
-                font-size: 12px;
-            }
-            .diff-row {
-                margin: 6px -12px 0;
-                padding: 10px 12px !important;
-            }
-            .denom-card {
-                padding: 10px 12px;
-            }
-            .denom-header {
-                margin-bottom: 6px;
-                padding-bottom: 4px;
-            .denom-header {
-                margin-bottom: 8px;
-                padding-bottom: 6px;
-            }
-            .denom-header h2 {
-                font-size: 13px;
-            }
-            .total-badge {
-                font-size: 11px;
-                padding: 3px 8px;
-            }
-            .denom-table {
-                font-size: 13px;
-            }
-            .denom-table thead th {
-                padding: 5px 4px;
-                font-size: 11px;
-            }
-            .denom-table .denom-value {
-                font-size: 13px;
-            }
-            .denom-table .denom-value small {
-                font-size: 10px;
-            }
-            .denom-table input {
-                max-width: 52px;
-                font-size: 13px;
-                padding: 5px 3px;
-            }
-            .denom-table .line-amount {
-                font-size: 11px;
-                padding-right: 4px;
-            }
-            .denom-table tbody td {
-                padding: 4px 3px;
-            }
-            .diff-row {
-                font-size: 13px;
-            }
-            .diff-row .label,
-            .diff-row .value {
-                font-size: 14px !important;
-            }
-            .action-card {
-                padding: 10px 12px;
-            }
-            .btn {
-                padding: 12px 8px;
-                font-size: 13px;
-                border-radius: 8px;
+                height: 100dvh;
+                padding: 4px;
                 gap: 4px;
             }
-            .btn svg {
-                width: 13px;
-                height: 13px;
+            header {
+                padding: 2px 0 1px;
+                flex-shrink: 0;
             }
-            .btn-sm {
-                padding: 8px 8px;
-                font-size: 12px;
+            header h1 {
+                font-size: 16px;
             }
-            .btn-row {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
+            header p {
+                font-size: 10px;
             }
-            .history-card {
-                padding: 10px 12px;
+            .content {
                 flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
                 min-height: 0;
                 overflow: hidden;
             }
-            .history-header {
-                padding: 8px 0;
-                margin-bottom: 6px;
+            .top-section {
+                flex-shrink: 0;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
             }
-            .history-header h2 {
-                font-size: 13px;
+            .bottom-section {
+                flex: 1;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
+                min-height: 0;
+                overflow: hidden;
             }
-            .history-actions {
-                gap: 6px;
+            .expected-card,
+            .result-card {
+                padding: 6px 8px;
             }
-            .btn-sm {
+            .expected-input-wrapper {
+                margin-bottom: 0;
+            }
+            .expected-input-wrapper label {
+                font-size: 9px;
+                margin-bottom: 2px;
+            }
+            .expected-input-wrapper input {
+                font-size: 14px;
+                padding: 5px 6px;
+            }
+            .result-main {
+                padding: 6px;
+                margin-bottom: 4px;
+            }
+            .result-main .label {
+                font-size: 9px;
+            }
+            .result-main .amount {
+                font-size: 18px;
+            }
+            .result-main .currency-text {
+                font-size: 10px;
+            }
+            .result-row {
+                padding: 3px 0;
+            }
+            .result-row .label,
+            .result-row .value {
                 font-size: 11px;
-                padding: 4px 8px;
             }
-            .history-list {
-                max-height: none;
-            }
-            .history-item {
-                padding: 8px 10px;
-            }
-            .history-item-header {
-                margin-bottom: 3px;
-            }
-            .history-item-header .time {
-                font-size: 11px;
-            }
-            .history-item-header .diff {
+            .diff-row {
+                margin: 3px -8px 0;
+                padding: 6px 8px !important;
                 font-size: 12px;
             }
-            .history-item-details {
+            .diff-row .label,
+            .diff-row .value {
+                font-size: 12px !important;
+            }
+            .denom-card,
+            .action-card,
+            .history-card {
+                border-radius: 8px;
+                padding: 6px 8px;
+                overflow: hidden;
+                min-height: 0;
+            }
+            .denom-card {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+            }
+            .denom-header {
+                flex-shrink: 0;
+                margin-bottom: 3px;
+                padding-bottom: 2px;
+            }
+            .denom-header h2 {
                 font-size: 11px;
-                gap: 8px;
+            }
+            .denom-header .total-badge {
+                font-size: 9px;
+                padding: 1px 5px;
+            }
+            .denom-table-wrap {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+            }
+            .denom-table {
+                width: 100%;
+                table-layout: fixed;
+            }
+            .denom-table thead th {
+                padding: 3px 3px;
+                font-size: 10px;
+            }
+            .denom-table tbody tr {
+                height: 28px;
+            }
+            .denom-table tbody td {
+                padding: 1px 3px;
+                white-space: nowrap;
+            }
+            .denom-table .denom-value {
+                font-size: 12px;
+            }
+            .denom-table .denom-value small {
+                font-size: 8px;
+            }
+            .denom-table input {
+                max-width: 50px;
+                font-size: 12px;
+                padding: 3px 2px;
+                height: 24px;
+            }
+            .denom-table .line-amount {
+                font-size: 10px;
+            }
+            .right-col {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                min-height: 0;
+                overflow: hidden;
+            }
+            .action-card {
+                flex-shrink: 0;
+                padding: 5px 6px;
+            }
+            .btn-row {
+                gap: 4px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .btn {
+                padding: 6px 3px;
+                font-size: 10px;
+                border-radius: 5px;
+                gap: 2px;
+            }
+            .btn svg {
+                width: 10px;
+                height: 10px;
+            }
+            .btn-sm {
+                font-size: 9px;
+                padding: 2px 4px;
+            }
+            .history-card {
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            .history-header {
+                padding: 3px 0;
+                margin-bottom: 3px;
+                flex-shrink: 0;
+            }
+            .history-header h2 {
+                font-size: 11px;
+            }
+            .history-actions {
+                gap: 4px;
+            }
+            .history-list {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+            }
+            .history-item {
+                padding: 5px 6px;
+            }
+            .history-item-header {
+                margin-bottom: 1px;
+            }
+            .history-item-header .time {
+                font-size: 9px;
+            }
+            .history-item-header .diff {
+                font-size: 10px;
+            }
+            .history-item-details {
+                font-size: 9px;
+                gap: 6px;
             }
             .toast {
-                font-size: 13px;
-                bottom: 16px;
+                font-size: 12px;
+                bottom: 12px;
             }
         }
 
@@ -802,147 +868,239 @@
             }
         }
 
-        /* Desktop: 2x2 grid, fit trong viewport */
+        /* Desktop: flex layout, NO page scroll */
         @media (min-width: 1024px) {
             body {
+                min-height: 100vh;
+                overflow: hidden;
                 padding: 0;
             }
             .container {
                 max-width: 1400px;
-                margin: 10px auto;
+                margin: 0 auto;
+                padding: 6px 8px;
+                height: 100vh;
+                gap: 6px;
+            }
+            header {
+                padding: 2px 0;
+                flex-shrink: 0;
+                margin-bottom: 0;
+            }
+            header h1 {
+                font-size: 20px;
+            }
+            header p {
+                font-size: 11px;
             }
             .content {
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: auto 1fr;
-                gap: 12px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                min-height: 0;
+                overflow: hidden;
             }
             .top-section {
-                grid-column: 1 / -1;
-                grid-template-columns: 1fr 1.15fr;
-                gap: 12px;
+                flex-shrink: 0;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+                height: auto;
             }
             .bottom-section {
-                grid-column: 1 / -1;
-                grid-template-columns: 1.45fr 1fr;
-                gap: 12px;
+                flex: 1;
+                display: grid;
+                grid-template-columns: 1.5fr 1fr;
+                gap: 6px;
                 min-height: 0;
+                overflow: hidden;
             }
             .expected-card,
             .result-card {
-                flex: 1;
-                min-height: 0;
-                height: 100%;
+                border-radius: 10px;
+                padding: 10px 12px;
                 margin-bottom: 0;
-                border-radius: 14px;
-                padding: 14px 16px;
             }
-            .denom-card,
-            .action-card,
+            .expected-card {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                justify-content: center;
+            }
+            .expected-input-wrapper {
+                display: flex;
+                flex-direction: column;
+            }
+            .expected-input-wrapper input {
+                font-size: 18px;
+                padding: 8px 10px;
+            }
+            .expected-input-wrapper label {
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+            .result-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .result-main {
+                padding: 8px;
+                margin-bottom: 6px;
+            }
+            .result-main .amount {
+                font-size: 26px;
+            }
+            .result-main .label {
+                font-size: 11px;
+            }
+            .result-main .currency-text {
+                font-size: 12px;
+            }
+            .result-row {
+                padding: 5px 0;
+            }
+            .result-row .label,
+            .result-row .value {
+                font-size: 13px;
+            }
+            .denom-card {
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                min-height: 0;
+                flex: 1;
+            }
+            .denom-header {
+                flex-shrink: 0;
+                margin-bottom: 4px;
+                padding-bottom: 3px;
+            }
+            .denom-header h2 {
+                font-size: 13px;
+            }
+            .denom-header .total-badge {
+                font-size: 11px;
+                padding: 2px 6px;
+            }
+            .denom-table-wrap {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+                min-height: 40px;
+            }
+            .denom-table {
+                width: 100%;
+                table-layout: fixed;
+            }
+            .denom-table thead th {
+                padding: 4px 4px;
+                font-size: 11px;
+            }
+            .denom-table tbody tr {
+                height: 32px;
+            }
+            .denom-table tbody td {
+                padding: 1px 4px;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            .denom-table .denom-value {
+                font-size: 14px;
+            }
+            .denom-table .denom-value small {
+                font-size: 9px;
+            }
+            .denom-table input {
+                max-width: 64px;
+                font-size: 13px;
+                padding: 3px 3px;
+                height: 26px;
+            }
+            .denom-table .line-amount {
+                font-size: 11px;
+            }
+            .diff-row {
+                margin: 4px -12px 0;
+                padding: 8px 12px !important;
+            }
+            .diff-row .label,
+            .diff-row .value {
+                font-size: 13px !important;
+            }
+            .right-col {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                min-height: 0;
+                overflow: hidden;
+            }
+            .action-card {
+                flex-shrink: 0;
+                padding: 6px 8px;
+            }
+            .btn-row {
+                gap: 5px;
+            }
+            .btn {
+                padding: 6px 4px;
+                font-size: 11px;
+                border-radius: 5px;
+                gap: 3px;
+            }
+            .btn svg {
+                width: 11px;
+                height: 11px;
+            }
+            .btn-sm {
+                font-size: 10px;
+                padding: 3px 5px;
+            }
             .history-card {
                 flex: 1;
                 min-height: 0;
-                margin-bottom: 0;
-                border-radius: 14px;
-                padding: 14px 16px;
-            }
-            .denom-header {
-                margin-bottom: 8px;
-                padding-bottom: 6px;
-            }
-            .denom-header h2 {
-                font-size: 16px;
-            }
-            .total-badge {
-                padding: 5px 12px;
-                font-size: 13px;
-            }
-            .denom-table input {
-                max-width: 86px;
-                font-size: 15px;
-                padding: 8px 6px;
-            }
-            .denom-table tbody td {
-                padding: 8px 8px;
-            }
-            .denom-table thead th {
-                padding: 8px 8px;
-                font-size: 13px;
-            }
-            .denom-table .denom-value {
-                font-size: 17px;
-            }
-            .denom-table .denom-value small {
-                font-size: 11px;
-            }
-            .denom-table .line-amount {
-                font-size: 14px;
-            }
-            .result-main {
-                padding: 12px;
-                margin-bottom: 10px;
-            }
-            .result-main .amount {
-                font-size: 30px;
-            }
-            .result-main .label {
-                font-size: 12px;
-            }
-            .result-main .currency-text {
-                font-size: 14px;
-            }
-            .result-row {
-                padding: 7px 0;
-            }
-            .result-row .label {
-                font-size: 14px;
-            }
-            .result-row .value {
-                font-size: 15px;
-            }
-            .history-list {
-                max-height: none;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                border-radius: 10px;
+                padding: 8px 10px;
             }
             .history-header {
-                padding: 10px 14px;
+                padding: 4px 0;
+                margin-bottom: 4px;
+                flex-shrink: 0;
             }
             .history-header h2 {
-                font-size: 16px;
+                font-size: 13px;
+            }
+            .history-list {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
             }
             .history-item {
-                padding: 12px 14px;
+                padding: 6px 8px;
             }
             .history-item-header {
-                margin-bottom: 5px;
+                margin-bottom: 2px;
             }
             .history-item-header .time {
-                font-size: 12px;
+                font-size: 10px;
             }
             .history-item-header .diff {
-                font-size: 14px;
+                font-size: 11px;
             }
             .history-item-details {
-                gap: 14px;
-                font-size: 13px;
-            }
-            .btn {
-                padding: 10px 12px;
-                font-size: 14px;
-            }
-            .btn-row {
-                gap: 10px;
-            }
-            header {
-                padding: 4px 0 6px;
-                margin-bottom: 6px;
-            }
-            header h1 {
-                font-size: 22px;
-            }
-            header p {
-                font-size: 12px;
+                font-size: 10px;
+                gap: 8px;
             }
             .install-banner p {
+                font-size: 12px;
+            }
+            .toast {
                 font-size: 13px;
+                bottom: 16px;
             }
         }
     </style>
