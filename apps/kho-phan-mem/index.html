@@ -1,22 +1,525 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Kho Phần Mềm • TKver8.6</title>
-<link rel="stylesheet" href="../_shared/app-lite.css?v=TKver8.6">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kho Phần Mềm - THIENKIM</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #8892b0;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+    .back-link:hover {
+      color: #64ffda;
+      background: rgba(100,255,218,0.1);
+    }
+    .page-header {
+      text-align: center;
+      margin: 32px 0 40px;
+    }
+    .page-header h1 {
+      font-size: 2.2rem;
+      margin: 0 0 8px;
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-header p {
+      color: #8892b0;
+      margin: 0;
+      font-size: 15px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: rgba(255,255,255,0.03);
+      padding: 6px;
+      border-radius: 16px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      background: transparent;
+      color: #8892b0;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .software-section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      margin: 0 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title .icon {
+      font-size: 1.5rem;
+    }
+    .upload-zone {
+      border: 2px dashed rgba(100,255,218,0.3);
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      background: rgba(100,255,218,0.02);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: #64ffda;
+      background: rgba(100,255,218,0.05);
+    }
+    .upload-zone input {
+      display: none;
+    }
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .upload-text {
+      color: #8892b0;
+      margin: 0;
+    }
+    .upload-hint {
+      font-size: 13px;
+      color: #5a6a8a;
+      margin-top: 8px;
+    }
+    .selected-file {
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(100,255,218,0.1);
+      border-radius: 12px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .selected-file.show {
+      display: flex;
+    }
+    .selected-file .file-icon {
+      font-size: 2rem;
+    }
+    .selected-file .file-info {
+      flex: 1;
+    }
+    .selected-file .file-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .selected-file .file-size {
+      font-size: 13px;
+      color: #8892b0;
+    }
+    .selected-file .clear-file {
+      background: rgba(255,100,100,0.2);
+      border: none;
+      color: #ff6b6b;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 13px;
+      color: #8892b0;
+      font-weight: 500;
+    }
+    .form-group input {
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: rgba(102,126,234,0.1);
+    }
+    .form-group input::placeholder {
+      color: #5a6a8a;
+    }
+    .btn-upload {
+      width: 100%;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+    }
+    .btn-upload:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+    }
+    .btn-upload:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .file-list {
+      margin-top: 28px;
+    }
+    .file-list-title {
+      font-size: 14px;
+      color: #8892b0;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+    .file-item:hover {
+      background: rgba(255,255,255,0.06);
+    }
+    .file-item .file-icon {
+      font-size: 1.5rem;
+    }
+    .file-item .file-info {
+      flex: 1;
+    }
+    .file-item .file-name {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .file-item .file-date {
+      font-size: 12px;
+      color: #5a6a8a;
+    }
+    .file-item .file-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .file-item a, .file-item button {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+    }
+    .file-item .btn-view {
+      background: rgba(100,255,218,0.15);
+      color: #64ffda;
+    }
+    .file-item .btn-view:hover {
+      background: rgba(100,255,218,0.25);
+    }
+    .file-item .btn-delete {
+      background: rgba(255,100,100,0.15);
+      color: #ff6b6b;
+    }
+    .file-item .btn-delete:hover {
+      background: rgba(255,100,100,0.25);
+    }
+    .empty-list {
+      text-align: center;
+      padding: 40px;
+      color: #5a6a8a;
+    }
+    .empty-list .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast.success {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      color: #fff;
+    }
+    .toast.error {
+      background: linear-gradient(135deg, #eb3349, #f45c43);
+      color: #fff;
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15,15,35,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 999;
+    }
+    .loading-overlay.show {
+      display: flex;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(102,126,234,0.3);
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .config-notice {
+      background: rgba(255,193,7,0.1);
+      border: 1px solid rgba(255,193,7,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .config-notice .icon {
+      font-size: 1.3rem;
+    }
+    .config-notice .text {
+      flex: 1;
+    }
+    .config-notice .title {
+      font-weight: 600;
+      color: #ffc107;
+      margin-bottom: 4px;
+    }
+    .config-notice .desc {
+      font-size: 13px;
+      color: #8892b0;
+      margin: 0;
+    }
+    .config-notice .desc a {
+      color: #64ffda;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-<main class="app-shell">
-  <a class="back" href="../index.html">← App Center</a>
-  <section class="hero">
-    <h1>Kho Phần Mềm</h1>
-    <span class="ver">TKver8.6</span>
-  </section>
-  
-<section class="card"><label>Tên phần mềm</label><input id="name"><label>Link tải / ghi chú</label><textarea id="info"></textarea><div class="btns"><button class="btn" id="addBtn">Thêm</button><button class="btn alt" id="exportBtn">Xuất danh sách</button><button class="btn red" id="clearBtn">Xóa kho</button></div><div class="list" id="listBox"></div></section>
-</main>
-<script src="app.js?v=TKver8.6"></script>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Về trang chủ</a>
 
+    <div class="page-header">
+      <h1>📦 Kho Phần Mềm</h1>
+      <p>Lưu trữ & chia sẻ phần mềm Android, Windows dễ dàng</p>
+    </div>
+
+    <!-- Thông báo cấu hình -->
+    <div class="config-notice" id="configNotice">
+      <span class="icon">⚠️</span>
+      <div class="text">
+        <div class="title">Cần cấu hình Google Drive</div>
+        <p class="desc">
+          Để tải file lên Drive, bạn cần tạo Google Apps Script và cập nhật URL trong file 
+          <code>apps/kho-phan-mem/app.js</code>. 
+          <a href="#" onclick="showSetupGuide(); return false;">Xem hướng dẫn chi tiết →</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('android')">
+        <span>🤖</span> App Android
+      </button>
+      <button class="tab-btn" onclick="switchTab('windows')">
+        <span>💻</span> App Windows
+      </button>
+    </div>
+
+    <!-- Android Tab -->
+    <div class="tab-content active" id="tab-android">
+      <div class="software-section">
+        <h3 class="section-title"><span class="icon">🤖</span> Tải lên App Android</h3>
+        
+        <div class="upload-zone" id="androidZone" onclick="document.getElementById('androidInput').click()">
+          <input type="file" id="androidInput" accept=".apk,.xapk,.aab,.zip">
+          <div class="upload-icon">📤</div>
+          <p class="upload-text">Kéo thả file hoặc click để chọn</p>
+          <p class="upload-hint">Hỗ trợ: APK, XAPK, AAB, ZIP</p>
+        </div>
+
+        <div class="selected-file" id="androidSelected">
+          <span class="file-icon">📄</span>
+          <div class="file-info">
+            <div class="file-name" id="androidFileName">-</div>
+            <div class="file-size" id="androidFileSize">-</div>
+          </div>
+          <button class="clear-file" onclick="clearFile('android')">✕</button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tên phần mềm</label>
+            <input type="text" id="androidName" placeholder="VD: TikTok Pro">
+          </div>
+          <div class="form-group">
+            <label>Phiên bản</label>
+            <input type="text" id="androidVersion" placeholder="VD: 1.0">
+          </div>
+        </div>
+
+        <button class="btn-upload" id="androidBtn" onclick="uploadFile('android')">
+          <span>⬆️</span> Tải lên Google Drive
+        </button>
+
+        <div class="file-list">
+          <div class="file-list-title">📁 File đã tải lên</div>
+          <div id="androidFiles"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows Tab -->
+    <div class="tab-content" id="tab-windows">
+      <div class="software-section">
+        <h3 class="section-title"><span class="icon">💻</span> Tải lên App Windows</h3>
+        
+        <div class="upload-zone" id="windowsZone" onclick="document.getElementById('windowsInput').click()">
+          <input type="file" id="windowsInput" accept=".exe,.msi,.zip,.rar,.7z">
+          <div class="upload-icon">📤</div>
+          <p class="upload-text">Kéo thả file hoặc click để chọn</p>
+          <p class="upload-hint">Hỗ trợ: EXE, MSI, ZIP, RAR, 7Z</p>
+        </div>
+
+        <div class="selected-file" id="windowsSelected">
+          <span class="file-icon">📄</span>
+          <div class="file-info">
+            <div class="file-name" id="windowsFileName">-</div>
+            <div class="file-size" id="windowsFileSize">-</div>
+          </div>
+          <button class="clear-file" onclick="clearFile('windows')">✕</button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tên phần mềm</label>
+            <input type="text" id="windowsName" placeholder="VD: Photoshop">
+          </div>
+          <div class="form-group">
+            <label>Phiên bản</label>
+            <input type="text" id="windowsVersion" placeholder="VD: 2024">
+          </div>
+        </div>
+
+        <button class="btn-upload" id="windowsBtn" onclick="uploadFile('windows')">
+          <span>⬆️</span> Tải lên Google Drive
+        </button>
+
+        <div class="file-list">
+          <div class="file-list-title">📁 File đã tải lên</div>
+          <div id="windowsFiles"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Đang tải lên Google Drive...</p>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
 </body>
 </html>

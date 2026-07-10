@@ -31,7 +31,7 @@ const TK_MODULES = {
   app: {
     title: "Bảo Bối Mì Ăn Liền 🛠️",
     domain: "app.thienkim.id.vn",
-    description: "App Center dùng nhanh: báo cáo, kiểm quỹ, QR, random, bài test, kho phần mềm và nhiều tiện ích khác.",
+    description: "App Center dùng nhanh: báo cáo, kiểm quỹ, QR, random, bài test và nhiều tiện ích khác.",
     access: "public",
     type: "app"
   },
@@ -93,18 +93,20 @@ const TK_MODULES = {
   }
 };
 
-const TK_APP_TOOLS = [  { key:"random-race", title:"Random Race", desc:"Game đua vịt/ngựa/xe random giống demo, Top 1/Top 3 và lịch sử.", icon:"assets/images/app-icons/random-race.svg", vip:false },
+const TK_APP_TOOLS = [
+  { key:"kho-phan-mem", title:"Kho Phần Mềm", desc:"Lưu trữ & chia sẻ phần mềm Android, Windows dễ dàng.", icon:"assets/images/app-icons/kho-phan-mem.svg", vip:false },
+  { key:"random-race", title:"Random Race", desc:"Game đua vịt/ngựa/xe random giống demo, Top 1/Top 3 và lịch sử.", icon:"assets/images/app-icons/random-race.svg", vip:false },
   { key:"bao-cao", title:"Báo Cáo", desc:"Tổng hợp nhanh báo cáo ngày, tuần, tháng.", icon:"assets/images/app-icons/bao-cao.jpg", vip:false },
   { key:"bai-test", title:"Bài Test", desc:"Tạo bài kiểm tra, checklist và form đánh giá.", icon:"assets/images/app-icons/bai-test.jpg", vip:false },
   { key:"bau-cua", title:"Bầu Cua", desc:"Mini game/tiện ích random vui vẻ cho đội nhóm.", icon:"assets/images/app-icons/bau-cua.jpg", vip:false },
   { key:"random", title:"Random", desc:"Random tên, số, ca trực, nhiệm vụ hoặc lựa chọn.", icon:"assets/images/app-icons/random.jpg", vip:false },
   { key:"doc-truyen", title:"Đọc Truyện", desc:"Thư viện truyện chữ/truyện tranh, True Tone và tự cập nhật từ Drive.", icon:"assets/images/app-icons/doc-truyen.jpg", vip:false },
   { key:"qr-code", title:"QR Code", desc:"Tạo QR/Barcode, import Excel, trình diễn và retry QR lỗi.", icon:"assets/images/app-icons/qr-code.jpg", vip:true, feature_column:"qr_code" },
-  { key:"kho-phan-mem", title:"Kho Phần Mềm", desc:"Lưu link công cụ, phần mềm và tài nguyên tải nhanh.", icon:"assets/images/app-icons/kho-phan-mem.jpg", vip:false },
   { key:"kiem-quy", title:"Kiểm Quỹ", desc:"Kiểm quỹ nhanh, mobile mode, voice count và lịch sử.", icon:"assets/images/app-icons/kiem-quy.jpg", vip:true, feature_column:"kiem_quy" },
   { key:"tinh-tra-gop", title:"Tính Trả Góp", desc:"Tính khoản trả góp, lãi suất và kế hoạch thanh toán.", icon:"assets/images/app-icons/tinh-tra-gop.jpg", vip:true, feature_column:"tinh_tra_gop" },
   { key:"ai-video", title:"AI Video", desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok, AI.TKver9.2.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"ai_video" },
-  { key:"ai-prompt", title:"AI Prompt", desc:"Kho prompt AI, ý tưởng nội dung và trợ lý viết nhanh.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"ai_prompt" }
+  { key:"ai-prompt", title:"AI Prompt", desc:"Kho prompt AI, ý tưởng nội dung và trợ lý viết nhanh.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"ai_prompt" },
+  { key:"image-prompt", title:"Prompt từ Ảnh", desc:"Upload ảnh mẫu, AI đọc nội dung, tạo prompt để bạn đưa sang ChatGPT/Gemini/Grok.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"image_prompt" }
 ];
 
 const TK_RESERVE_DOMAINS = [

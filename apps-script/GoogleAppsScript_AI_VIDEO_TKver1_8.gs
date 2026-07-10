@@ -14,8 +14,12 @@ const TK_CONFIG = {
   SHEET_ID: '', // Nếu để trống, script sẽ tạo sheet mới tên TK_AI_VIDEO_DATA trong Drive của tài khoản chạy script.
   SHEET_NAME_FEEDBACK: 'feedback',
   SHEET_NAME_API_STATUS: 'api_status',
-  GEMINI_MODEL: 'gemini-1.5-flash'
+  GEMINI_MODEL: 'gemini-1.5-flash',
+  GROK_MODEL: 'grok-2-1212'
 };
+
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GROK_URL = 'https://api.x.ai/v1/chat/completions';
 
 function doGet(e) {
   return jsonOutput({ ok: true, app: 'TK-AI-VIDEO', version: 'AI.TKver8.6', message: 'Backend đang hoạt động.' });
@@ -23,13 +27,17 @@ function doGet(e) {
 
 function doPost(e) {
   try {
-    const payload = JSON.parse((e && e.postData && e.postData.contents) || '{}');
-    const action = payload.action || '';
+    const payload = parsePayload_(e);
+    const action = String(payload.action || '').trim();
+    if (!action) return jsonOutput({ ok: false, message: 'Thiếu action.' });
+
     if (action === 'checkGemini') return jsonOutput(checkGemini(payload.apiKey));
+    if (action === 'checkGrok') return jsonOutput(checkGrok(payload.apiKey));
     if (action === 'analyzeProduct') return jsonOutput(analyzeProduct(payload));
     if (action === 'generatePrompt') return jsonOutput(generatePrompt(payload));
     if (action === 'submitFeedback') return jsonOutput(submitFeedback(payload));
     if (action === 'getFeedbackReply') return jsonOutput(getFeedbackReply(payload));
+
     return jsonOutput({ ok: false, message: 'Action không hợp lệ.' });
   } catch (err) {
     return jsonOutput({ ok: false, message: String(err && err.message ? err.message : err) });
@@ -37,7 +45,43 @@ function doPost(e) {
 }
 
 function jsonOutput(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+  const json = JSON.stringify(obj);
+  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+}
+
+function parsePayload_(e) {
+  const payload = {};
+
+  if (e && e.parameter && typeof e.parameter === 'object') {
+    Object.keys(e.parameter).forEach(key => {
+      payload[key] = e.parameter[key];
+    });
+  }
+
+  if (e && e.postData && e.postData.contents) {
+    const raw = e.postData.contents;
+    try {
+      const body = JSON.parse(raw);
+      if (body && typeof body === 'object') {
+        Object.keys(body).forEach(key => {
+          payload[key] = body[key];
+        });
+      }
+    } catch (err) {
+      try {
+        const body = JSON.parse(raw.replace(/&/g, '&').replace(/"/g, '\"'));
+        if (body && typeof body === 'object') {
+          Object.keys(body).forEach(key => {
+            payload[key] = body[key];
+          });
+        }
+      } catch (err2) {
+        // Cho phép form-urlencoded/text fallback nếu cần
+      }
+    }
+  }
+
+  return payload;
 }
 
 function checkGemini(apiKey) {
@@ -53,32 +97,17 @@ function checkGemini(apiKey) {
 }
 
 function analyzeProduct(payload) {
-  const input = payload.productInput || '';
-  const apiKey = payload.apiKey || '';
+  const input = String(payload.productInput || '').trim();
+  const apiKey = String(payload.apiKey || '').trim();
   const htmlData = fetchProductPage(input);
-  const rawText = htmlData.text || '';
+  const rawText = String(htmlData.text || '');
   const fallback = fallbackAnalyze(input, rawText);
 
   if (!apiKey) {
     return Object.assign({ ok: true, source: 'fallback-no-api-key', message: 'Chưa có Gemini API Key, trả về phân tích cơ bản.' }, fallback);
   }
 
-  const prompt = `Bạn là chuyên gia phân tích sản phẩm bán hàng online. Hãy đọc dữ liệu trang/tên sản phẩm bên dưới và trả về JSON THUẦN, không markdown.
-
-Yêu cầu JSON:
-{
-  "shortDesc": ["3-5 điểm nhấn tính năng/lợi ích thật của sản phẩm"],
-  "price": "giá bán thực tế đang hiển thị trên website nếu tìm thấy, nếu không thì ghi Không tìm thấy giá",
-  "promotions": ["top 3 khuyến mãi/voucher/ưu đãi tốt nhất nếu có"],
-  "customer": "đối tượng khách hàng phù hợp với sản phẩm",
-  "storeName": "nơi bán/kênh bán nếu nhận diện được"
-}
-
-Đầu vào người dùng: ${input}
-
-Dữ liệu lấy từ website/tên sản phẩm:
-${rawText.slice(0, 16000)}
-`;
+  const prompt = buildAnalysisPrompt_(input, rawText);
 
   try {
     const gemini = callGemini(apiKey, prompt);
@@ -86,12 +115,12 @@ ${rawText.slice(0, 16000)}
     if (parsed) {
       return {
         ok: true,
-        source: htmlData.source || 'gemini',
-        shortDesc: parsed.shortDesc || fallback.shortDesc,
-        price: parsed.price || fallback.price,
-        promotions: parsed.promotions || fallback.promotions,
-        customer: parsed.customer || fallback.customer,
-        storeName: parsed.storeName || fallback.storeName,
+        source: String(htmlData.source || 'gemini'),
+        shortDesc: Array.isArray(parsed.shortDesc) ? parsed.shortDesc : fallback.shortDesc,
+        price: String(parsed.price || fallback.price),
+        promotions: Array.isArray(parsed.promotions) ? parsed.promotions : fallback.promotions,
+        customer: String(parsed.customer || fallback.customer),
+        storeName: String(parsed.storeName || fallback.storeName),
         accountStatus: 'green'
       };
     }
@@ -103,33 +132,34 @@ ${rawText.slice(0, 16000)}
 }
 
 function generatePrompt(payload) {
-  const apiKey = payload.apiKey || '';
-  const basePrompt = payload.basePrompt || '';
-  const assetMode = payload.assetMode || 'video';
+  const apiKey = String(payload.apiKey || '').trim();
+  const basePrompt = String(payload.basePrompt || '').trim();
+  const assetMode = String(payload.assetMode || 'video').trim();
+  const provider = String(payload.provider || 'gemini').toLowerCase().trim();
+
   if (!apiKey) return { ok: false, status: 'red', message: 'Chưa nhập API Key.' };
 
-  const prompt = `Hãy chuyển yêu cầu bên dưới thành một bản PROMPT VIP chuyên nghiệp, rõ mục, dễ copy sang công cụ AI. Giữ đầy đủ các phần: ${assetMode === 'image' ? 'prompt ảnh, bố cục ảnh, text trên ảnh, biến thể ảnh, caption, hashtag, CTA, checklist' : 'kịch bản video, prompt video, thumbnail, giọng đọc, caption, hashtag, CTA, checklist'}.
-
-Yêu cầu:
-- Viết tiếng Việt dễ hiểu.
-- Prompt tạo ảnh/video có thể dùng trực tiếp.
-- Nếu có link sản phẩm, nhắc AI đọc đúng giá/khuyến mãi trên web.
-- Nếu có file upload nhân vật/bối cảnh, nhắc người dùng upload đúng file vào tool AI.
-- Nội dung bán hàng tự nhiên, không nói quá đà.
-
-Dữ liệu nền:
-${basePrompt}`;
+  const systemPrompt = buildGeneratorSystemPrompt_(assetMode, basePrompt);
 
   try {
-    const gemini = callGemini(apiKey, prompt);
-    return { ok: true, prompt: gemini.text, accountStatus: 'green' };
+    if (provider === 'grok') {
+      const grok = callGrok(apiKey, systemPrompt);
+      return { ok: true, prompt: String(grok.text || ''), accountStatus: 'green', provider: 'grok' };
+    } else {
+      const gemini = callGemini(apiKey, systemPrompt);
+      return { ok: true, prompt: String(gemini.text || ''), accountStatus: 'green', provider: 'gemini' };
+    }
   } catch (err) {
-    return parseGeminiError(err);
+    if (provider === 'grok') {
+      return parseGrokError(err);
+    } else {
+      return parseGeminiError(err);
+    }
   }
 }
 
 function callGemini(apiKey, prompt) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${TK_CONFIG.GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const url = GEMINI_URL + '/' + encodeURIComponent(TK_CONFIG.GEMINI_MODEL) + ':generateContent?key=' + encodeURIComponent(apiKey);
   const payload = {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: { temperature: 0.55, topP: 0.9, maxOutputTokens: 8192 }
@@ -142,10 +172,11 @@ function callGemini(apiKey, prompt) {
   });
   const code = res.getResponseCode();
   const body = res.getContentText();
-  if (code < 200 || code >= 300) throw new Error(`Gemini HTTP ${code}: ${body}`);
+  if (code < 200 || code >= 300) throw new Error('Gemini HTTP ' + code + ': ' + body);
   const data = JSON.parse(body);
-  const text = (((data.candidates || [])[0] || {}).content || {}).parts || [];
-  return { text: text.map(p => p.text || '').join('\n').trim(), raw: data };
+  const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+  const text = parts.map(p => String(p.text || '').trim()).filter(Boolean).join('\n').trim();
+  return { text: text, raw: data };
 }
 
 function parseGeminiError(err) {
@@ -155,141 +186,57 @@ function parseGeminiError(err) {
   return { ok: false, status: 'red', message: msg.slice(0, 260) };
 }
 
+function callGrok(apiKey, prompt) {
+  const payload = {
+    model: TK_CONFIG.GROK_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.55,
+    max_tokens: 8192
+  };
+  const res = UrlFetchApp.fetch(GROK_URL, {
+    method: 'post',
+    contentType: 'application/json',
+    headers: { 'Authorization': 'Bearer ' + apiKey },
+    muteHttpExceptions: true,
+    payload: JSON.stringify(payload)
+  });
+  const code = res.getResponseCode();
+  const body = res.getContentText();
+  if (code < 200 || code >= 300) throw new Error('Grok HTTP ' + code + ': ' + body);
+  const data = JSON.parse(body);
+  const text = String(((data.choices || [])[0] || {}).message || {}).content || '';
+  return { text: text.trim(), raw: data };
+}
+
+function parseGrokError(err) {
+  const msg = String(err && err.message ? err.message : err);
+  if (/quota|limit|429|RESOURCE_EXHAUSTED/i.test(msg)) return { ok: false, status: 'red', message: 'Grok hết quota, vui lòng thử lại sau.' };
+  if (/invalid|unauthorized|401|403/i.test(msg)) return { ok: false, status: 'red', message: 'Grok API Key không hợp lệ.' };
+  return { ok: false, status: 'red', message: msg.slice(0, 260) };
+}
+
 function fetchProductPage(input) {
-  if (!/^https?:\/\//i.test(input || '')) return { source: 'name-only', text: input || '' };
+  const trimmed = String(input || '').trim();
+  if (!/^https?:\/\//i.test(trimmed)) {
+    return { source: 'name-only', text: trimmed || '' };
+  }
+
   try {
-    const res = UrlFetchApp.fetch(input, {
+    const res = UrlFetchApp.fetch(trimmed, {
       method: 'get',
       muteHttpExceptions: true,
       followRedirects: true,
-      headers: { 'User-Agent': 'Mozilla/5.0 TK-AI-VIDEO/1.7' }
+      headers: { 'User-Agent': 'Mozilla/5.0 TK-AI-VIDEO/1.8' }
     });
-    const html = res.getContentText();
-    return { source: input, text: extractReadableText(html, input) };
+    const html = String(res.getContentText() || '');
+    return { source: trimmed, text: extractReadableText(html, trimmed) };
   } catch (err) {
-    return { source: 'fetch-error', text: `${input}\nKhông crawl được trang: ${err.message}` };
+    return { source: 'fetch-error', text: trimmed + '\nKhông crawl được trang: ' + err.message };
   }
 }
 
 function extractReadableText(html, url) {
-  let text = html || '';
-  const title = matchOne(text, /<title[^>]*>([\s\S]*?)<\/title>/i);
-  const desc = matchMeta(text, 'description') || matchMeta(text, 'og:description');
-  const ogTitle = matchMeta(text, 'og:title');
-  const price = matchMeta(text, 'product:price:amount') || matchMeta(text, 'og:price:amount') || matchOne(text, /"price"\s*:\s*"?([^",}]+)"?/i);
-  const clean = text
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return [
-    `URL: ${url}`,
-    title ? `TITLE: ${decodeHtml(title)}` : '',
-    ogTitle ? `OG_TITLE: ${decodeHtml(ogTitle)}` : '',
-    desc ? `DESCRIPTION: ${decodeHtml(desc)}` : '',
-    price ? `PRICE_SCHEMA: ${decodeHtml(price)}` : '',
-    `PAGE_TEXT: ${decodeHtml(clean).slice(0, 12000)}`
-  ].filter(Boolean).join('\n');
-}
-
-function matchOne(s, re) { const m = String(s || '').match(re); return m ? m[1].trim() : ''; }
-function matchMeta(html, name) {
-  const re1 = new RegExp(`<meta[^>]+(?:name|property)=["']${escapeReg(name)}["'][^>]+content=["']([^"']+)["'][^>]*>`, 'i');
-  const re2 = new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:name|property)=["']${escapeReg(name)}["'][^>]*>`, 'i');
-  return matchOne(html, re1) || matchOne(html, re2);
-}
-function escapeReg(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-function decodeHtml(s) { return String(s || '').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
-
-function safeJsonParse(text) {
-  try { return JSON.parse(text); } catch (e) {}
-  const m = String(text || '').match(/\{[\s\S]*\}/);
-  if (m) { try { return JSON.parse(m[0]); } catch (e) {} }
-  return null;
-}
-
-function fallbackAnalyze(input, rawText) {
-  const s = `${input}\n${rawText}`.toLowerCase();
-  let storeName = 'kênh bán hàng bạn muốn giới thiệu';
-  if (s.indexOf('dienmayxanh') >= 0) storeName = 'Điện Máy Xanh';
-  else if (s.indexOf('thegioididong') >= 0) storeName = 'Thế Giới Di Động';
-  else if (s.indexOf('shopee') >= 0) storeName = 'Shopee';
-
-  let shortDesc = [
-    'Tập trung vào 3-5 điểm nổi bật nhất của sản phẩm.',
-    'Nêu rõ lợi ích thật, tính năng quan trọng và lý do khách hàng nên quan tâm.',
-    'Ưu tiên nội dung từ website gốc/trang bán hàng nếu có.',
-    `Gợi ý nơi bán/kênh giới thiệu: ${storeName}.`
-  ];
-  if (/tivi|tv|crystal|uhd|samsung/.test(s)) {
-    shortDesc = [
-      'Hình ảnh 4K sắc nét, phù hợp giải trí gia đình.',
-      'Màu sắc sống động, tạo cảm giác cao cấp khi xem phim/thể thao.',
-      'Hệ điều hành thông minh, dễ xem YouTube, Netflix và các ứng dụng phổ biến.',
-      'Thiết kế hiện đại, phù hợp phòng khách, phòng ngủ hoặc cửa hàng.',
-      `Gợi ý nơi bán/kênh giới thiệu: ${storeName}.`
-    ];
-  }
-  const price = extractPriceFromText(rawText) || 'Không tìm thấy giá. Vui lòng nhập tay giá đang hiển thị trên website.';
-  return {
-    shortDesc,
-    price,
-    promotions: ['Tìm ưu đãi/voucher đang hiển thị trên website.', 'Ưu tiên top 3: giảm giá, trả góp 0%, freeship/lắp đặt/quà tặng/bảo hành.', 'Nếu không có ưu đãi rõ ràng, đề xuất ưu đãi hợp lý để tăng chuyển đổi.'],
-    customer: /tivi|tv|samsung/.test(s) ? 'Gia đình, chủ nhà, người mua sắm thiết bị điện máy, người cần nâng cấp trải nghiệm giải trí tại nhà.' : 'Khách hàng có nhu cầu thực tế với sản phẩm, quan tâm chất lượng, giá trị sử dụng và ưu đãi mua hàng.',
-    storeName
-  };
-}
-
-function extractPriceFromText(text) {
-  const m = String(text || '').match(/(\d{1,3}(?:[\.\,]\d{3}){1,4}\s*(?:₫|đ|vnd|vnđ))/i);
-  return m ? m[1] : '';
-}
-
-function getDb() {
-  let ss;
-  if (TK_CONFIG.SHEET_ID) ss = SpreadsheetApp.openById(TK_CONFIG.SHEET_ID);
-  else {
-    const files = DriveApp.getFilesByName('TK_AI_VIDEO_DATA');
-    ss = files.hasNext() ? SpreadsheetApp.open(files.next()) : SpreadsheetApp.create('TK_AI_VIDEO_DATA');
-  }
-  ensureSheet(ss, TK_CONFIG.SHEET_NAME_FEEDBACK, ['id', 'time', 'name', 'email', 'message', 'reply', 'status', 'appVersion']);
-  ensureSheet(ss, TK_CONFIG.SHEET_NAME_API_STATUS, ['account', 'status', 'last_check', 'note']);
-  return ss;
-}
-function ensureSheet(ss, name, headers) {
-  let sh = ss.getSheetByName(name);
-  if (!sh) sh = ss.insertSheet(name);
-  if (sh.getLastRow() === 0) sh.appendRow(headers);
-  return sh;
-}
-function submitFeedback(payload) {
-  const ss = getDb();
-  const sh = ss.getSheetByName(TK_CONFIG.SHEET_NAME_FEEDBACK);
-  const id = 'FB-' + Date.now();
-  sh.appendRow([id, new Date(), payload.name || '', payload.email || '', payload.message || '', '', 'new', payload.appVersion || '']);
-  return { ok: true, id, message: 'Đã ghi nhận đóng góp.' };
-}
-function getFeedbackReply(payload) {
-  const email = payload.email || '';
-  if (!email) return { ok: false, message: 'Thiếu email hoặc mã nhận phản hồi.' };
-  const ss = getDb();
-  const sh = ss.getSheetByName(TK_CONFIG.SHEET_NAME_FEEDBACK);
-  const values = sh.getDataRange().getValues();
-  let latest = null;
-  for (let i = values.length - 1; i >= 1; i--) {
-    if (String(values[i][3]) === String(email)) { latest = values[i]; break; }
-  }
-  return { ok: true, reply: latest ? latest[5] : '', status: latest ? latest[6] : '' };
-}
-
-/***********************
- * AI.TKver8.6 Backend Overrides
- ***********************/
-function extractReadableText(html, url) {
-  let text = html || '';
+  const text = String(html || '');
   const title = matchOne(text, /<title[^>]*>([\s\S]*?)<\/title>/i);
   const desc = matchMeta(text, 'description') || matchMeta(text, 'og:description');
   const ogTitle = matchMeta(text, 'og:title');
@@ -303,18 +250,22 @@ function extractReadableText(html, url) {
     .replace(/&amp;/g, '&')
     .replace(/\s+/g, ' ')
     .trim();
+
   const priceGuess = metaPrice || extractPriceFromText(jsonLdText + '\n' + clean);
   const promoGuess = extractPromoSnippets(clean);
-  return [
-    `URL: ${url}`,
-    title ? `TITLE: ${decodeHtml(title)}` : '',
-    ogTitle ? `OG_TITLE: ${decodeHtml(ogTitle)}` : '',
-    desc ? `DESCRIPTION: ${decodeHtml(desc)}` : '',
-    priceGuess ? `PRICE_DETECTED: ${decodeHtml(priceGuess)}` : '',
-    promoGuess ? `PROMOTION_SNIPPETS: ${promoGuess}` : '',
-    jsonLdText ? `JSON_LD: ${jsonLdText.slice(0, 5000)}` : '',
-    `PAGE_TEXT: ${decodeHtml(clean).slice(0, 18000)}`
-  ].filter(Boolean).join('\n');
+
+  const parts = [
+    'URL: ' + url,
+    title ? 'TITLE: ' + decodeHtml(title) : '',
+    ogTitle ? 'OG_TITLE: ' + decodeHtml(ogTitle) : '',
+    desc ? 'DESCRIPTION: ' + decodeHtml(desc) : '',
+    priceGuess ? 'PRICE_DETECTED: ' + decodeHtml(priceGuess) : '',
+    promoGuess ? 'PROMOTION_SNIPPETS: ' + promoGuess : '',
+    jsonLdText ? 'JSON_LD: ' + decodeHtml(jsonLdText).slice(0, 5000) : '',
+    'PAGE_TEXT: ' + decodeHtml(clean).slice(0, 18000)
+  ];
+
+  return parts.filter(Boolean).join('\n');
 }
 
 function extractJsonLdText(html) {
@@ -325,6 +276,30 @@ function extractJsonLdText(html) {
     parts.push(decodeHtml(m[1]).replace(/\s+/g, ' ').trim());
   }
   return parts.join('\n');
+}
+
+function matchOne(s, re) {
+  const m = String(s || '').match(re);
+  return m ? m[1].trim() : '';
+}
+
+function matchMeta(html, name) {
+  const re1 = new RegExp('<meta[^>]+(?:name|property)=["\']' + escapeReg(name) + '["\'][^>]+content=["\']([^"\']+)["\'][^>]*>', 'i');
+  const re2 = new RegExp('<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:name|property)=["\']' + escapeReg(name) + '["\'][^>]*>', 'i');
+  return matchOne(html, re1) || matchOne(html, re2);
+}
+
+function escapeReg(s) {
+  return String(s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function decodeHtml(s) {
+  return String(s || '')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
 }
 
 function extractPriceFromText(text) {
@@ -363,8 +338,17 @@ function extractPromoSnippets(text) {
   return snippets.join(' | ');
 }
 
+function safeJsonParse(text) {
+  try { return JSON.parse(text); } catch (e) {}
+  const m = String(text || '').match(/\{[\s\S]*\}/);
+  if (m) {
+    try { return JSON.parse(m[0]); } catch (e) {}
+  }
+  return null;
+}
+
 function fallbackAnalyze(input, rawText) {
-  const s = `${input}\n${rawText}`.toLowerCase();
+  const s = (String(input || '') + '\n' + String(rawText || '')).toLowerCase();
   let storeName = 'kênh bán hàng bạn muốn giới thiệu';
   if (s.indexOf('dienmayxanh') >= 0) storeName = 'Điện Máy Xanh';
   else if (s.indexOf('thegioididong') >= 0) storeName = 'Thế Giới Di Động';
@@ -376,7 +360,7 @@ function fallbackAnalyze(input, rawText) {
     'Tập trung vào 3-5 điểm nổi bật nhất của sản phẩm.',
     'Nêu rõ lợi ích thật, tính năng quan trọng và lý do khách hàng nên quan tâm.',
     'Ưu tiên nội dung từ website gốc/trang bán hàng nếu có.',
-    `Gợi ý nơi bán/kênh giới thiệu: ${storeName}.`
+    'Gợi ý nơi bán/kênh giới thiệu: ' + storeName + '.'
   ];
   if (/tivi|tv|crystal|uhd|samsung/.test(s)) {
     shortDesc = [
@@ -384,16 +368,18 @@ function fallbackAnalyze(input, rawText) {
       'Màu sắc sống động, tạo cảm giác cao cấp khi xem phim/thể thao.',
       'Hệ điều hành thông minh, dễ xem YouTube, Netflix và các ứng dụng phổ biến.',
       'Thiết kế hiện đại, phù hợp phòng khách, phòng ngủ hoặc cửa hàng.',
-      `Gợi ý nơi bán/kênh giới thiệu: ${storeName}.`
+      'Gợi ý nơi bán/kênh giới thiệu: ' + storeName + '.'
     ];
   }
+
   const price = extractPriceFromText(rawText) || 'Không tìm thấy giá. Vui lòng nhập tay giá đang hiển thị trên website.';
   const promoText = extractPromoSnippets(rawText);
-  const promos = promoText ? promoText.split('|').slice(0,3).map(x => x.trim()) : [
+  const promos = promoText ? promoText.split('|').slice(0, 3).map(x => x.trim()) : [
     'Tìm ưu đãi/voucher đang hiển thị trên website.',
     'Ưu tiên top 3: giảm giá, trả góp 0%, freeship/lắp đặt/quà tặng/bảo hành.',
     'Nếu không có ưu đãi rõ ràng, đề xuất ưu đãi hợp lý để tăng chuyển đổi.'
   ];
+
   return {
     shortDesc,
     price,
@@ -401,4 +387,93 @@ function fallbackAnalyze(input, rawText) {
     customer: /tivi|tv|samsung/.test(s) ? 'Gia đình, chủ nhà, người mua sắm thiết bị điện máy, người cần nâng cấp trải nghiệm giải trí tại nhà.' : 'Khách hàng có nhu cầu thực tế với sản phẩm, quan tâm chất lượng, giá trị sử dụng và ưu đãi mua hàng.',
     storeName
   };
+}
+
+function buildAnalysisPrompt_(input, rawText) {
+  return 'Bạn là chuyên gia phân tích sản phẩm bán hàng online. Hãy đọc dữ liệu trang/tên sản phẩm bên dưới và trả về JSON THUẦN, không markdown.\n\n' +
+    'Yêu cầu JSON:\n' +
+    '{\n' +
+    '  "shortDesc": ["3-5 điểm nhấn tính năng/lợi ích thật của sản phẩm"],\n' +
+    '  "price": "giá bán thực tế đang hiển thị trên website nếu tìm thấy, nếu không thì ghi Không tìm thấy giá",\n' +
+    '  "promotions": ["top 3 khuyến mãi/voucher/ưu đãi tốt nhất nếu có"],\n' +
+    '  "customer": "đối tượng khách hàng phù hợp với sản phẩm",\n' +
+    '  "storeName": "nơi bán/kênh bán nếu nhận diện được"\n' +
+    '}\n\n' +
+    'Đầu vào người dùng: ' + input + '\n\n' +
+    'Dữ liệu lấy từ website/tên sản phẩm:\n' + rawText.slice(0, 16000);
+}
+
+function buildGeneratorSystemPrompt_(assetMode, basePrompt) {
+  return 'Hãy chuyển yêu cầu bên dưới thành một bản PROMPT VIP chuyên nghiệp, rõ mục, dễ copy sang công cụ AI. Giữ đầy đủ các phần: ' + (assetMode === 'image' ? 'prompt ảnh, bố cục ảnh, text trên ảnh, biến thể ảnh, caption, hashtag, CTA, checklist' : 'kịch bản video, prompt video, thumbnail, giọng đọc, caption, hashtag, CTA, checklist') + '.\n\n' +
+    'Yêu cầu:\n' +
+    '- Viết tiếng Việt dễ hiểu.\n' +
+    '- Prompt tạo ảnh/video có thể dùng trực tiếp.\n' +
+    '- Nếu có link sản phẩm, nhắc AI đọc đúng giá/khuyến mãi trên web.\n' +
+    '- Nếu có file upload nhân vật/bối cảnh, nhắc người dùng upload đúng file vào tool AI.\n' +
+    '- Nội dung bán hàng tự nhiên, không nói quá đà.\n\n' +
+    'Dữ liệu nền:\n' + basePrompt;
+}
+
+function getDb() {
+  let ss;
+  if (TK_CONFIG.SHEET_ID) {
+    ss = SpreadsheetApp.openById(TK_CONFIG.SHEET_ID);
+  } else {
+    const files = DriveApp.getFilesByName('TK_AI_VIDEO_DATA');
+    if (files.hasNext()) {
+      ss = SpreadsheetApp.open(files.next());
+    } else {
+      ss = SpreadsheetApp.create('TK_AI_VIDEO_DATA');
+    }
+  }
+  ensureSheet(ss, TK_CONFIG.SHEET_NAME_FEEDBACK, ['id', 'time', 'name', 'email', 'message', 'reply', 'status', 'appVersion']);
+  ensureSheet(ss, TK_CONFIG.SHEET_NAME_API_STATUS, ['account', 'status', 'last_check', 'note']);
+  return ss;
+}
+
+function ensureSheet(ss, name, headers) {
+  let sh = ss.getSheetByName(name);
+  if (!sh) sh = ss.insertSheet(name);
+  if (sh.getLastRow() === 0) sh.appendRow(headers);
+  return sh;
+}
+
+function submitFeedback(payload) {
+  const lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+
+  try {
+    const ss = getDb();
+    const sh = ss.getSheetByName(TK_CONFIG.SHEET_NAME_FEEDBACK);
+    const id = 'FB-' + Date.now();
+    sh.appendRow([id, new Date(), String(payload.name || '').trim(), String(payload.email || '').trim(), String(payload.message || '').trim(), '', 'new', String(payload.appVersion || '').trim()]);
+    return { ok: true, id, message: 'Đã ghi nhận đóng góp.' };
+  } catch (err) {
+    return { ok: false, message: 'Lỗi khi lưu góp ý: ' + err.message };
+  } finally {
+    try { lock.releaseLock(); } catch (e) {}
+  }
+}
+
+function getFeedbackReply(payload) {
+  const email = String(payload.email || '').trim();
+  if (!email) return { ok: false, message: 'Thiếu email hoặc mã nhận phản hồi.' };
+
+  const ss = getDb();
+  const sh = ss.getSheetByName(TK_CONFIG.SHEET_NAME_FEEDBACK);
+  const lastRow = sh.getLastRow();
+  if (lastRow < 2) return { ok: true, reply: '', status: '' };
+
+  const lastCol = Math.min(sh.getLastColumn(), 8);
+  const values = sh.getRange(1, 1, lastRow, lastCol).getValues();
+
+  let latest = null;
+  for (let i = values.length - 1; i >= 1; i--) {
+    if (String(values[i][3] || '').toLowerCase() === email.toLowerCase()) {
+      latest = values[i];
+      break;
+    }
+  }
+
+  return { ok: true, reply: latest ? String(latest[5] || '') : '', status: latest ? String(latest[6] || '') : '' };
 }

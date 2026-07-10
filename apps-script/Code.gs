@@ -5,14 +5,15 @@
  * Sheet link hiện tại:
  * https://docs.google.com/spreadsheets/d/11vvybEWeClcJFCZIchZ12MsClXDPJ-39iRNQtWGpRDs/edit?gid=1334014683
  *
- * Cột gợi ý:
- * username | password | role | full_name | status | note
+ * Cột gợi ý user sheet: username | password | role | full_name | status | note
  *
- * status nên để: active
+ * Cột gợi ý user_permissions sheet: username | vip_access | create_video | ai_prompt | image_prompt | app_order | mood_tracking
  */
 
 const SPREADSHEET_ID = '11vvybEWeClcJFCZIchZ12MsClXDPJ-39iRNQtWGpRDs';
 const SHEET_GID = 1334014683;
+const DEFAULT_PAGE_SIZE = 200;
+const MAX_PAGE_SIZE = 500;
 
 function doGet(e) {
   return handleRequest_(e);
@@ -25,7 +26,11 @@ function doPost(e) {
 function handleRequest_(e) {
   try {
     const params = parseParams_(e);
-    const action = String(params.action || '').toLowerCase();
+    const action = String(params.action || '').toLowerCase().trim();
+
+    if (!action) {
+      return json_({ ok: false, error: 'Thiếu action.' });
+    }
 
     if (action === 'ping') {
       return json_({ ok: true, message: 'TK API OK', time: new Date().toISOString() });
@@ -33,6 +38,14 @@ function handleRequest_(e) {
 
     if (action === 'login') {
       return login_(params);
+    }
+
+    if (action === 'get_users') {
+      return getUsers_(params);
+    }
+
+    if (action === 'set_user_permissions') {
+      return setUserPermissions_(params);
     }
 
     return json_({ ok: false, error: 'Action không hợp lệ.' });
@@ -46,19 +59,34 @@ function handleRequest_(e) {
 }
 
 function parseParams_(e) {
-  let params = {};
+  const params = {};
 
   if (e && e.parameter) {
-    params = Object.assign(params, e.parameter);
+    Object.keys(e.parameter).forEach(key => {
+      params[key] = e.parameter[key];
+    });
   }
 
   if (e && e.postData && e.postData.contents) {
     const raw = e.postData.contents;
     try {
       const body = JSON.parse(raw);
-      params = Object.assign(params, body);
+      if (body && typeof body === 'object') {
+        Object.keys(body).forEach(key => {
+          params[key] = body[key];
+        });
+      }
     } catch (err) {
-      // Cho phép form-urlencoded/text fallback nếu cần
+      try {
+        const body = JSON.parse(raw.replace(/&/g, '&').replace(/"/g, '\"'));
+        if (body && typeof body === 'object') {
+          Object.keys(body).forEach(key => {
+            params[key] = body[key];
+          });
+        }
+      } catch (err2) {
+        // Cho phép form-urlencoded/text fallback nếu cần
+      }
     }
   }
 
@@ -73,14 +101,27 @@ function login_(params) {
     return json_({ ok: false, error: 'Thiếu username hoặc password.' });
   }
 
-  const sheet = getTargetSheet_();
-  const values = sheet.getDataRange().getValues();
+  const targetUsername = username.toLowerCase();
+  const targetPassword = password;
 
-  if (values.length < 2) {
+  let ss;
+  try {
+    ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  } catch (err) {
+    return json_({ ok: false, error: 'Không mở được Google Sheet. Kiểm tra quyền truy cập.' });
+  }
+
+  const sheet = getTargetSheet_(ss);
+  const lastRow = sheet.getLastRow();
+
+  if (lastRow < 2) {
     return json_({ ok: false, error: 'Sheet chưa có dữ liệu user.' });
   }
 
+  const dataRange = sheet.getRange(1, 1, lastRow, Math.min(sheet.getLastColumn(), 20));
+  const values = dataRange.getValues();
   const headers = values[0].map(h => clean_(h).toLowerCase());
+
   const idx = {
     username: headers.indexOf('username'),
     password: headers.indexOf('password'),
@@ -96,20 +137,22 @@ function login_(params) {
     });
   }
 
+  let matchedUser = null;
+
   for (let i = 1; i < values.length; i++) {
     const row = values[i];
-
     const rowUsername = clean_(row[idx.username]);
     const rowPassword = clean_(row[idx.password]);
 
-    if (rowUsername === username && rowPassword === password) {
-      const status = idx.status >= 0 ? clean_(row[idx.status]).toLowerCase() : 'active';
+    if (rowUsername.toLowerCase() === targetUsername && rowPassword === targetPassword) {
+      const statusRaw = idx.status >= 0 ? clean_(row[idx.status]) : 'active';
+      const status = statusRaw.toLowerCase();
 
       if (status && status !== 'active') {
         return json_({ ok: false, error: 'Tài khoản đang bị khóa hoặc chưa active.' });
       }
 
-      const user = {
+      matchedUser = {
         username: rowUsername,
         full_name: idx.full_name >= 0 ? clean_(row[idx.full_name]) : rowUsername,
         role: clean_(row[idx.role]) || 'TVBH',
@@ -117,18 +160,141 @@ function login_(params) {
         source: 'google_sheet'
       };
 
-      // TKver8.6: trả thêm các cột mở rộng nếu có trong Google Sheet
       headers.forEach((h, colIndex) => {
-        if (!user[h] && !['username','password','full_name','role','status'].includes(h)) {
-          user[h] = clean_(row[colIndex]);
+        if (!matchedUser[h] && !['username','password','full_name','role','status'].includes(h)) {
+          matchedUser[h] = clean_(row[colIndex]);
         }
       });
 
-      return json_({ ok: true, user });
+      break;
     }
   }
 
-  return json_({ ok: false, error: 'Không tìm thấy user hoặc sai mật khẩu.' });
+  if (!matchedUser) {
+    return json_({ ok: false, error: 'Không tìm thấy user hoặc sai mật khẩu.' });
+  }
+
+  const permission = readPermissionForUser_(ss, matchedUser.username);
+  if (permission) {
+    matchedUser.permissions = permission;
+  }
+
+  return json_({ ok: true, user: matchedUser });
+}
+
+function getUsers_(params) {
+  const requester = clean_(params.requester_username);
+  if (!requester) return json_({ ok: false, error: 'Thiếu requester_username.' });
+
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const userSheet = getTargetSheet_(ss);
+  const permSheetName = 'user_permissions';
+  const permSheet = ensureSheet_(ss, permSheetName, ['username','vip_access','create_video','ai_prompt','image_prompt','app_order','mood_tracking']);
+
+  const userValues = userSheet.getRange(1, 1, userSheet.getLastRow(), Math.min(userSheet.getLastColumn(), 20)).getValues();
+  const permValues = permSheet.getRange(1, 1, permSheet.getLastRow(), permSheet.getLastColumn()).getValues();
+
+  const permHeader = (permValues[0] || []).map(h => clean_(h).toLowerCase());
+  const permRows = permValues.slice(1).map(row => {
+    const obj = {};
+    permHeader.forEach((h, i) => obj[h] = clean_(row[i]));
+    return obj;
+  });
+  const permMap = {};
+  permRows.forEach(r => { if (r.username) permMap[r.username.toLowerCase()] = r; });
+
+  const users = [];
+  for (let i = 1; i < userValues.length; i++) {
+    const row = userValues[i];
+    const username = clean_(row[0]);
+    if (!username) continue;
+    const user = { username };
+    for (let j = 1; j < row.length; j++) {
+      const header = clean_(userValues[0][j]).toLowerCase();
+      if (header && header !== 'password') user[header] = clean_(row[j]);
+    }
+    const perm = permMap[username.toLowerCase()];
+    if (perm) user.permissions = perm;
+    users.push(user);
+  }
+
+  return json_({ ok: true, users });
+}
+
+function setUserPermissions_(params) {
+  const requester = clean_(params.requester_username);
+  const targetUsername = clean_(params.username);
+  const vipAccess = clean_(params.vip_access);
+  const createVideo = clean_(params.create_video);
+  const aiPrompt = clean_(params.ai_prompt);
+  const imagePrompt = clean_(params.image_prompt);
+  const appOrder = clean_(params.app_order);
+  const moodTracking = clean_(params.mood_tracking);
+
+  if (!requester || !targetUsername) return json_({ ok: false, error: 'Thiếu requester_username hoặc username.' });
+
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const permSheet = ensureSheet_(ss, 'user_permissions', ['username','vip_access','create_video','ai_prompt','image_prompt','app_order','mood_tracking']);
+  const values = permSheet.getRange(1, 1, permSheet.getLastRow(), permSheet.getLastColumn()).getValues();
+  const headers = values[0].map(h => clean_(h).toLowerCase());
+  const idx = {
+    username: headers.indexOf('username'),
+    vip_access: headers.indexOf('vip_access'),
+    create_video: headers.indexOf('create_video'),
+    ai_prompt: headers.indexOf('ai_prompt'),
+    image_prompt: headers.indexOf('image_prompt'),
+    app_order: headers.indexOf('app_order'),
+    mood_tracking: headers.indexOf('mood_tracking')
+  };
+
+  let rowIndex = -1;
+  for (let i = 1; i < values.length; i++) {
+    if (clean_(values[i][idx.username]).toLowerCase() === targetUsername.toLowerCase()) {
+      rowIndex = i + 1;
+      break;
+    }
+  }
+
+  const row = [];
+  headers.forEach((_, i) => {
+    if (i === idx.username) row.push(targetUsername);
+    else if (i === idx.vip_access) row.push(vipAccess);
+    else if (i === idx.create_video) row.push(createVideo);
+    else if (i === idx.ai_prompt) row.push(aiPrompt);
+    else if (i === idx.image_prompt) row.push(imagePrompt);
+    else if (i === idx.app_order) row.push(appOrder);
+    else if (i === idx.mood_tracking) row.push(moodTracking);
+    else row.push('');
+  });
+
+  if (rowIndex > 0) {
+    permSheet.getRange(rowIndex, 1, 1, row.length).setValues([row]);
+  } else {
+    permSheet.appendRow(row);
+  }
+
+  return json_({ ok: true, message: 'Đã cập nhật quyền user.' });
+}
+
+function readPermissionForUser_(ss, username) {
+  const permSheet = ensureSheet_(ss, 'user_permissions', ['username','vip_access','create_video','ai_prompt','image_prompt','app_order','mood_tracking']);
+  const values = permSheet.getRange(1, 1, permSheet.getLastRow(), permSheet.getLastColumn()).getValues();
+  const headers = values[0].map(h => clean_(h).toLowerCase());
+  for (let i = 1; i < values.length; i++) {
+    if (clean_(values[i][0]).toLowerCase() === String(username).toLowerCase()) {
+      const obj = {};
+      headers.forEach((h, idx) => { if (h) obj[h] = clean_(values[i][idx]); });
+      return obj;
+    }
+  }
+  return null;
+}
+
+function ensureSheet_(ss, name, headers) {
+  let sh = ss.getSheetByName(name);
+  if (!sh) sh = ss.insertSheet(name);
+  if (sh.getLastRow() === 0) sh.appendRow(headers);
+  return sh;
 }
 
 function getTargetSheet_() {
@@ -145,11 +311,13 @@ function getTargetSheet_() {
 }
 
 function clean_(value) {
-  return String(value === null || value === undefined ? '' : value).trim();
+  if (value === null || value === undefined) return '';
+  return String(value).trim();
 }
 
 function json_(obj) {
+  const json = JSON.stringify(obj);
   return ContentService
-    .createTextOutput(JSON.stringify(obj))
+    .createTextOutput(json)
     .setMimeType(ContentService.MimeType.JSON);
 }

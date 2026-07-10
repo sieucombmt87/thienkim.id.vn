@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="200" height="200" rx="40" fill="url(#bg)"/>
+  <!-- Box -->
+  <rect x="45" y="55" width="110" height="90" rx="8" fill="#fff" opacity="0.95"/>
+  <!-- Box lid -->
+  <rect x="40" y="45" width="120" height="20" rx="6" fill="#fff"/>
+  <!-- Android robot -->
+  <rect x="70" y="75" width="25" height="30" rx="5" fill="#3ddc84"/>
+  <circle cx="82" cy="70" r="12" fill="#3ddc84"/>
+  <rect x="62" y="67" width="8" height="5" rx="2" fill="#3ddc84"/>
+  <rect x="95" y="67" width="8" height="5" rx="2" fill="#3ddc84"/>
+  <!-- Windows -->
+  <rect x="105" y="80" width="35" height="40" rx="4" fill="#0078d4"/>
+  <rect x="105" y="80" width="35" height="8" rx="4" fill="#005a9e"/>
+  <circle cx="108" cy="84" r="2" fill="#ff5f57"/>
+  <circle cx="114" cy="84" r="2" fill="#febc2e"/>
+  <circle cx="120" cy="84" r="2" fill="#28c840"/>
+  <!-- Label -->
+  <text x="100" y="140" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="Arial">SOFTWARE</text>
+</svg>

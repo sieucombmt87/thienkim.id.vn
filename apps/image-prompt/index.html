@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prompt từ Ảnh • TKver9.2</title>
+<link rel="stylesheet" href="../_shared/app-lite.css?v=TKver9.2">
+<style>
+  .image-preview-wrap{
+    margin-top:8px;
+    border:2px dashed rgba(255,255,255,0.15);
+    border-radius:16px;
+    padding:16px;
+    text-align:center;
+    min-height:120px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .image-preview-wrap img{
+    max-width:100%;
+    max-height:260px;
+    border-radius:12px;
+    display:block;
+    margin:0 auto;
+  }
+  .edit-row{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:12px;
+  }
+  .full-row{
+    grid-column: 1 / -1;
+  }
+  .replace-block{
+    margin-top:10px;
+    padding:10px 12px;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    background:rgba(255,255,255,0.03);
+  }
+  .replace-block summary{
+    cursor:pointer;
+    font-weight:600;
+    color:#cfe6ff;
+  }
+  .replace-block .pair{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+  }
+  .suggestions{
+    margin-top:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .chip{
+    border:1px solid rgba(255,255,255,0.12);
+    padding:6px 10px;
+    border-radius:999px;
+    cursor:pointer;
+    background:rgba(255,255,255,0.05);
+    color:#e7f0ff;
+    font-size:13px;
+  }
+  .chip:hover{
+    border-color:rgba(255,255,255,0.35);
+    background:rgba(255,255,255,0.1);
+  }
+  .status.success{ color:#9be7b8; }
+  .status.error{ color:#ff9e9e; }
+  .status{ min-height:18px; }
+  .provider-grid{ display:flex; flex-wrap:wrap; gap:10px; }
+  .provider-btn{
+    border:1px solid rgba(255,255,255,0.15);
+    padding:10px 14px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.05);
+    color:#e7f0ff;
+    cursor:pointer;
+    min-width:140px;
+  }
+  .provider-btn.active{
+    border-color:#7aa7ff;
+    background:rgba(122,167,255,0.12);
+    color:#fff;
+  }
+  .api-grid{ display:grid; gap:10px; margin-top:10px; }
+  .api-card{
+    border:1px solid rgba(255,255,255,0.08);
+    padding:12px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.03);
+  }
+  .api-card input[type="password"], .api-card input[type="text"]{
+    width:100%;
+    margin-top:6px;
+  }
+  .mini-btn{
+    border:1px solid rgba(255,255,255,0.2);
+    padding:8px 10px;
+    border-radius:10px;
+    background:rgba(255,255,255,0.08);
+    color:#e7f0ff;
+    cursor:pointer;
+    margin-top:8px;
+  }
+  .mini-btn.primary{
+    background:#3b82f6;
+    border-color:#3b82f6;
+    color:#fff;
+  }
+  .action-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+  .panel{
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:16px;
+    background:rgba(255,255,255,0.03);
+    margin-bottom:14px;
+  }
+  label{ display:block; font-size:13px; color:#cfe6ff; margin:10px 0 6px; }
+  input,textarea,select{
+    width:100%;
+    background:rgba(0,0,0,0.25);
+    color:#e7f0ff;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:10px;
+    padding:10px;
+    font:inherit;
+  }
+  textarea{ min-height:120px; resize:vertical; }
+  .copy-wrap{ position:relative; }
+  .copy-wrap textarea{ padding-right:120px; }
+  .copy-row{
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    display:flex;
+    gap:8px;
+  }
+  .pill{
+    border:1px solid rgba(255,255,255,0.2);
+    padding:8px 10px;
+    border-radius:10px;
+    background:rgba(255,255,255,0.08);
+    color:#e7f0ff;
+    cursor:pointer;
+  }
+  .grid-layout{ display:grid; grid-template-columns: 1fr; gap:14px; }
+  @media (min-width: 920px){
+    .grid-layout{ grid-template-columns: 1.1fr .9fr; }
+    .edit-row{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+<body>
+<main class="app-shell">
+  <a class="back" href="../index.html">← App Center</a>
+  <section class="hero">
+    <h1>Prompt từ Ảnh</h1>
+    <span class="ver">TKver9.2</span>
+    <p>Upload ảnh mẫu → AI đọc nội dung → tạo prompt → bạn có thể sửa prompt rồi đưa sang ChatGPT/Gemini/Grok.</p>
+  </section>
+
+  <section class="panel">
+    <h2>1. Chọn AI</h2>
+    <div id="providerSelector" class="provider-grid"></div>
+
+    <div id="geminiAccountsSection" class="api-grid">
+      <div class="api-card">
+        <div style="font-weight:700;">Gemini API cá nhân</div>
+        <input id="geminiKey" type="password" placeholder="Dán Gemini API Key của bạn" />
+        <button class="mini-btn" type="button" onclick="checkGemini()">Kiểm tra Gemini</button>
+        <div id="geminiStatus" class="status"></div>
+      </div>
+    </div>
+
+    <div id="grokApiSection" class="api-grid" style="display:none;">
+      <div class="api-card">
+        <div style="font-weight:700;">Grok API Key</div>
+        <input id="grokKey" type="password" placeholder="Dán Grok API Key của bạn" />
+        <button class="mini-btn" type="button" onclick="checkGrok()">Kiểm tra Grok</button>
+        <div id="grokStatus" class="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid-layout">
+    <section class="panel">
+      <h2>2. Ảnh mẫu & thông tin muốn đổi</h2>
+
+      <label>Upload ảnh mẫu</label>
+      <input id="imageFile" type="file" accept="image/*" />
+      <div class="image-preview-wrap" id="previewWrap">
+        <span style="color:#8aa3c2;">Chưa có ảnh. Hãy chọn 1 ảnh mẫu.</span>
+      </div>
+
+      <label>Ghi chú thêm về ảnh (tuỳ chọn)</label>
+      <textarea id="imageNote" placeholder="Ví dụ: đây là banner khuyến mãi, muốn giữ cấu trúc nhưng đổi nội dung..."></textarea>
+
+      <div class="edit-row">
+        <div>
+          <label>Thay cửa hàng / thương hiệu</label>
+          <input id="replaceStore" placeholder='VD: "Thế giới di động 600 Nguyễn Nghiêm - Đức Phổ"' />
+        </div>
+        <div>
+          <label>Thay vị trí / địa điểm</label>
+          <input id="replacePlace" placeholder='VD: "Ngã 4 đèn xanh đèn đỏ"' />
+        </div>
+        <div>
+          <label>Thay mô tả địa điểm khác</label>
+          <input id="replacePlace2" placeholder='VD: "Đối diện đường vào chợ Đức Phổ"' />
+        </div>
+        <div>
+          <label>Yêu cầu thêm cho prompt</label>
+          <input id="extraRequirement" placeholder="VD: thêm hotline, đổi tone sang chuyên gia..." />
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="mini-btn primary" type="button" onclick="createPromptFromImage()">✨ Tạo prompt từ ảnh</button>
+        <button class="mini-btn" type="button" onclick="generatePromptWithAI()">⚡ AI viết lại prompt</button>
+        <button class="mini-btn" type="button" onclick="saveCurrentPrompt()">💾 Lưu prompt</button>
+      </div>
+      <div id="mainStatus" class="status" style="margin-top:10px;"></div>
+    </section>
+
+    <section class="panel">
+      <h2>3. Prompt đã phân tích & gợi ý đổi nội dung</h2>
+      <p class="muted">Prompt được viết theo cấu trúc chuẩn để bạn dán vào ChatGPT / Gemini / Grok.</p>
+      <div class="copy-wrap">
+        <textarea id="promptOutput" placeholder="Prompt sẽ hiện ở đây sau khi phân tích ảnh..."></textarea>
+        <div class="copy-row">
+          <button class="pill" type="button" onclick="copyPrompt()">Copy</button>
+          <button class="pill" type="button" onclick="applyReplacements()">Đổi theo gợi ý</button>
+        </div>
+      </div>
+      <div id="copyStatus" class="status" style="margin-top:8px;"></div>
+
+      <label style="margin-top:14px;">Gợi ý nhanh</label>
+      <div class="suggestions" id="suggestions"></div>
+
+      <label style="margin-top:14px;">Lịch sử prompt đã lưu</label>
+      <div id="promptHistory" class="suggestions"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+(function(){
+  const LS_KEY = 'TK_IMAGE_PROMPT_';
+  let selectedProvider = localStorage.getItem(LS_KEY+'provider') || 'gemini';
+  const $ = id => document.getElementById(id);
+
+  const PROVIDERS = {
+    gemini: { name: 'Google Gemini', color: '#4285f4', apiUrl: 'https://generativelanguage.googleapis.com/v1beta/models/', defaultModel: 'gemini-2.0-flash' },
+    grok: { name: 'xAI Grok', color: '#8b5cf6', apiUrl: 'https://api.x.ai/v1/', defaultModel: 'grok-2-1212' }
+  };
+
+  function getProvider(){ return PROVIDERS[selectedProvider] || PROVIDERS.gemini; }
+  function geminiKey(){ return ($('geminiKey')?.value || localStorage.getItem(LS_KEY+'geminiKey') || '').trim(); }
+  function grokKey(){ return ($('grokKey')?.value || localStorage.getItem(LS_KEY+'grokKey') || '').trim(); }
+  function apiKey(){
+    if(selectedProvider === 'grok') return grokKey();
+    return geminiKey();
+  }
+
+  function renderProviderSelector(){
+    const wrap = $('providerSelector');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    Object.entries(PROVIDERS).forEach(([key, p]) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'provider-btn' + (selectedProvider === key ? ' active' : '');
+      btn.innerHTML = `<b>${p.name}</b>`;
+      btn.onclick = () => { selectedProvider = key; localStorage.setItem(LS_KEY+'provider', key); renderProviderSelector(); renderApiSections(); };
+      wrap.appendChild(btn);
+    });
+  }
+
+  function renderApiSections(){
+    $('geminiAccountsSection').style.display = selectedProvider === 'gemini' ? 'grid' : 'none';
+    $('grokApiSection').style.display = selectedProvider === 'grok' ? 'grid' : 'none';
+  }
+
+  function saveKeys(){
+    localStorage.setItem(LS_KEY+'geminiKey', $('geminiKey').value.trim());
+    localStorage.setItem(LS_KEY+'grokKey', $('grokKey').value.trim());
+  }
+
+  async function callAI(prompt, imageBase64, mimeType){
+    const provider = getProvider();
+    if(selectedProvider === 'grok'){
+      if(!grokKey()) throw new Error('Bạn chưa nhập Grok API Key.');
+      const body = {
+        model: provider.defaultModel,
+        messages: [
+          { role: 'user', content: [
+            { type: 'text', text: prompt },
+            { type: 'image_url', image_url: { url: `data:${mimeType};base64,${imageBase64}` } }
+          ]}
+        ],
+        temperature: 0.45,
+        max_tokens: 4000
+      };
+      const res = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${grokKey()}` },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error((data.error && data.error.message) || `Grok HTTP ${res.status}`);
+      return ((data.choices || [])[0] || {}).message || {};
+    }
+
+    if(!geminiKey()) throw new Error('Bạn chưa nhập Gemini API Key.');
+    const url = `${provider.apiUrl}${provider.defaultModel}:generateContent?key=${encodeURIComponent(geminiKey())}`;
+    const parts = [{ text: prompt }];
+    if(imageBase64) parts.push({ inline_data: { mime_type: mimeType, data: imageBase64 } });
+    const body = { contents: [{ role: 'user', parts }], generationConfig: { temperature: 0.45, topP: 0.9, maxOutputTokens: 4000 } };
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const data = await res.json();
+    if(!res.ok) throw new Error((data.error && data.error.message) || `Gemini HTTP ${res.status}`);
+    const text = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+    return { content: text.map(p => p.text || '').join('\n').trim(), raw: data };
+  }
+
+  async function checkGemini(){
+    saveKeys();
+    const el = $('geminiStatus');
+    el.className = 'status'; el.innerText = 'Đang kiểm tra...';
+    try {
+      const out = await callAI('Trả lời duy nhất 1 từ: OK', null, '');
+      el.className = 'status success'; el.innerText = 'Gemini hoạt động.';
+    } catch (e) {
+      el.className = 'status error'; el.innerText = e.message;
+    }
+  }
+
+  async function checkGrok(){
+    saveKeys();
+    const el = $('grokStatus');
+    el.className = 'status'; el.innerText = 'Đang kiểm tra...';
+    try {
+      const out = await callAI('Trả lời duy nhất 1 từ: OK', null, '');
+      el.className = 'status success'; el.innerText = 'Grok hoạt động.';
+    } catch (e) {
+      el.className = 'status error'; el.innerText = e.message;
+    }
+  }
+
+  function readImageFile(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const m = String(reader.result || '').match(/^data:([^;]+);base64,(.*)$/);
+        if(!m) return reject(new Error('Không đọc được định dạng ảnh.'));
+        resolve({ base64: m[2], mimeType: m[1] });
+      };
+      reader.onerror = () => reject(new Error('Không đọc được file ảnh.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  $('imageFile').addEventListener('change', async () => {
+    const file = $('imageFile').files[0];
+    if(!file) return;
+    try {
+      const data = await readImageFile(file);
+      const wrap = $('previewWrap');
+      wrap.innerHTML = `<img alt="preview" src="data:${data.mimeType};base64,${data.base64}" /><div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;padding:4px 8px;border-radius:8px;font-size:12px;">${escapeHtml(file.name)}</div>`;
+      wrap.dataset.base64 = data.base64;
+      wrap.dataset.mime = data.mimeType;
+      $('mainStatus').className = 'status success'; $('mainStatus').innerText = 'Đã chọn ảnh.';
+    } catch (e) {
+      $('mainStatus').className = 'status error'; $('mainStatus').innerText = e.message;
+    }
+  });
+
+  async function createPromptFromImage(){
+    const base64 = $('previewWrap').dataset.base64;
+    const mime = $('previewWrap').dataset.mime;
+    if(!base64){ $('mainStatus').className = 'status error'; $('mainStatus').innerText = 'Bạn chưa chọn ảnh.'; return; }
+    const note = ($('imageNote').value || '').trim();
+    const extra = ($('extraRequirement').value || '').trim();
+
+    $('mainStatus').className = 'status'; $('mainStatus').innerText = 'Đang phân tích ảnh...';
+    const analyzePrompt = `Bạn là trợ lý phân tích nội dung ảnh bán hàng cho Thiên Kim Universe. Hãy đọc chi tiết nội dung trong ảnh này và trả về JSON THUẦN. Không markdown.
+{
+  "summary": "tóm tắt ngắn nội dung ảnh",
+  "texts": ["toàn bộ đoạn text có trong ảnh"],
+  "store": "tên cửa hàng / thương hiệu nếu có",
+  "location": "địa điểm / vị trí / gần đâu nếu có",
+  "products": ["sản phẩm / dịch vụ được đề cập"],
+  "style": "phong cách thiết kế ảnh",
+  "suggestedReplacements": [
+    {"key":"store","current":"...","suggest":"..."},
+    {"key":"location","current":"...","suggest":"..."}
+  ]
+}
+Ghi chú thêm: ${note || 'không có'}`;
+
+    try {
+      const result = await callAI(analyzePrompt, base64, mime);
+      let parsed = null;
+      try { parsed = JSON.parse((result.content || '').replace(/```json/g,'').replace(/```/g,'').trim()); } catch {}
+      const userStore = ($('replaceStore').value || '').trim();
+      const userPlace = ($('replacePlace').value || '').trim();
+      const userPlace2 = ($('replacePlace2').value || '').trim();
+
+      const prompt = buildPromptFromImage({
+        summary: parsed?.summary || 'Nội dung quảng cáo trong ảnh',
+        texts: parsed?.texts || [],
+        store: parsed?.store || '',
+        location: parsed?.location || '',
+        products: parsed?.products || [],
+        style: parsed?.style || 'hiện đại, rõ ràng, chuyên nghiệp',
+        suggestedReplacements: parsed?.suggestedReplacements || [],
+        userStore,
+        userPlace,
+        userPlace2,
+        extra,
+        note
+      });
+
+      $('promptOutput').value = prompt;
+      $('mainStatus').className = 'status success'; $('mainStatus').innerText = 'Đã tạo prompt từ ảnh.';
+      renderSuggestions(parsed?.suggestedReplacements || [], userStore, userPlace, userPlace2);
+    } catch (e) {
+      $('mainStatus').className = 'status error'; $('mainStatus').innerText = e.message;
+    }
+  }
+
+  function buildPromptFromImage(data){
+    const store = data.userStore || data.store || 'tên cửa hàng của bạn';
+    const location = data.userPlace || data.location || 'địa điểm của bạn';
+    const location2 = data.userPlace2 ? `hoặc ${data.userPlace2}` : '';
+    return `Bạn là chuyên gia viết prompt cho ChatGPT / Gemini / Grok, chuyên tái tạo nội dung quảng cáo từ ảnh mẫu mà tôi đã upload.
+
+TÔM TẮT ẢNH MẪU:
+${data.summary}
+
+NỘI DUNG GỐC TRONG ẢNH:
+${(data.texts || []).map((t,i) => `${i+1}. ${t}`).join('\n') || 'Chưa trích xuất được text rõ.'}
+
+PHONG CÁCH ẢNH GỐC:
+${data.style}
+
+SẢN PHẨM / DỊCH VỤ GỢI Ý:
+${(data.products || []).map((t,i) => `${i+1}. ${t}`).join('\n') || 'Chưa xác định rõ sản phẩm.'}
+
+YÊU CẦU THAY ĐỔI NỘI DUNG:
+1. Tên cửa hàng / thương hiệu: đổi sang "${store}"
+2. Vị trí / địa điểm: đổi sang "${location}" ${location2}
+3. Nếu trong ảnh có địa điểm cũ, hãy thay bằng địa điểm mới ở trên
+4. Giữ cấu trúc bố cục, vị trí text, headline và CTA nếu phù hợp
+5. Nếu có yêu cầu thêm: ${data.extra || 'không có'}
+6. Giữ tính chuyển đổi cao: headline rõ, khuyến mãi rõ, CTA rõ, hashtag phù hợp
+
+HÃY TRẢ VỀ CHO TÔI:
+1. Prompt để tạo lại ảnh quảng cáo mới theo nội dung đã đổi
+2. Bố cục text đề xuất trên ảnh mới
+3. Caption đăng bài + hashtag
+4. Checklist kiểm tra trước khi đăng`;
+  }
+
+  function renderSuggestions(suggestions, userStore, userPlace, userPlace2){
+    const wrap = $('suggestions');
+    wrap.innerHTML = '';
+    const replacements = [
+      ...suggestions,
+      ...(userStore ? [{key:'store', current:'', suggest: userStore}] : []),
+      ...(userPlace ? [{key:'location', current:'', suggest: userPlace}] : [])
+    ];
+    replacements.forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip';
+      btn.textContent = `${item.key}: ${item.suggest}`;
+      btn.onclick = () => { $('replaceStore').value = userStore || item.suggest; $('replacePlace').value = userPlace || item.suggest; createPromptFromImage(); };
+      wrap.appendChild(btn);
+    });
+  }
+
+  function renderPromptHistory(){
+    const wrap = $('promptHistory');
+    const history = getPromptHistory();
+    wrap.innerHTML = '';
+    if(!history.length){
+      wrap.innerHTML = '<span style="color:#8aa3c2;font-size:12px;">Chưa có prompt đã lưu.</span>';
+      return;
+    }
+    history.slice(0, 20).forEach((item, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip';
+      btn.textContent = `${idx + 1}. ${item.title || 'Prompt ' + (idx + 1)}`;
+      btn.onclick = () => {
+        $('promptOutput').value = item.prompt || '';
+        $('copyStatus').className = 'status success';
+        $('copyStatus').innerText = 'Đã tải prompt đã lưu.';
+      };
+      wrap.appendChild(btn);
+    });
+  }
+
+  function getPromptHistory(){
+    try { return JSON.parse(localStorage.getItem(LS_KEY+'history') || '[]'); } catch { return []; }
+  }
+
+  function saveCurrentPrompt(){
+    const prompt = ($('promptOutput').value || '').trim();
+    if(!prompt){ $('copyStatus').className = 'status error'; $('copyStatus').innerText = 'Chưa có prompt để lưu.'; return; }
+    const title = prompt.slice(0, 60).replace(/\n/g, ' ');
+    const history = getPromptHistory();
+    history.unshift({ title, prompt, savedAt: Date.now() });
+    localStorage.setItem(LS_KEY+'history', JSON.stringify(history.slice(0, 50)));
+    $('copyStatus').className = 'status success'; $('copyStatus').innerText = 'Đã lưu prompt vào lịch sử.';
+    renderPromptHistory();
+  }
+
+  async function generatePromptWithAI(){
+    const base64 = $('previewWrap').dataset.base64;
+    const mime = $('previewWrap').dataset.mime;
+    const promptText = ($('promptOutput').value || '').trim();
+    if(!promptText){ $('copyStatus').className = 'status error'; $('copyStatus').innerText = 'Bạn cần tạo prompt từ ảnh trước.'; return; }
+    if(!apiKey()){ $('copyStatus').className = 'status error'; $('copyStatus').innerText = 'Bạn chưa nhập API Key.'; return; }
+
+    $('copyStatus').className = 'status'; $('copyStatus').innerText = 'Đang viết lại prompt bằng AI...';
+    const rewritePrompt = `Dưới đây là prompt đang có. Hãy viết lại prompt đó thành bản PROMPT VIP tốt hơn: giữ cấu trúc chuẩn, rõ phần tạo ảnh, bố cục text, caption, hashtag, checklist. Viết bằng tiếng Việt, dễ copy sang công cụ AI.
+
+PROMPT HIỆN TẠI:
+${promptText}`;
+
+    try {
+      const result = await callAI(rewritePrompt, base64 && !selectedProvider ? null : null, mime || '');
+      $('promptOutput').value = result.content || $('promptOutput').value;
+      $('copyStatus').className = 'status success'; $('copyStatus').innerText = 'Đã viết lại prompt.';
+    } catch (e) {
+      $('copyStatus').className = 'status error'; $('copyStatus').innerText = e.message;
+    }
+  }
+
+  function applyReplacements(){
+    const prompt = $('promptOutput').value;
+    if(!prompt){ $('copyStatus').className = 'status error'; $('copyStatus').innerText = 'Chưa có prompt.'; return; }
+    let next = prompt;
+    const store = ($('replaceStore').value || '').trim();
+    const place = ($('replacePlace').value || '').trim();
+    const place2 = ($('replacePlace2').value || '').trim();
+    if(store){
+      const re = new RegExp('(đổi sang|thay bằng|thay thế bằng|sang|bởi)\\s*"?([^"\\n]{1,120})"?|"(Điện máy xanh[^"]+)"', 'gi');
+      const phrases = ['cửa hàng', 'thương hiệu', 'shop', 'store'];
+      phrases.forEach(p => { if(next.toLowerCase().includes(p)) next = next.replace(new RegExp(`(${p})[^\\n]{0,40}`, 'i'), `$1: ${store}`); });
+    }
+    if(place){
+      const phrases = ['địa điểm', 'vị trí', 'gần', 'ngã'];
+      phrases.forEach(p => { if(next.toLowerCase().includes(p)) next = next.replace(new RegExp(`(${p})[^\\n]{0,40}`, 'i'), `$1: ${place}`); });
+    }
+    if(place2) next = next.replace(/(đối diện|ngã 4|gần khách sạn)[^\n]{0,80}/i, place2);
+    $('promptOutput').value = next;
+    $('copyStatus').className = 'status success'; $('copyStatus').innerText = 'Đã áp dụng thay đổi nội dung theo ô bạn nhập.';
+  }
+
+  async function copyPrompt(){
+    const text = ($('promptOutput').value || '').trim();
+    if(!text){ $('copyStatus').className = 'status error'; $('copyStatus').innerText = 'Chưa có prompt.'; return; }
+    try { await navigator.clipboard.writeText(text); $('copyStatus').className = 'status success'; $('copyStatus').innerText = 'Đã copy prompt.'; }
+    catch { $('promptOutput').select(); document.execCommand('copy'); $('copyStatus').className = 'status success'; $('copyStatus').innerText = 'Đã copy prompt.'; }
+  }
+
+  function escapeHtml(s){ return String(s||'').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[c])); }
+
+  function requireLogin(){
+    const user = typeof getSavedUser === "function" ? getSavedUser() : null;
+    if(!user){
+      alert("Bạn cần đăng nhập để dùng app này.");
+      location.href = "../login.html?mode=vip&next=app";
+      return false;
+    }
+    return true;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if(!requireLogin()) return;
+    renderProviderSelector();
+    renderApiSections();
+    renderPromptHistory();
+    if($('geminiKey')) $('geminiKey').value = localStorage.getItem(LS_KEY+'geminiKey') || '';
+    if($('grokKey')) $('grokKey').value = localStorage.getItem(LS_KEY+'grokKey') || '';
+  });
+})();
+</script>
+</body>
+</html>

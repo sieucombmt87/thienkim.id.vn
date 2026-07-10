@@ -103,6 +103,8 @@ function bindHeaderActions(){
 function appUrl(tool){
   if(tool.key === "ai-video" || tool.key === "create-video") return "ai-video/";
   if(tool.key === "ai-prompt") return "ai-prompt/";
+  if(tool.key === "image-prompt") return "image-prompt/";
+  if(tool.key === "kho-phan-mem") return "kho-phan-mem/";
   return tool.key + "/";
 }
 

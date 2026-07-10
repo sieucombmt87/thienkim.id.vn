@@ -12,9 +12,10 @@
     body{background:radial-gradient(circle at 25% 8%,rgba(255,216,107,.25),transparent 26%),radial-gradient(circle at 80% 18%,rgba(89,169,255,.18),transparent 30%),linear-gradient(135deg,#05040a,#17112f 45%,#05040a)}
     .shell{width:100vw;height:100dvh;min-height:100vh;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
     .topbar{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(10px + var(--safe-top)) 14px 10px;background:linear-gradient(180deg,rgba(5,4,10,.92),rgba(5,4,10,.56));border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px)}
-    .back,.open-new{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 14px;border-radius:999px;text-decoration:none;font-weight:900;white-space:nowrap}
+    .back,.open-new,.close-app{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 14px;border-radius:999px;text-decoration:none;font-weight:900;white-space:nowrap}
     .back{border:1px solid var(--line);color:#231700;background:linear-gradient(135deg,#fff4bd,#d5a90b);box-shadow:0 10px 24px rgba(0,0,0,.28)}
     .open-new{border:1px solid rgba(255,255,255,.18);color:#fff;background:rgba(255,255,255,.09)}
+    .close-app{border:1px solid rgba(255,255,255,.18);color:#fff;background:rgba(255,80,80,.18)}
     .brand{min-width:0;text-align:center;line-height:1.08}
     .brand b{display:block;font-size:clamp(15px,2.4vw,22px);letter-spacing:.04em;color:var(--gold)}
     .brand small{display:block;margin-top:3px;color:rgba(255,255,255,.72);font-weight:800;font-size:12px}
@@ -34,7 +35,7 @@
     .btn{min-height:42px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:linear-gradient(135deg,#fff4bd,#d5a90b);color:#231700;font-weight:900;text-decoration:none}
     .btn.secondary{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.18)}
     .version{position:fixed;right:10px;bottom:calc(8px + var(--safe-bottom));z-index:6;font-size:10px;color:rgba(115,215,255,.5);font-weight:900;pointer-events:none;text-shadow:0 1px 5px #000}
-    @media(max-width:768px){.topbar{padding-left:8px;padding-right:8px;gap:6px}.back,.open-new{min-height:38px;padding:0 10px;font-size:12px}.brand b{font-size:13px}.brand small{display:none}.frame-wrap{padding:6px;padding-bottom:calc(6px + var(--safe-bottom))}.frame-card{border-radius:15px}.open-new span{display:none}}
+    @media(max-width:768px){.topbar{padding-left:8px;padding-right:8px;gap:6px}.back,.open-new,.close-app{min-height:38px;padding:0 10px;font-size:12px}.brand b{font-size:13px}.brand small{display:none}.frame-wrap{padding:6px;padding-bottom:calc(6px + var(--safe-bottom))}.frame-card{border-radius:15px}.open-new span{display:none}}
   </style>
 </head>
 <body>
@@ -42,11 +43,14 @@
     <header class="topbar">
       <a class="back" href="../index.html" title="Về App Center">← App Center</a>
       <div class="brand"><b>TK RANDOM RACE</b><small>Nhúng app random hiện có • TKver1.0.race</small></div>
-      <a class="open-new" href="https://remix-app-random-468167887002.asia-southeast1.run.app/" target="_blank" rel="noopener">↗ <span>Mở riêng</span></a>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a class="open-new" href="https://remix-app-random-468167887002.asia-southeast1.run.app/" target="_blank" rel="noopener">↗ <span>Mở riêng</span></a>
+        <button class="close-app" type="button" onclick="location.href='../index.html'" title="Đóng và quay lại App Center">✕ Đóng</button>
+      </div>
     </header>
     <section class="frame-wrap">
       <div class="frame-card">
-        <div class="loading" id="loading"><div class="box"><div class="spinner"></div><b>Đang mở Random Race...</b><p>App tự co theo laptop, tablet và điện thoại.</p></div></div>
+        <div class="loading" id="loading"><div class="box"><div class="spinner"></div><b>App đã được public lên</b><p>Random Race đang chạy trên server, bạn có thể tương tác bình thường.</p><button class="btn" type="button" onclick="location.href='../index.html'">✕ Đóng</button></div></div>
         <iframe id="raceFrame" title="TK Random Race" src="https://remix-app-random-468167887002.asia-southeast1.run.app/" allow="fullscreen; autoplay; clipboard-read; clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>
         <div class="fail" id="fail"><div class="fail-card"><h1>Không nhúng được app</h1><p>Nếu server bên ngoài chặn iframe, bấm “Mở app riêng”.</p><div class="fail-actions"><a class="btn" target="_blank" rel="noopener" href="https://remix-app-random-468167887002.asia-southeast1.run.app/">Mở app riêng</a><a class="btn secondary" href="../index.html">Về App Center</a></div></div></div>
       </div>

@@ -1,1 +1,373 @@
-let db=JSON.parse(localStorage.tk_software||'[]');function save(){localStorage.tk_software=JSON.stringify(db)}function render(){listBox.innerHTML=db.map((x,i)=>`<div class='row'><b>${x.name}</b><span>${x.info}</span><button class='btn red' onclick='db.splice(${i},1);save();render()'>X</button></div>`).join('')||'Chưa có.'}addBtn.onclick=()=>{db.unshift({name:name.value,info:info.value});save();render();name.value=info.value=''};exportBtn.onclick=()=>navigator.clipboard.writeText(db.map(x=>`${x.name}: ${x.info}`).join('\n'));clearBtn.onclick=()=>{if(confirm('Xóa kho?')){db=[];save();render()}};render();
+// =============================================
+// KHO PHẦN MỀM - THIENKIM APP
+// Upload file lên Google Drive
+// =============================================
+
+// CẤU HÌNH - UPLOAD LÊN GOOGLE DRIVE CỦA BẠN
+const GOOGLE_SCRIPT_URL = '';
+
+// State
+let currentFile = {
+  android: null,
+  windows: null
+};
+
+// =============================================
+// KHỞI TẠO
+// =============================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadFileLists();
+  initDragDrop();
+  checkConfig();
+});
+
+// =============================================
+// TAB SWITCHING
+// =============================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  
+  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+// =============================================
+// DRAG & DROP
+// =============================================
+function initDragDrop() {
+  ['android', 'windows'].forEach(type => {
+    const zone = document.getElementById(`${type}Zone`);
+    const input = document.getElementById(`${type}Input`);
+    
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('dragover');
+    });
+    
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('dragover');
+    });
+    
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) {
+        handleFileSelect(type, e.dataTransfer.files[0]);
+      }
+    });
+    
+    input.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelect(type, e.target.files[0]);
+      }
+    });
+  });
+}
+
+// =============================================
+// XỬ LÝ CHỌN FILE
+// =============================================
+function handleFileSelect(type, file) {
+  currentFile[type] = file;
+  
+  const nameInput = document.getElementById(`${type}Name`);
+  const selectedDiv = document.getElementById(`${type}Selected`);
+  const fileName = document.getElementById(`${type}FileName`);
+  const fileSize = document.getElementById(`${type}FileSize`);
+  
+  // Auto fill tên từ file name (không extension)
+  if (!nameInput.value) {
+    nameInput.value = file.name.replace(/\.[^/.]+$/, '');
+  }
+  
+  fileName.textContent = file.name;
+  fileSize.textContent = formatFileSize(file.size);
+  selectedDiv.classList.add('show');
+}
+
+function clearFile(type) {
+  currentFile[type] = null;
+  document.getElementById(`${type}Input`).value = '';
+  document.getElementById(`${type}Selected`).classList.remove('show');
+  if (type === 'android' || type === 'windows') {
+    document.getElementById(`${type}Name`).value = '';
+    document.getElementById(`${type}Version`).value = '';
+  }
+}
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// =============================================
+// UPLOAD FILE
+// =============================================
+async function uploadFile(type) {
+  const file = currentFile[type];
+  const name = document.getElementById(`${type}Name`).value.trim();
+  const version = document.getElementById(`${type}Version`).value.trim();
+  
+  // Validation
+  if (!file) {
+    showToast('Vui lòng chọn file!', 'error');
+    return;
+  }
+  if (!name) {
+    showToast('Vui lòng nhập tên phần mềm!', 'error');
+    document.getElementById(`${type}Name`).focus();
+    return;
+  }
+  
+  const finalName = version ? `${name} v${version}` : name;
+  
+  // Kiểm tra cấu hình
+  if (!GOOGLE_SCRIPT_URL) {
+    // Lưu local nếu chưa có config
+    saveFileLocal(type, finalName, file);
+    return;
+  }
+  
+  // Show loading
+  showLoading(true);
+  const btn = document.getElementById(`${type}Btn`);
+  btn.disabled = true;
+  
+  try {
+    // Đọc file
+    const base64 = await readFileAsBase64(file);
+    
+    // Upload lên Drive
+    const formData = new FormData();
+    formData.append('fileName', finalName);
+    formData.append('fileType', type);
+    formData.append('fileData', base64);
+    formData.append('fileSize', file.size);
+    
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Lưu vào local
+      saveFileLocal(type, finalName, result.link || '#');
+      showToast(`✅ Đã tải lên: ${finalName}`, 'success');
+      clearFile(type);
+    } else {
+      throw new Error(result.error || 'Upload thất bại');
+    }
+  } catch (err) {
+    console.error('Upload error:', err);
+    showToast(`❌ Lỗi: ${err.message}`, 'error');
+  } finally {
+    showLoading(false);
+    btn.disabled = false;
+  }
+}
+
+// =============================================
+// ĐỌC FILE -> BASE64
+// =============================================
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// =============================================
+// LƯU FILE VÀO LOCAL STORAGE
+// =============================================
+function saveFileLocal(type, name, link) {
+  const storageKey = `tk_software_${type}`;
+  let files = [];
+  
+  try {
+    files = JSON.parse(localStorage.getItem(storageKey) || '[]');
+  } catch (e) {}
+  
+  files.unshift({
+    name: name,
+    link: link,
+    date: new Date().toISOString(),
+    type: type
+  });
+  
+  // Giữ tối đa 50 file
+  if (files.length > 50) {
+    files = files.slice(0, 50);
+  }
+  
+  localStorage.setItem(storageKey, JSON.stringify(files));
+  loadFileLists();
+  
+  // Nếu không có link (chưa config), thông báo
+  if (!link || link === '#') {
+    showToast(`💾 Đã lưu tạm: ${name} (chưa upload lên Drive)`, 'success');
+    showToast('⚠️ Cần cấu hình Google Apps Script để upload lên Drive', 'error');
+  }
+}
+
+// =============================================
+// TẢI DANH SÁCH FILE
+// =============================================
+function loadFileLists() {
+  ['android', 'windows'].forEach(type => {
+    const container = document.getElementById(`${type}Files`);
+    const storageKey = `tk_software_${type}`;
+    let files = [];
+    
+    try {
+      files = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    } catch (e) {}
+    
+    if (files.length === 0) {
+      container.innerHTML = `
+        <div class="empty-list">
+          <div class="icon">📂</div>
+          <p>Chưa có file nào</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = files.map((file, index) => `
+      <div class="file-item">
+        <span class="file-icon">${type === 'android' ? '🤖' : '💻'}</span>
+        <div class="file-info">
+          <div class="file-name">${escapeHtml(file.name)}</div>
+          <div class="file-date">${formatDate(file.date)}</div>
+        </div>
+        <div class="file-actions">
+          <a href="${escapeHtml(file.link)}" target="_blank" class="btn-view" ${!file.link || file.link === '#' ? 'style="opacity:0.5;pointer-events:none;"' : ''}>
+            🔗 Mở link
+          </a>
+          <button class="btn-delete" onclick="deleteFile('${type}', ${index})">
+            🗑️ Xóa
+          </button>
+        </div>
+      </div>
+    `).join('');
+}
+
+function deleteFile(type, index) {
+  const storageKey = `tk_software_${type}`;
+  let files = [];
+  
+  try {
+    files = JSON.parse(localStorage.getItem(storageKey) || '[]');
+  } catch (e) {}
+  
+  if (confirm('Bạn có chắc muốn xóa file này?')) {
+    files.splice(index, 1);
+    localStorage.setItem(storageKey, JSON.stringify(files));
+    loadFileLists();
+    showToast('Đã xóa file!', 'success');
+  }
+}
+
+function formatDate(isoString) {
+  if (!isoString) return '-';
+  const date = new Date(isoString);
+  return date.toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// =============================================
+// LOADING & TOAST
+// =============================================
+function showLoading(show) {
+  const overlay = document.getElementById('loadingOverlay');
+  if (show) {
+    overlay.classList.add('show');
+  } else {
+    overlay.classList.remove('show');
+  }
+}
+
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type} show`;
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 4000);
+}
+
+// =============================================
+// KIỂM TRA CẤU HÌNH
+// =============================================
+function checkConfig() {
+  const notice = document.getElementById('configNotice');
+  if (GOOGLE_SCRIPT_URL) {
+    notice.style.display = 'none';
+  } else {
+    notice.style.display = 'flex';
+  }
+}
+
+function showSetupGuide() {
+  const guide = `
+📋 HƯỚNG DẪN CẤU HÌNH GOOGLE DRIVE
+
+1️⃣ Mở Google Drive, tạo thư mục lưu phần mềm
+
+2️⃣ Copy Folder ID từ URL:
+   drive.google.com/drive/folders/XXXXXXXX
+   → Copy phần XXXXXXXX
+
+3️⃣ Vào script.google.com → Tạo Project mới
+
+4️⃣ Paste code sau vào Code.gs:
+
+function doPost(e) {
+  const { fileName, fileType, fileData } = e.parameter;
+  const folderName = fileType === 'android' ? 'App Android' : 'App Windows';
+  const folder = getOrCreateFolder(folderName, 'YOUR_FOLDER_ID');
+  const decoded = Utilities.base64Decode(fileData);
+  const blob = Utilities.newBlob(decoded, 'application/octet-stream', fileName);
+  const file = folder.createFile(blob);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return ContentService.createTextOutput(JSON.stringify({ success: true, link: file.getUrl() })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function getOrCreateFolder(name, parentId) {
+  const folders = DriveApp.getFoldersByName(name);
+  if (folders.hasNext()) return folders.next();
+  return DriveApp.getFolderById(parentId).createFolder(name);
+}
+
+5️⃣ Deploy → New deployment → Web app
+   Execute as: Me
+   Who has access: Anyone
+
+6️⃣ Copy URL deployment và paste vào file app.js
+
+7️⃣ Thay 'YOUR_FOLDER_ID' bằng Folder ID đã copy ở bước 2
+  `;
+  alert(guide);
+}
