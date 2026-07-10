@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Prompt từ Ảnh • TKver9.2</title>
-<link rel="stylesheet" href="../_shared/app-lite.css?v=TKver9.2">
+<title>Prompt từ Ảnh</title>
+<link rel="stylesheet" href="../_shared/app-lite.css">
+<script src="../../config/version.js"></script>
 <style>
   .image-preview-wrap{
     margin-top:8px;
@@ -162,7 +163,7 @@
   <a class="back" href="../index.html">← App Center</a>
   <section class="hero">
     <h1>Prompt từ Ảnh</h1>
-    <span class="ver">TKver9.2</span>
+    <span class="ver" id="appVer"></span>
     <p>Upload ảnh mẫu → AI đọc nội dung → tạo prompt → bạn có thể sửa prompt rồi đưa sang ChatGPT/Gemini/Grok.</p>
   </section>
 
@@ -593,6 +594,7 @@ ${promptText}`;
     renderPromptHistory();
     if($('geminiKey')) $('geminiKey').value = localStorage.getItem(LS_KEY+'geminiKey') || '';
     if($('grokKey')) $('grokKey').value = localStorage.getItem(LS_KEY+'grokKey') || '';
+    if($('appVer')) $('appVer').textContent = window.TK_VER || 'TKver0.0.1';
   });
 })();
 </script>

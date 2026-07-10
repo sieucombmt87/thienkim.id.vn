@@ -104,7 +104,7 @@ const TK_APP_TOOLS = [
   { key:"qr-code", title:"QR Code", desc:"Tạo QR/Barcode, import Excel, trình diễn và retry QR lỗi.", icon:"assets/images/app-icons/qr-code.jpg", vip:true, feature_column:"qr_code" },
   { key:"kiem-quy", title:"Kiểm Quỹ", desc:"Kiểm quỹ nhanh, mobile mode, voice count và lịch sử.", icon:"assets/images/app-icons/kiem-quy.jpg", vip:true, feature_column:"kiem_quy" },
   { key:"tinh-tra-gop", title:"Tính Trả Góp", desc:"Tính khoản trả góp, lãi suất và kế hoạch thanh toán.", icon:"assets/images/app-icons/tinh-tra-gop.jpg", vip:true, feature_column:"tinh_tra_gop" },
-  { key:"ai-video", title:"AI Video", desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok, AI.TKver9.2.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"ai_video" },
+  { key:"ai-video", title:"AI Video", desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok.", icon:"assets/images/app-icons/create-video.jpg", vip:true, feature_column:"ai_video" },
   { key:"ai-prompt", title:"AI Prompt", desc:"Kho prompt AI, ý tưởng nội dung và trợ lý viết nhanh.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"ai_prompt" },
   { key:"image-prompt", title:"Prompt từ Ảnh", desc:"Upload ảnh mẫu, AI đọc nội dung, tạo prompt để bạn đưa sang ChatGPT/Gemini/Grok.", icon:"assets/images/app-icons/ai-prompt.jpg", vip:true, feature_column:"image_prompt" }
 ];
@@ -152,7 +152,7 @@ function tkCanAccess(module, user){
   return false;
 }
 
-// TKver9.2 App helpers
+// TKver0.0.1 App helpers
 function tkGetAppConfig(){
   let overrides = {};
   try{ overrides = JSON.parse(localStorage.getItem("tk_app_config") || "{}"); }catch(e){}
@@ -223,7 +223,7 @@ function tkGetSortedApps(user){
 }
 
 
-// TKver9.2: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
+// TKver0.0.1: chỉ role VIP hoặc user 0947924444 được quyền set app VIP/thường
 function tkIsAppManager(user){
   const username = String(user?.username || "").toLowerCase();
   const role = String(user?.role || "").toLowerCase();

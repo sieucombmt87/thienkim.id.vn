@@ -1,5 +1,5 @@
 /**
- * TKver9.2 - Google Sheet + backend config
+ * Google Sheet + backend config
  * Điểm gọi login/user qua Apps Script web app.
  */
 

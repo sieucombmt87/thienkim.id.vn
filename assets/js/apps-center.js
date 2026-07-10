@@ -6,7 +6,7 @@
     window.TK_APP_TOOLS.unshift({
       key:"ai-video",
       title:"AI Video",
-      desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok, AI.TKver9.2.",
+      desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok.",
       icon:"assets/images/app-icons/create-video.jpg",
       vip:true,
       feature_column:"ai_video"
@@ -14,7 +14,7 @@
   }else{
     window.TK_APP_TOOLS = window.TK_APP_TOOLS.map(app => {
       if(app && app.key === "create-video"){
-        return {...app, key:"ai-video", title:"AI Video", desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok, AI.TKver9.2.", feature_column:"ai_video"};
+        return {...app, key:"ai-video", title:"AI Video", desc:"Tạo prompt video/hình ảnh bán hàng bằng Gemini/Grok.", feature_column:"ai_video"};
       }
       return app;
     });
@@ -22,7 +22,7 @@
 })();
 
 
-/* TKver9.2 guest usage sort */
+/* guest usage sort */
 function tkGetCurrentUserForAppCenter(){try{return JSON.parse(localStorage.getItem("tk_current_user")||localStorage.getItem("currentUser")||localStorage.getItem("tk_user")||"null")}catch(e){return null}}
 function tkReadAppUsage(){try{return JSON.parse(localStorage.getItem("tk_app_usage")||"{}")}catch(e){return {}}}
 function tkTrackAppUsage(key){try{const u=tkReadAppUsage();u[key]=(u[key]||0)+1;localStorage.setItem("tk_app_usage",JSON.stringify(u))}catch(e){}}
@@ -42,10 +42,6 @@ document.addEventListener("DOMContentLoaded",()=>setTimeout(tkApplyGuestUsageDom
       vip:false
     });
   }
-  document.addEventListener("DOMContentLoaded",()=>{
-    const v=document.getElementById("buildVersion");
-    if(v) v.textContent="TKver9.2";
-  });
 })();
 
 
