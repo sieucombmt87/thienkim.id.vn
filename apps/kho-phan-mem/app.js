@@ -6,11 +6,29 @@
 // CẤU HÌNH - UPLOAD LÊN GOOGLE DRIVE CỦA BẠN
 const GOOGLE_SCRIPT_URL = '';
 
+// FOLDER ID GOOGLE DRIVE MẶC ĐỊNH
+const DRIVE_FOLDERS = {
+  android: '1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN',  // Folder App Android
+  windows: '1WRvqQ_E6jD3ik93VUQ8VFFg5e5UsEzd7'     // Folder App Windows
+};
+
+// MẬT KHẨU ADMIN (thay đổi nếu cần)
+const ADMIN_PASSWORD = 'thienkim2024';
+
 // State
 let currentFile = {
   android: null,
   windows: null
 };
+
+// Kiểm tra admin
+function isAdmin() {
+  return localStorage.getItem('tk_admin_mode') === 'true';
+}
+
+function setAdminMode(enabled) {
+  localStorage.setItem('tk_admin_mode', enabled ? 'true' : 'false');
+}
 
 // =============================================
 // KHỞI TẠO
@@ -19,7 +37,50 @@ document.addEventListener('DOMContentLoaded', () => {
   loadFileLists();
   initDragDrop();
   checkConfig();
+  checkAdminStatus();
 });
+
+// =============================================
+// KIỂM TRA & CẬP NHẬT TRẠNG THÁI ADMIN
+// =============================================
+function checkAdminStatus() {
+  const adminBadge = document.getElementById('adminBadge');
+  const adminPanel = document.getElementById('adminPanel');
+  
+  if (isAdmin()) {
+    adminBadge.innerHTML = '🔓 Admin';
+    if (adminPanel) adminPanel.style.display = 'block';
+    showAdminFeatures(true);
+  } else {
+    adminBadge.innerHTML = '🔒 User';
+    if (adminPanel) adminPanel.style.display = 'none';
+    showAdminFeatures(false);
+  }
+}
+
+function showAdminFeatures(show) {
+  // Ẩn/hiện các nút upload, xóa, xem link
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = show ? '' : 'none';
+  });
+}
+
+function toggleAdminLogin() {
+  if (isAdmin()) {
+    setAdminMode(false);
+    checkAdminStatus();
+    showToast('Đã thoát chế độ Admin', 'success');
+  } else {
+    const password = prompt('Nhập mật khẩu Admin:');
+    if (password === ADMIN_PASSWORD) {
+      setAdminMode(true);
+      checkAdminStatus();
+      showToast('Đã đăng nhập Admin thành công!', 'success');
+    } else if (password !== null) {
+      showToast('Sai mật khẩu!', 'error');
+    }
+  }
+}
 
 // =============================================
 // TAB SWITCHING
@@ -108,6 +169,12 @@ function formatFileSize(bytes) {
 // UPLOAD FILE
 // =============================================
 async function uploadFile(type) {
+  // Kiểm tra quyền admin
+  if (!isAdmin()) {
+    showToast('❌ Chỉ Admin mới được phép tải file lên!', 'error');
+    return;
+  }
+  
   const file = currentFile[type];
   const name = document.getElementById(`${type}Name`).value.trim();
   const version = document.getElementById(`${type}Version`).value.trim();
@@ -243,6 +310,8 @@ function loadFileLists() {
       return;
     }
     
+    const admin = isAdmin();
+    
     container.innerHTML = files.map((file, index) => `
       <div class="file-item">
         <span class="file-icon">${type === 'android' ? '🤖' : '💻'}</span>
@@ -251,18 +320,31 @@ function loadFileLists() {
           <div class="file-date">${formatDate(file.date)}</div>
         </div>
         <div class="file-actions">
-          <a href="${escapeHtml(file.link)}" target="_blank" class="btn-view" ${!file.link || file.link === '#' ? 'style="opacity:0.5;pointer-events:none;"' : ''}>
-            🔗 Mở link
-          </a>
-          <button class="btn-delete" onclick="deleteFile('${type}', ${index})">
-            🗑️ Xóa
-          </button>
+          ${admin ? `
+            <a href="${escapeHtml(file.link)}" target="_blank" class="btn-view admin-only" ${!file.link || file.link === '#' ? 'style="opacity:0.5;pointer-events:none;"' : ''}>
+              🔗 Mở link
+            </a>
+            <button class="btn-delete admin-only" onclick="deleteFile('${type}', ${index})">
+              🗑️ Xóa
+            </button>
+          ` : `
+            <a href="${escapeHtml(file.link)}" target="_blank" class="btn-view">
+              ⬇️ Tải về
+            </a>
+          `}
         </div>
       </div>
     `).join('');
+  });
 }
 
 function deleteFile(type, index) {
+  // Kiểm tra quyền admin
+  if (!isAdmin()) {
+    showToast('❌ Chỉ Admin mới được phép xóa!', 'error');
+    return;
+  }
+  
   const storageKey = `tk_software_${type}`;
   let files = [];
   
@@ -334,40 +416,33 @@ function showSetupGuide() {
   const guide = `
 📋 HƯỚNG DẪN CẤU HÌNH GOOGLE DRIVE
 
-1️⃣ Mở Google Drive, tạo thư mục lưu phần mềm
+1️⃣ Tạo Google Apps Script (script.google.com)
 
-2️⃣ Copy Folder ID từ URL:
-   drive.google.com/drive/folders/XXXXXXXX
-   → Copy phần XXXXXXXX
-
-3️⃣ Vào script.google.com → Tạo Project mới
-
-4️⃣ Paste code sau vào Code.gs:
+2️⃣ Paste code sau vào Code.gs:
 
 function doPost(e) {
   const { fileName, fileType, fileData } = e.parameter;
-  const folderName = fileType === 'android' ? 'App Android' : 'App Windows';
-  const folder = getOrCreateFolder(folderName, 'YOUR_FOLDER_ID');
+  const folderId = fileType === 'android' 
+    ? '1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN' 
+    : '1WRvqQ_E6jD3ik93VUQ8VFFg5e5UsEzd7';
+  const folder = DriveApp.getFolderById(folderId);
   const decoded = Utilities.base64Decode(fileData);
   const blob = Utilities.newBlob(decoded, 'application/octet-stream', fileName);
   const file = folder.createFile(blob);
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  return ContentService.createTextOutput(JSON.stringify({ success: true, link: file.getUrl() })).setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(
+    JSON.stringify({ success: true, link: file.getUrl() })
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 
-function getOrCreateFolder(name, parentId) {
-  const folders = DriveApp.getFoldersByName(name);
-  if (folders.hasNext()) return folders.next();
-  return DriveApp.getFolderById(parentId).createFolder(name);
-}
-
-5️⃣ Deploy → New deployment → Web app
+3️⃣ Deploy → New deployment → Web app
    Execute as: Me
    Who has access: Anyone
 
-6️⃣ Copy URL deployment và paste vào file app.js
+4️⃣ Copy URL deployment và paste vào app.js
 
-7️⃣ Thay 'YOUR_FOLDER_ID' bằng Folder ID đã copy ở bước 2
+✅ Folder Android: 1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN
+✅ Folder Windows: 1WRvqQ_E6jD3ik93VUQ8VFFg5e5UsEzd7
   `;
   alert(guide);
 }

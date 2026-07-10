@@ -390,6 +390,12 @@
       color: #64ffda;
       text-decoration: none;
     }
+    .admin-badge:hover {
+      background: rgba(102,126,234,0.5);
+    }
+    .admin-only {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -399,6 +405,7 @@
     <div class="page-header">
       <h1>📦 Kho Phần Mềm</h1>
       <p>Lưu trữ & chia sẻ phần mềm Android, Windows dễ dàng</p>
+      <button class="admin-badge" id="adminBadge" onclick="toggleAdminLogin()" style="margin-top:12px;padding:8px 16px;border:none;border-radius:20px;background:rgba(102,126,234,0.3);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">🔒 User</button>
     </div>
 
     <!-- Thông báo cấu hình -->
@@ -429,7 +436,7 @@
       <div class="software-section">
         <h3 class="section-title"><span class="icon">🤖</span> Tải lên App Android</h3>
         
-        <div class="upload-zone" id="androidZone" onclick="document.getElementById('androidInput').click()">
+        <div class="upload-zone admin-only" id="androidZone" onclick="document.getElementById('androidInput').click()">
           <input type="file" id="androidInput" accept=".apk,.xapk,.aab,.zip">
           <div class="upload-icon">📤</div>
           <p class="upload-text">Kéo thả file hoặc click để chọn</p>
@@ -445,7 +452,7 @@
           <button class="clear-file" onclick="clearFile('android')">✕</button>
         </div>
 
-        <div class="form-row">
+        <div class="form-row admin-only">
           <div class="form-group">
             <label>Tên phần mềm</label>
             <input type="text" id="androidName" placeholder="VD: TikTok Pro">
@@ -456,7 +463,7 @@
           </div>
         </div>
 
-        <button class="btn-upload" id="androidBtn" onclick="uploadFile('android')">
+        <button class="btn-upload admin-only" id="androidBtn" onclick="uploadFile('android')">
           <span>⬆️</span> Tải lên Google Drive
         </button>
 
@@ -472,7 +479,7 @@
       <div class="software-section">
         <h3 class="section-title"><span class="icon">💻</span> Tải lên App Windows</h3>
         
-        <div class="upload-zone" id="windowsZone" onclick="document.getElementById('windowsInput').click()">
+        <div class="upload-zone admin-only" id="windowsZone" onclick="document.getElementById('windowsInput').click()">
           <input type="file" id="windowsInput" accept=".exe,.msi,.zip,.rar,.7z">
           <div class="upload-icon">📤</div>
           <p class="upload-text">Kéo thả file hoặc click để chọn</p>
@@ -488,7 +495,7 @@
           <button class="clear-file" onclick="clearFile('windows')">✕</button>
         </div>
 
-        <div class="form-row">
+        <div class="form-row admin-only">
           <div class="form-group">
             <label>Tên phần mềm</label>
             <input type="text" id="windowsName" placeholder="VD: Photoshop">
@@ -499,7 +506,7 @@
           </div>
         </div>
 
-        <button class="btn-upload" id="windowsBtn" onclick="uploadFile('windows')">
+        <button class="btn-upload admin-only" id="windowsBtn" onclick="uploadFile('windows')">
           <span>⬆️</span> Tải lên Google Drive
         </button>
 
