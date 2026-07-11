@@ -2,7 +2,7 @@
 // THIENKIM VERSION CONFIG
 // Cập nhật VERSION khi có thay đổi
 // =============================================
-const TK_VERSION = '0.0.1';
+const TK_VERSION = '0.0.2';
 
 // Auto-inject version badge vào cuối body
 (function() {
@@ -13,7 +13,7 @@ const TK_VERSION = '0.0.1';
     if (!badge) {
       badge = document.createElement('div');
       badge.id = 'buildVersion';
-      badge.style.cssText = 'position:fixed;bottom:8px;right:10px;font-size:10px;color:#667eea;opacity:0.5;z-index:9999;pointer-events:none;';
+      badge.title = `THIENKIM build ${TK_VERSION}`;
       document.body.appendChild(badge);
     }
     badge.textContent = `TKver${TK_VERSION}`;
