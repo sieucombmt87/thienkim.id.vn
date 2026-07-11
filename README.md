@@ -1,4 +1,17 @@
-# TKver8.6 - App Center Direct / Permission Excel
+# TKver0.0.3 - Setup Guide Modal + Auto Bump Version
+
+## Cập nhật
+- Thay `alert()` hướng dẫn Google Drive trong `apps/kho-phan-mem/` bằng modal có thể select/copy code.
+- Nút **📋 Copy code** tự động copy toàn bộ code Apps Script vào clipboard.
+- Bump version badge: `0.0.2` → `0.0.3`.
+- Thêm auto-bump script `tools/bump-version.js` để mỗi lần commit tăng version tự động.
+
+## Quy ước version
+- Bản hiện tại: `0.0.3`
+- Bản tiếp theo: `0.0.4`
+- Mỗi lần có update mới → báo Tao chạy `node tools/bump-version.js` để bump version → mày refresh là thấy version mới ngay.
+
+# TKver0.0.2 - App Center Direct / Permission Excel
 
 - App Center chuyển sang `/apps/`.
 - Trang cũ `/app/` tự redirect sang `/apps/`.
