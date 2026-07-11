@@ -1,3 +1,15 @@
+# TKver0.0.4 - Card Click Fix
+
+## Bug
+- Mày bấm vào card trên trang chủ nhưng không vào được nội dung.
+- Nguyên nhân: `index.html` không load helper `getSavedUser`, nên JS trong `assets/js/app.js` không nhận diện được user đã đăng nhập và throw lỗi trước khi navigate.
+
+## Sửa
+- Thêm `assets/js/tk-auth.js`: expose `getSavedUser`, `saveUser`, `clearUser`, `ROLE_LABELS` ra global.
+- Load `tk-auth.js` TRƯỚC `app.js` trong `index.html`.
+- Thêm compatibility wrapper `apiLogin(...)` trong `config/google-sheet.js`.
+- Version bump: `0.0.3` → `0.0.4`.
+
 # TKver0.0.3 - Setup Guide Modal + Auto Bump Version
 
 ## Cập nhật

@@ -14,6 +14,20 @@ function tkLoginWithSheet(username, password) {
   return fetchWithSheet_(username, password);
 }
 
+// Compatibility wrapper for callers using apiLogin(...)
+async function apiLogin(username, password) {
+  try {
+    return await tkLoginWithSheet(username, password);
+  } catch (e) {
+    return { ok: false, error: 'API error: ' + (e && e.message || e) };
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.tkLoginWithSheet = tkLoginWithSheet;
+  window.apiLogin = apiLogin;
+}
+
 async function fetchWithSheet_(username, password) {
   const body = { action: 'login', username, password };
 
