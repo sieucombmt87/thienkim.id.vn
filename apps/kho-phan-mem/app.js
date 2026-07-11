@@ -413,17 +413,18 @@ function checkConfig() {
 }
 
 function showSetupGuide() {
-  const guide = `
-📋 HƯỚNG DẪN CẤU HÌNH GOOGLE DRIVE
+  const guide = `<strong>📋 HƯỚNG DẪN CẤU HÌNH GOOGLE DRIVE</strong>
 
-1️⃣ Tạo Google Apps Script (script.google.com)
+<strong>1️⃣</strong> Tạo Google Apps Script (script.google.com)
 
-2️⃣ Paste code sau vào Code.gs:
+<strong>2️⃣</strong> Paste code sau vào <b>Code.gs</b>:
 
-function doPost(e) {
+<button type="button" onclick="tkCopySetupGuide(this)" style="position:absolute;top:6px;right:6px;padding:6px 12px;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:rgba(100,255,218,.2);color:#64ffda;cursor:pointer;font-size:12px;font-weight:600;">📋 Copy code</button>
+
+<pre><code>function doPost(e) {
   const { fileName, fileType, fileData } = e.parameter;
-  const folderId = fileType === 'android' 
-    ? '1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN' 
+  const folderId = fileType === 'android'
+    ? '1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN'
     : '1WRvqQ_E6jD3ik93VUQ8VFFg5e5UsEzd7';
   const folder = DriveApp.getFolderById(folderId);
   const decoded = Utilities.base64Decode(fileData);
@@ -433,16 +434,68 @@ function doPost(e) {
   return ContentService.createTextOutput(
     JSON.stringify({ success: true, link: file.getUrl() })
   ).setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+
+<strong>3️⃣</strong> Deploy → New deployment → Web app
+&nbsp;&nbsp;&nbsp;&nbsp;Execute as: Me
+&nbsp;&nbsp;&nbsp;&nbsp;Who has access: Anyone
+
+<strong>4️⃣</strong> Copy URL deployment và paste vào app.js (GOOGLE_SCRIPT_URL)
+
+<small style="opacity:.7">✅ Folder Android: 1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN</small>
+<small style="opacity:.7">✅ Folder Windows: 1WRvqQ_E6jD3ik93VUQ8VFFg5e5UsEzd7</small>`;
+
+  tkShowGuideModal("Hướng dẫn cấu hình Google Drive", guide);
 }
 
-3️⃣ Deploy → New deployment → Web app
-   Execute as: Me
-   Who has access: Anyone
+function tkShowGuideModal(title, bodyHtml) {
+  let overlay = document.getElementById('tkGuideModal');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'tkGuideModal';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)';
+    overlay.innerHTML = `
+      <div style="position:relative;max-width:680px;width:100%;max-height:90vh;background:linear-gradient(135deg,#1a1a3e,#0f0f23);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:24px;overflow:hidden;display:flex;flex-direction:column;color:#e6f1ff;box-shadow:0 20px 60px rgba(0,0,0,.6)">
+        <button type="button" onclick="document.getElementById('tkGuideModal').style.display='none'" style="position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:18px;cursor:pointer">✕</button>
+        <h2 id="tkGuideTitle" style="margin:0 0 16px;color:#64ffda;font-size:18px"></h2>
+        <div id="tkGuideBody" style="flex:1;overflow:auto;padding-right:8px;line-height:1.55;font-size:14px"></div>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+  }
+  document.getElementById('tkGuideTitle').textContent = title;
+  document.getElementById('tkGuideBody').innerHTML = bodyHtml;
+  overlay.style.display = 'flex';
+}
 
-4️⃣ Copy URL deployment và paste vào app.js
-
-✅ Folder Android: 1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN
-✅ Folder Windows: 1WRvqQ_E6jD3ik93VUQ8VFFg5e5UsEzd7
-  `;
-  alert(guide);
+function tkCopySetupGuide(btn) {
+  const code = `function doPost(e) {
+  const { fileName, fileType, fileData } = e.parameter;
+  const folderId = fileType === 'android'
+    ? '1et9mL9i5zN3FDs1w09BbvnOdBdZB8AmN'
+    : '1WRvqQ_E6jD3ik93VUQ8VFFg5e5UsEzd7';
+  const folder = DriveApp.getFolderById(folderId);
+  const decoded = Utilities.base64Decode(fileData);
+  const blob = Utilities.newBlob(decoded, 'application/octet-stream', fileName);
+  const file = folder.createFile(blob);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return ContentService.createTextOutput(
+    JSON.stringify({ success: true, link: file.getUrl() })
+  ).setMimeType(ContentService.MimeType.JSON);
+}`;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '✅ Đã copy!';
+    setTimeout(() => { btn.textContent = '📋 Copy code'; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = code;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✅ Đã copy!';
+    setTimeout(() => { btn.textContent = '📋 Copy code'; }, 2000);
+  });
 }
