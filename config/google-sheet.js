@@ -7,7 +7,7 @@
 // Mặc định fallback sang bản test (chỉ chủ script truy cập được) — KHÔNG dùng cho user thường.
 // Khi deploy production, mày thay URL dưới bằng URL /exec (bắt đăng bằng https://script.google.com/macros/s/.../exec).
 const TK_GOOGLE_SHEET_API_DEV = 'https://script.google.com/macros/s/AKfycbwevK4LQgr8jLASGHTSt7g89No4qNSxM_c-lodATS4/dev';
-const TK_GOOGLE_SHEET_API_EXEC = 'https://script.google.com/macros/s/AKfycbyzlcEcrZiyKXXhys_wJbYmTOYKBKnZKd1n7eemya4Jijvy4OcX5mUmRx21ChVDoLA/exec';
+const TK_GOOGLE_SHEET_API_EXEC = 'https://script.google.com/macros/s/AKfycbxOXbfPDOS04gd4cnvIEeffRMZxpcAYheNo-La_298zo2X7yY6eqGynZSvwC6_66_Gl/exec';
 
 function tkResolveApiUrl_() {
   // 1. Ưu tiên config cục bộ (config/local.js — gitignored)
