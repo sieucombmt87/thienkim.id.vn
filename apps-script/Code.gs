@@ -1,6 +1,12 @@
 /**
- * TKver0.0.6 - Google Sheet Login API
+ * TKver0.0.7 - Google Sheet Login API
  * Dùng cho Google Apps Script Web App.
+ *
+ * Changelog:
+ *  v0.0.6 → Thêm normalizeUsername_ (SĐT VN tự thêm '0').
+ *  v0.0.7 → Fix status check (chỉ khóa khi chứa lock/inactive/...,
+ *           tránh cột status là số/checkbox/trống bị hiểu thành khóa).
+ *           clean_() loại bỏ ký tự ẩn \r \n \t trong cell Sheet.
  *
  * Sheet link hiện tại:
  * https://docs.google.com/spreadsheets/d/11vvybEWeClcJFCZIchZ12MsClXDPJ-39iRNQtWGpRDs/edit?gid=1334014683
@@ -85,7 +91,7 @@ function parseParams_(e) {
           });
         }
       } catch (err2) {
-        // Cho phép form-urlencoded/text fallback nếu cần
+        // form-urlencoded/text fallback
       }
     }
   }
@@ -101,8 +107,6 @@ function login_(params) {
     return json_({ ok: false, error: 'Thiếu username hoặc password.' });
   }
 
-  // TKver0.0.6 - Chuẩn hoá username: nếu là SĐT VN 10 số bắt đầu bằng '9'
-  // (do Google Sheet cắt mất số 0 đầu khi lưu dạng Number), tự thêm '0'.
   const targetUsername = normalizeUsername_(username).toLowerCase();
   const targetPassword = password;
 
@@ -149,8 +153,10 @@ function login_(params) {
     if (rowUsername.toLowerCase() === targetUsername && rowPassword === targetPassword) {
       const statusRaw = idx.status >= 0 ? clean_(row[idx.status]) : 'active';
       const status = statusRaw.toLowerCase();
+      const lockedKeywords = ['lock', 'inactive', 'disable', 'disabled', 'block', 'blocked', 'banned', 'khoa', 'vohieu', 'vo_hieu'];
+      const isLocked = lockedKeywords.some(k => status === k || status.indexOf(k) === 0);
 
-      if (status && status !== 'active') {
+      if (status && isLocked) {
         return json_({ ok: false, error: 'Tài khoản đang bị khóa hoặc chưa active.' });
       }
 
@@ -314,12 +320,12 @@ function getTargetSheet_() {
 
 function clean_(value) {
   if (value === null || value === undefined) return '';
-  return String(value).trim();
+  return String(value).replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function normalizeUsername_(value) {
   const s = String(value || '').trim();
-  if (/^9\d{9}$/.test(s)) return '0' + s; // SĐT VN 10 số, thêm '0' đầu
+  if (/^9\d{9}$/.test(s)) return '0' + s;
   return s;
 }
 
