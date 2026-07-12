@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const MODE_LABELS = {
     admin: "ADMIN GATEWAY",
-    vip: "KHO BÁU VIP",
-    sales: "TẠP HÓA CHỐT ĐƠN"
+    vip: "CỔNG ĐĂNG NHẬP",
+    sales: "CỔNG ĐĂNG NHẬP"
   };
 
   if(modeChip){

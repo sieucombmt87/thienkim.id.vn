@@ -2,7 +2,7 @@
 // THIENKIM VERSION CONFIG
 // Cập nhật VERSION khi có thay đổi
 // =============================================
-const TK_VERSION = '0.0.7';
+const TK_VERSION = '0.0.8';
 
 // Auto-inject version badge vào cuối body
 (function() {
