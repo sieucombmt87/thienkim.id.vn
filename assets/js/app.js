@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if(user){
     if(logout) logout.classList.remove("hidden");
     if(badge){
-      const label = ROLE_LABELS[user.role] || user.role || "User";
+      const labels = (typeof ROLE_LABELS === "object" && ROLE_LABELS) || {};
+      const label = labels[user.role] || user.role || "User";
       badge.textContent = `${label} • ${user.full_name || user.username}`;
       badge.classList.remove("hidden");
       if(canGoAdmin(user)){
@@ -54,14 +55,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".card-shell").forEach(card => {
     card.addEventListener("click", e => {
-      if(e.target.closest("a")) return;
+      if(e.target.closest("a.login-chip")) return;
       const section = card.dataset.open;
-      const u = getSavedUser();
+      const u = (typeof getSavedUser === "function") ? getSavedUser() : null;
       if((section === "vip" || section === "sales") && !u){
         location.href = `login.html?mode=${section}`;
         return;
       }
-      location.href = card.dataset.url || routeMap[section] || "index.html";
+      const dest = card.dataset.url || routeMap[section] || "index.html";
+      console.log("[TK] Card click →", section, dest);
+      location.href = dest;
     });
   });
 });

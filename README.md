@@ -1,3 +1,15 @@
+# TKver0.0.5 - Card Click Hardening
+
+## Bug
+- Mày xác nhận lại: vẫn không có card nào click được sau bản 0.0.4.
+- Root cause: 2 card `data-open="vip"` và `data-open="sales"` có chứa `<a class="login-chip" href="login.html?mode=...">`. Khi click vào card, `e.target.closest("a")` return truthy (chip nằm trong cùng card) → JS return → KHÔNG navigate.
+
+## Sửa
+- Đổi điều kiện `closest("a")` → `closest("a.login-chip")` để chỉ skip khi click thẳng vào chip login, không skip toàn bộ card.
+- Thêm `console.log` để debug lần sau.
+- Inject `tk-auth.js` vào: `apps/index.html`, `apps/edu-lab/index.html`, `pages/module.html`, `me/index.html` để các trang con luôn có `getSavedUser`.
+- Version bump: `0.0.4` → `0.0.5`.
+
 # TKver0.0.4 - Card Click Fix
 
 ## Bug
