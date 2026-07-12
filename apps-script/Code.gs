@@ -1,5 +1,5 @@
 /**
- * TKver8.6 - Google Sheet Login API
+ * TKver0.0.6 - Google Sheet Login API
  * Dùng cho Google Apps Script Web App.
  *
  * Sheet link hiện tại:
@@ -101,7 +101,9 @@ function login_(params) {
     return json_({ ok: false, error: 'Thiếu username hoặc password.' });
   }
 
-  const targetUsername = username.toLowerCase();
+  // TKver0.0.6 - Chuẩn hoá username: nếu là SĐT VN 10 số bắt đầu bằng '9'
+  // (do Google Sheet cắt mất số 0 đầu khi lưu dạng Number), tự thêm '0'.
+  const targetUsername = normalizeUsername_(username).toLowerCase();
   const targetPassword = password;
 
   let ss;
@@ -206,7 +208,7 @@ function getUsers_(params) {
   const users = [];
   for (let i = 1; i < userValues.length; i++) {
     const row = userValues[i];
-    const username = clean_(row[0]);
+    const username = normalizeUsername_(clean_(row[0]));
     if (!username) continue;
     const user = { username };
     for (let j = 1; j < row.length; j++) {
@@ -249,7 +251,7 @@ function setUserPermissions_(params) {
 
   let rowIndex = -1;
   for (let i = 1; i < values.length; i++) {
-    if (clean_(values[i][idx.username]).toLowerCase() === targetUsername.toLowerCase()) {
+    if (normalizeUsername_(clean_(values[i][idx.username])).toLowerCase() === targetUsername.toLowerCase()) {
       rowIndex = i + 1;
       break;
     }
@@ -281,7 +283,7 @@ function readPermissionForUser_(ss, username) {
   const values = permSheet.getRange(1, 1, permSheet.getLastRow(), permSheet.getLastColumn()).getValues();
   const headers = values[0].map(h => clean_(h).toLowerCase());
   for (let i = 1; i < values.length; i++) {
-    if (clean_(values[i][0]).toLowerCase() === String(username).toLowerCase()) {
+    if (normalizeUsername_(clean_(values[i][0])).toLowerCase() === String(username).toLowerCase()) {
       const obj = {};
       headers.forEach((h, idx) => { if (h) obj[h] = clean_(values[i][idx]); });
       return obj;
@@ -313,6 +315,12 @@ function getTargetSheet_() {
 function clean_(value) {
   if (value === null || value === undefined) return '';
   return String(value).trim();
+}
+
+function normalizeUsername_(value) {
+  const s = String(value || '').trim();
+  if (/^9\d{9}$/.test(s)) return '0' + s; // SĐT VN 10 số, thêm '0' đầu
+  return s;
 }
 
 function json_(obj) {
