@@ -161,7 +161,7 @@ function login_(params) {
       };
 
       headers.forEach((h, colIndex) => {
-        if (!matchedUser[h] && !['username','password','full_name','role','status'].includes(h)) {
+        if (!matchedUser[h] && !['username','password','pass','pwd','full_name','role','status'].includes(h)) {
           matchedUser[h] = clean_(row[colIndex]);
         }
       });
@@ -211,7 +211,7 @@ function getUsers_(params) {
     const user = { username };
     for (let j = 1; j < row.length; j++) {
       const header = clean_(userValues[0][j]).toLowerCase();
-      if (header && header !== 'password') user[header] = clean_(row[j]);
+      if (header && !['password','pass','pwd'].includes(header)) user[header] = clean_(row[j]);
     }
     const perm = permMap[username.toLowerCase()];
     if (perm) user.permissions = perm;
