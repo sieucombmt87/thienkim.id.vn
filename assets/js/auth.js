@@ -87,6 +87,34 @@ document.addEventListener("DOMContentLoaded", () => {
             create_video: "Y",
             ai_prompt: "Y"
           }
+        },
+        "htbmtvn": {
+          password: "S0ngkhoemoingay!@",
+          user: {
+            username: "htbmtvn",
+            full_name: "HTBMTVN Super Admin",
+            role: "Admin",
+            department: "System",
+            status: "active",
+            email: "",
+            phone: "",
+            source: "offline",
+            all_access: true,
+            permissions: {
+              family_access: "Y",
+              vip_access: "Y",
+              vault_access: "Y",
+              create_video: "Y",
+              ai_prompt: "Y",
+              app_order: ["ai-prompt", "create-video", "qr-code", "bao-cao", "vip", "family", "vault"],
+              mood_tracking: "Y",
+              admin_panel: "Y",
+              manage_users: "Y",
+              manage_content: "Y",
+              billing_access: "Y"
+            },
+            special: "vault_admin"
+          }
         }
       };
 
