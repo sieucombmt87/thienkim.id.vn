@@ -23,7 +23,14 @@
       <div id="appCenterContent"></div>
     </section>
   </main>
-  <script src="../config/local.js"></script>
+  <script>
+    (function(){
+      var s = document.createElement('script');
+      s.src = '../config/local.js';
+      s.onerror = function(){ console.log('[local.js] not found, using built-in config'); };
+      document.head.appendChild(s);
+    })();
+  </script>
   <script src="../config/google-sheet.js"></script>
   <script src="../config/modules.js"></script>
   <script src="../assets/js/tk-auth.js"></script>
