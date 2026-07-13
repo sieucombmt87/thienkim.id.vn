@@ -55,6 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("password").value.trim();
       const remember = document.getElementById("remember").checked;
 
+      console.log('[AUTH DEBUG] username:', JSON.stringify(username), 'pwdlen:', password.length);
+
       let data;
 
       // TKver8.6 - Offline test accounts, không cần Google Sheet
@@ -119,11 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       if(offlineUsers[username] && offlineUsers[username].password === password){
+        console.log('[AUTH DEBUG] offline MATCH for:', username);
         data = {
           ok: true,
           user: offlineUsers[username].user
         };
       }else{
+        console.log('[AUTH DEBUG] offline NO MATCH, calling apiLogin. keys:', Object.keys(offlineUsers));
         data = await apiLogin(username, password);
       }
 
@@ -155,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 650);
     }catch(err){
       msg.className = "login-message error";
+      console.error('[AUTH DEBUG] CATCH err:', err);
       msg.textContent = "Không kết nối được API. Hãy kiểm tra Apps Script hoặc dùng tài khoản test offline để vào trước."; console.error(err);
     }
   });
