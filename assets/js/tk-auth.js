@@ -43,12 +43,11 @@
   const ROLE_LABELS = {
     admin: "ADMIN GATEWAY",
     vip: "KHO BÁU VIP",
-    sales: "TẠP HÓA CHỐT ĐƠN",
+    sales: "TAP HOA CHOT DON",
     boss: "Boss",
     leader: "Leader",
     family: "Family",
-    trưởng_ca: "Trưởng ca",
-    trưởng ca: "Trưởng ca",
+    truong_ca: "Truong ca",
     tvbh: "TVBH"
   };
 
