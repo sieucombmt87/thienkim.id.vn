@@ -733,7 +733,15 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
   function step(){
     ensure();
     if(!window.runCodes.length){renderCurrentCode();return;}
-    window.runIndex=(window.runIndex+1)%window.runCodes.length;
+    const nextIndex=window.runIndex+1;
+    if(nextIndex>=window.runCodes.length){
+      if(window.runnerTimer){clearInterval(window.runnerTimer);window.runnerTimer=null;}
+      window.runIndex=window.runCodes.length-1;
+      renderCurrentCode();
+      if(typeof showRunnerDoneToast==="function")showRunnerDoneToast();
+      return;
+    }
+    window.runIndex=nextIndex;
     renderCurrentCode();
   }
   function delay(){
@@ -886,8 +894,35 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
 
   function step(){
     if(!state.codes.length){ syncCodes(true); renderCurrent(false); return; }
-    state.index = (state.index + 1) % state.codes.length;
+    const nextIndex = state.index + 1;
+    if(nextIndex >= state.codes.length){
+      // Đã chạy hết tất cả mã → dừng interval, hiện thông báo
+      if(state.timer){ clearInterval(state.timer); state.timer=null; }
+      state.running = false;
+      state.index = state.codes.length - 1;
+      renderCurrent(true);
+      renderLists();
+      showRunnerDoneToast();
+      return;
+    }
+    state.index = nextIndex;
     renderCurrent(true);
+  }
+  function showRunnerDoneToast(){
+    if(document.getElementById("tkRunnerDoneToast")) return;
+    const toast = document.createElement("div");
+    toast.id = "tkRunnerDoneToast";
+    toast.textContent = "✅ Đã chạy hết tất cả mã!";
+    toast.style.cssText = "position:fixed;top:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:600;box-shadow:0 8px 24px rgba(16,185,129,.4);z-index:99999;animation:slideDown .35s ease-out;";
+    if(!document.getElementById("tkRunnerDoneStyle")){
+      const s = document.createElement("style");
+      s.id = "tkRunnerDoneStyle";
+      s.textContent = "@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}";
+      document.head.appendChild(s);
+    }
+    document.body.appendChild(toast);
+    try{ if(navigator.vibrate) navigator.vibrate([120,60,120]); }catch(e){}
+    setTimeout(()=>{ toast.style.transition="opacity .35s"; toast.style.opacity="0"; setTimeout(()=>toast.remove(),350); }, 3000);
   }
 
   function play(){
