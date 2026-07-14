@@ -227,7 +227,10 @@ function tkGetSortedApps(user){
 function tkIsAppManager(user){
   const username = String(user?.username || "").toLowerCase();
   const role = String(user?.role || "").toLowerCase();
-  return !!user && (role === "vip" || username === "0947924444");
+  if(!user) return false;
+  if(username === "0947924444" || username === "0987471471") return true;
+  if(user.all_access === true) return true;
+  return role === "vip" || role === "admin" || role === "boss";
 }
 
 function tkIsAdminBackUser(user){
