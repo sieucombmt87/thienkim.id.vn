@@ -281,8 +281,9 @@ function parseRunCodes(){const raw=document.getElementById("createInput")?.value
 function renderCurrentCode(){const p=document.getElementById("codePreview");if(!p)return;p.innerHTML="";const code=runCodes[runIndex]||"";if(!code){p.textContent="Mã sẽ hiện ở đây...";updateRunStats();return;}if(currentCodeType==="qr"&&window.QRCode){const c=document.createElement("canvas");c.id="currentCodeCanvas";p.appendChild(c);QRCode.toCanvas(c,code,{width:280,margin:2},()=>{});}else if(window.JsBarcode){const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.id="currentBarcodeSvg";p.appendChild(svg);try{JsBarcode(svg,code,{format:"CODE128",displayValue:true})}catch(e){p.textContent=code;}}else p.textContent=code;runDone.add(code);updateRunStats();}
 function updateRunStats(){const total=runCodes.length;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set("runTotal",total);set("runDone",runDone.size);set("runError",runErrors.size);set("runIndex",total?`${Math.min(runIndex+1,total)}/${total}`:"0/0");renderRunLists();}
 function renderRunLists(){const list=document.getElementById("runList"),err=document.getElementById("errorList"),done=document.getElementById("doneList"),status=document.getElementById("runListStatus");if(status)status.textContent=runTimer?"Đang chạy":(runCodes.length?"Đã nạp":"Chưa chạy");if(list)list.innerHTML=runCodes.length?runCodes.map((c,i)=>`<div class="run-item ${i===runIndex?"active":""} ${runErrors.has(c)?"error":""}"><span>${i+1}</span><span>${escapeHtml(c)}</span><span>${runErrors.has(c)?"Lỗi":(runDone.has(c)?"Đã chạy":"Chờ")}</span></div>`).join(""):"Chưa có dữ liệu.";if(err)err.innerHTML=runErrors.size?[...runErrors].map((c,i)=>`<div class="run-item error"><span>${i+1}</span><span>${escapeHtml(c)}</span><span>Lỗi</span></div>`).join(""):"Chưa có lỗi.";if(done)done.innerHTML=runDone.size?[...runDone].map((c,i)=>`<div class="run-item"><span>${i+1}</span><span>${escapeHtml(c)}</span><span>OK</span></div>`).join(""):"Chưa có.";}
-function nextRunCode(){if(!runCodes.length)parseRunCodes();if(!runCodes.length)return;runIndex++;if(runIndex>=runCodes.length){if(runErrors.size){runCodes=[...runErrors];runErrors.clear();runIndex=0;}else{pauseRunner();runIndex=runCodes.length-1;updateRunStats();return;}}renderCurrentCode();}
-function playRunner(){if(!runCodes.length)parseRunCodes();if(!runCodes.length)return alert("Chưa có mã để chạy.");pauseRunner(false);renderCurrentCode();const delay=Number(document.getElementById("runnerDelay")?.value||2000);runTimer=setInterval(nextRunCode,delay);updateRunStats();}
+function nextRunCode(){if(!runCodes.length)parseRunCodes();if(!runCodes.length)return;runIndex++;if(runIndex>=runCodes.length){if(runErrors.size){runCodes=[...runErrors];runErrors.clear();runIndex=0;renderCurrentCode();return;}pauseRunner();runIndex=runCodes.length-1;updateRunStats();showRunnerDoneToast();return;}renderCurrentCode();}
+function showRunnerDoneToast(){const toast=document.createElement("div");toast.textContent="✅ Đã chạy hết tất cả mã!";toast.style.cssText="position:fixed;top:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:600;box-shadow:0 8px 24px rgba(16,185,129,.4);z-index:99999;animation:slideDown .35s ease-out;";if(!document.getElementById("tkRunnerDoneStyle")){const s=document.createElement("style");s.id="tkRunnerDoneStyle";s.textContent="@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}";document.head.appendChild(s);}document.body.appendChild(toast);try{if(navigator.vibrate)navigator.vibrate([120,60,120]);}catch(e){}setTimeout(()=>{toast.style.transition="opacity .35s";toast.style.opacity="0";setTimeout(()=>toast.remove(),350);},3000);}
+function playRunner(){if(!runCodes.length)parseRunCodes();if(!runCodes.length)return alert("Chưa có mã để chạy.");pauseRunner(false);renderCurrentCode();const seconds=Math.max(1,parseFloat(document.getElementById("runnerDelay")?.value||5)||5);const delay=Math.round(seconds*1000);runTimer=setInterval(nextRunCode,delay);updateRunStats();}
 function pauseRunner(update=true){if(runTimer){clearInterval(runTimer);runTimer=null;}if(update)updateRunStats();}
 function resetRunner(){pauseRunner(false);runIndex=0;runErrors.clear();runDone.clear();parseRunCodes();renderCurrentCode();renderRunLists();}
 function markCurrentError(){const code=runCodes[runIndex];if(code){runErrors.add(code);updateRunStats();}}
@@ -736,9 +737,9 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
     renderCurrentCode();
   }
   function delay(){
-    const sel=$("delaySelect")||$("runnerDelay")||document.querySelector(".runner-delay select");
-    const n=parseInt(sel?.value||"2",10);
-    return (Number.isFinite(n)?n:2)*1000;
+    const sel=$("delaySelect")||$("runnerDelay")||document.querySelector(".runner-delay select, .runner-delay input");
+    const n=parseFloat(sel?.value||"5");
+    return (Number.isFinite(n)?Math.max(1,n):5)*1000;
   }
   window.startRunner=function(){
     ensure();
@@ -787,8 +788,8 @@ async function scanInventoryFrame(){if(tk84ScanLocked)return;if(!inventoryVideo|
     return raw.split(/\r?\n|[,;\t]+/).map(x=>x.trim()).filter(Boolean);
   }
   function delayMs(){
-    const v = parseInt($("runnerDelay")?.value || "2000", 10);
-    return Number.isFinite(v) ? v : 2000;
+    const v = parseFloat($("runnerDelay")?.value || "5");
+    return Number.isFinite(v) ? Math.max(1, Math.round(v * 1000)) : 5000;
   }
   function setText(id,val){ const el=$(id); if(el) el.textContent=val; }
 

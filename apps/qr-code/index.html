@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>QR CODE PRO • TKver9.1</title>
-  <link rel="stylesheet" href="style.css?v=TKver9.1">
+  <title>QR CODE PRO • TKver9.2</title>
+  <link rel="stylesheet" href="style.css?v=TKver9.2">
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -41,7 +41,7 @@
         <div class="runner-actions">
           <button class="btn primary" id="playRunnerBtn">▶ Chạy</button><button class="btn danger" id="pauseRunnerBtn">Ⅱ Tạm dừng</button><button class="btn ghost" id="resetRunnerBtn">↻ Bắt đầu lại</button><button class="btn ghost" id="downloadCurrentBtn">⇩ Tải ảnh</button>
         </div>
-        <label class="runner-delay">Thời gian chuyển:<select id="runnerDelay"><option value="2000">2 giây</option><option value="3000">3 giây</option><option value="4000">4 giây</option><option value="5000">5 giây</option></select></label>
+        <label class="runner-delay">Thời gian chuyển (giây):<input type="number" id="runnerDelay" min="1" max="3600" step="1" value="5" style="width:80px;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;text-align:center;"></label>
         <p class="runner-help" id="runnerHelp">Máy tính: nhấn SPACE để đánh dấu mã lỗi. Điện thoại: chạm vào mã đang hiển thị để đánh dấu lỗi.</p>
       </section>
       <section class="runner-lists">
@@ -190,6 +190,6 @@
       <div id="exportPreview" class="export-preview hidden"></div>
     </section>
   </main>
-  <script src="app.js?v=TKver9.1"></script>
+  <script src="app.js?v=TKver9.2"></script>
 </body>
 </html>
